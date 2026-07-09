@@ -1,0 +1,2554 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import { ui } from "../i18n/ui";
+import QuotaBanner from "../components/QuotaBanner.astro";
+import AnalysisRating from "../components/AnalysisRating.astro";
+
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const translations = ui[lang];
+---
+
+<!-- Injected i18n for client-side script -->
+<meta name="check-i18n" content={JSON.stringify(translations)} />
+
+<Layout 
+  title={t("check.title")}
+  description="深度红蓝对抗财报分析报告。分析公司财务指标、潜在风险点及投资建议，提供可视化数据与完整证据链。"
+  keywords="财报深度分析, 审计报告生成, 风险建议, 财务表现可视化"
+>
+  <div class="check-page">
+    <div class="u-container">
+      <!-- Page Header -->
+      <div class="check-header">
+        <h1 class="check-title" id="page-title">{t("check.title")}</h1>
+      </div>
+
+
+
+      <!-- Loading State -->
+      <div class="loading-container" id="loading-container">
+        <div class="financial-quantum-loader">
+          <!-- Background Grid & Glow -->
+          <div class="loader-backdrop"></div>
+          <div class="scanning-beam"></div>
+          
+          <div class="loader-main">
+            <!-- Central Dynamic Icon (Rotates through states) -->
+            <div class="pivot-icon">
+              <div class="icon-state s-shield active">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div class="icon-state s-chart">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+              </div>
+              <div class="icon-state s-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              </div>
+            </div>
+            
+            <!-- Candlestick Animation -->
+            <div class="finance-viz">
+              <div class="candle c1"></div>
+              <div class="candle c2"></div>
+              <div class="candle c3"></div>
+              <div class="candle c4"></div>
+              <div class="candle c5"></div>
+            </div>
+
+            <!-- Ticker Band -->
+            <div class="ticker-tape">
+              <div class="ticker-track">
+                <span>REVENUE_VAL: OK</span><span>NET_PROFIT: STABLE</span><span>DEBT_RATIO: 42%</span><span>AUDIT_PROC_INIT</span><span>CROSS_CHECKED</span><span>CASH_FLOW_PULSE</span>
+              </div>
+            </div>
+
+            <!-- Data Flux Particles -->
+            <div class="data-flux">
+              <span class="flux-item">RISK:LOW</span>
+              <span class="flux-item">AUDIT:PASS</span>
+              <span class="flux-item">DATA:99.9%</span>
+              <span class="flux-item">ROI:12%</span>
+            </div>
+          </div>
+          
+          <!-- Outer Orbits -->
+          <div class="orbit-path op-1"></div>
+          <div class="orbit-path op-2"></div>
+        </div>
+
+        <div class="loading-info">
+          <p class="loading-text" id="loading-text">{t("check.loading")}</p>
+          <div class="progress-bar-wrapper">
+            <div class="progress-bar" id="progress-bar"></div>
+            <div class="progress-glow"></div>
+          </div>
+          <p class="progress-label" id="progress-label">0%</p>
+        </div>
+      </div>
+
+      <!-- Error State -->
+      <div class="error-container hidden" id="error-container">
+        <div class="error-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <p class="error-text" id="error-text">{t("check.error")}</p>
+        <a id="back-link" href={lang === "zh" ? "/search/" : "/en/search/"} class="back-btn">
+          ← {lang === "zh" ? "返回搜索" : "Back to Search"}
+        </a>
+        <a id="upgrade-link" href={lang === "zh" ? "/premium/?from=exceed" : "/en/premium/?from=exceed"} class="back-btn hidden">
+          {t("quota.upgrade_now")}
+        </a>
+      </div>
+
+      <!-- Results -->
+      <div class="results-container hidden" id="results-container">
+        <!-- Thought Process (A, B, C) -->
+        <div class="thought-container" id="thought-container">
+          <button class="thought-header" id="thought-toggle" aria-expanded="true">
+            <span class="thought-icon"><i class="fa-solid fa-chart-simple"></i></span>
+            <span class="thought-title">{t("check.thought")}</span>
+            <span class="thought-arrow"></span>
+          </button>
+          
+          <div class="thought-content" id="thought-content">
+            <div class="thought-grid">
+              <!-- A: Structured Data -->
+              <div class="thought-section section-a hidden">
+                <div class="section-label">数据归一化 (A)</div>
+                <div class="charts-grid" id="charts-a">
+                  <div class="chart-item">
+                    <div class="chart-label">营业收入</div>
+                    <div class="chart-canvas-wrapper">
+                      <canvas id="chart-revenue"></canvas>
+                    </div>
+                  </div>
+                  <div class="chart-item">
+                    <div class="chart-label">净利润</div>
+                    <div class="chart-canvas-wrapper">
+                      <canvas id="chart-profit"></canvas>
+                    </div>
+                  </div>
+                  <div class="chart-item">
+                    <div class="chart-label">毛利率</div>
+                    <div class="chart-canvas-wrapper">
+                      <canvas id="chart-margin"></canvas>
+                    </div>
+                  </div>
+                  <div class="chart-item">
+                    <div class="chart-label">资产负债率</div>
+                    <div class="chart-canvas-wrapper">
+                      <canvas id="chart-debt"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- B: Analysis Text -->
+              <div class="thought-section section-b">
+                <div class="section-label">{lang === 'zh' ? '深度分析 (B)' : 'Analyzer (B)'}</div>
+                <div class="scroll-wrapper-b">
+                  <div class="text-output" id="text-b"></div>
+                </div>
+              </div>
+
+              <!-- I: Industry Information -->
+              <div class="thought-section section-i">
+                <div class="section-label">{t("check.industry")} (I)</div>
+                <div class="industry-grid hidden">
+                  <div class="wordcloud-container">
+                    <canvas id="industry-wordcloud"></canvas>
+                  </div>
+                  <div class="news-display">
+                    <div id="news-header" class="news-header hidden"></div>
+                    <div id="news-placeholder" class="news-placeholder">
+                      <div class="placeholder-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                      <p>{t("check.industry_placeholder")}</p>
+                    </div>
+                    <div id="news-list" class="news-list hidden"></div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- C: Auditor Text -->
+              <div class="thought-section section-c">
+                <div class="section-label">风险审计 (C)</div>
+                <div class="scroll-wrapper-b">
+                  <div class="text-output" id="text-c"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="summary-container" id="summary-section-container">
+          <h2 class="col-title">{t("check.headline")}</h2>
+          <div class="summary-box">
+            <div id="summary-text" class="text-output"></div>
+            <div class="final-result-wrapper">
+              <div id="final-result-text" class="final-result-output hidden"></div>
+              <AnalysisRating slug="" lang="zh" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <QuotaBanner />
+  </div>
+</Layout>
+
+<style>
+  .check-page {
+    min-height: 100vh;
+    padding: 10vh 1rem 4rem;
+    background: var(--color-bg);
+  }
+
+  /* ── Header ── */
+  .check-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+
+
+  .check-title {
+    font-family: var(--font-roboto-slab);
+    font-size: clamp(1.4rem, 3.5vw, 2.4rem);
+    color: var(--color-text);
+    font-weight: 800;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  /* ── Loading ── */
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
+    padding: 0 1rem 4rem;
+    min-height: 55vh;
+  }
+
+  .financial-quantum-loader {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 24px;
+    background: rgba(var(--rgb-brand-1), 0.02);
+    border: 1px solid rgba(var(--rgb-brand-1), 0.1);
+    box-shadow: inset 0 0 40px rgba(var(--rgb-brand-1), 0.05);
+  }
+
+  .loader-backdrop {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(var(--rgb-brand-1), 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(var(--rgb-brand-1), 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.3;
+  }
+
+  .scanning-beam {
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    background: linear-gradient(to bottom, transparent, rgba(var(--rgb-brand-1), 0.2), transparent);
+    animation: beam-scan 3s ease-in-out infinite;
+    z-index: 1;
+  }
+
+  @keyframes beam-scan {
+    0% { top: -40%; }
+    50% { top: 100%; }
+    100% { top: -40%; }
+  }
+
+  .loader-main {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+
+  .pivot-icon {
+    width: 60px;
+    height: 60px;
+    color: var(--color-brand-1);
+    filter: drop-shadow(0 0 15px rgba(var(--rgb-brand-1), 0.5));
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .icon-state {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: scale(0.8) rotate(-10deg);
+    transition: all 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .icon-state.active {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+
+  .icon-state svg {
+    width: 100%;
+    height: 100%;
+    stroke: var(--color-brand-1);
+  }
+
+  /* Auto-rotation of icons handled by animation or script? 
+     Let's use a CSS animation for simplicity if possible, or just a CSS stagger */
+  .s-shield { animation: state-cycle 9s infinite 0s; }
+  .s-chart { animation: state-cycle 9s infinite 3s; }
+  .s-search { animation: state-cycle 9s infinite 6s; }
+
+  @keyframes state-cycle {
+    0%, 28% { opacity: 1; transform: scale(1) rotate(0deg); }
+    33.33%, 95% { opacity: 0; transform: scale(0.8) rotate(10deg); }
+    100% { opacity: 0; }
+  }
+
+  /* Candlesticks */
+  .finance-viz {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 60px;
+    margin-bottom: 20px;
+  }
+
+  .candle {
+    width: 10px;
+    border-radius: 2px;
+    position: relative;
+  }
+
+  .candle::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    width: 2px;
+    height: 120%;
+    bottom: -10%;
+    transform: translateX(-50%);
+    background: inherit;
+    opacity: 0.4;
+  }
+
+  .c1 { height: 30px; background: #10b981; animation: fluctu-green 2s infinite 0s; }
+  .c2 { height: 45px; background: #ef4444; animation: fluctu-red 2.5s infinite 0.3s; }
+  .c3 { height: 25px; background: #10b981; animation: fluctu-green 1.8s infinite 0.6s; }
+  .c4 { height: 50px; background: #10b981; animation: fluctu-green 2.2s infinite 0.9s; }
+  .c5 { height: 35px; background: #ef4444; animation: fluctu-red 2.1s infinite 1.2s; }
+
+  @keyframes fluctu-green {
+    0%, 100% { height: 20px; }
+    50% { height: 40px; }
+  }
+  @keyframes fluctu-red {
+    0%, 100% { height: 50px; }
+    50% { height: 25px; }
+  }
+
+  /* Ticker Tape */
+  .ticker-tape {
+    width: 120%;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 4px 0;
+    transform: rotate(-5deg);
+    border-top: 1px solid rgba(var(--rgb-brand-1), 0.2);
+    border-bottom: 1px solid rgba(var(--rgb-brand-1), 0.2);
+    overflow: hidden;
+  }
+
+  .ticker-track {
+    display: flex;
+    white-space: nowrap;
+    gap: 30px;
+    animation: ticker-slide 15s linear infinite;
+  }
+
+  .ticker-track span {
+    font-size: 0.7rem;
+    font-family: var(--font-mono, monospace);
+    font-weight: 700;
+    color: var(--color-text-alt);
+  }
+
+  @keyframes ticker-slide {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* Data Flux */
+  .data-flux {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .flux-item {
+    position: absolute;
+    font-size: 0.6rem;
+    font-weight: 800;
+    color: var(--color-brand-1);
+    background: rgba(var(--rgb-brand-1), 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    font-family: var(--font-mono, monospace);
+  }
+
+  .flux-item:nth-child(1) { top: 15%; left: 10%; animation: float-data 4s infinite 0s; }
+  .flux-item:nth-child(2) { top: 20%; right: 10%; animation: float-data 4s infinite 1s; }
+  .flux-item:nth-child(3) { bottom: 25%; left: 15%; animation: float-data 4s infinite 2s; }
+  .flux-item:nth-child(4) { bottom: 15%; right: 15%; animation: float-data 4s infinite 3s; }
+
+  @keyframes float-data {
+    0% { transform: translateY(10px); opacity: 0; }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.8; }
+    100% { transform: translateY(-30px); opacity: 0; }
+  }
+
+  /* Orbit Paths */
+  .orbit-path {
+    position: absolute;
+    border: 1px dashed rgba(var(--rgb-brand-1), 0.15);
+    border-radius: 50%;
+  }
+
+  .op-1 { width: 140%; height: 140%; animation: rotate 20s linear infinite; }
+  .op-2 { width: 180%; height: 180%; animation: rotate 30s linear infinite reverse; }
+
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .loading-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    max-width: 440px;
+  }
+
+  .loading-text {
+    font-size: 1.1rem;
+    color: var(--color-text);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-align: center;
+  }
+
+  .progress-bar-wrapper {
+    position: relative;
+    width: 100%;
+    height: 8px;
+    background: rgba(var(--rgb-brand-1), 0.08);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+  }
+
+  .progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--color-brand-1), #9333ea);
+    border-radius: 999px;
+    transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+    z-index: 2;
+  }
+
+  .progress-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shine 2s infinite;
+  }
+
+  @keyframes shine {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
+  }
+
+  .progress-label {
+    font-size: 0.9rem;
+    color: var(--color-text-alt);
+    font-weight: 700;
+    font-family: var(--font-mono, monospace);
+  }
+
+  /* ── Error ── */
+  .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 4rem 1rem;
+  }
+
+  .error-icon {
+    font-size: 3rem;
+  }
+
+  .error-text {
+    font-size: 1.1rem;
+    color: var(--color-text);
+    text-align: center;
+  }
+
+  .back-btn {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.6rem 1.6rem;
+    background: var(--color-brand-1);
+    color: var(--color-white);
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s var(--ease-out-expo);
+  }
+
+  .back-btn:hover {
+    filter: brightness(1.1);
+    transform: scale(1.04);
+  }
+
+  /* ── Results Container ── */
+  .results-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  /* ── Thought Process (Deep Thinking) ── */
+  .thought-container {
+    background: var(--color-surface);
+    border: 1px solid rgba(var(--rgb-brand-1), 0.15);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .thought-header {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(var(--rgb-brand-1), 0.03);
+    border: none;
+    border-bottom: 1px solid rgba(var(--rgb-brand-1), 0.1);
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s;
+  }
+
+  .thought-header:hover {
+    background: rgba(var(--rgb-brand-1), 0.06);
+  }
+
+  .thought-icon {
+    font-size: 1.2rem;
+    filter: drop-shadow(0 0 8px rgba(var(--rgb-brand-1), 0.4));
+  }
+
+  .thought-title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-brand-1);
+    flex-grow: 1;
+  }
+
+  .thought-arrow {
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid var(--color-brand-1);
+    border-bottom: 2px solid var(--color-brand-1);
+    transform: rotate(-135deg);
+    transition: transform 0.3s;
+    margin-right: 0.5rem;
+  }
+
+  .thought-container.is-collapsed .thought-arrow {
+    transform: rotate(45deg);
+  }
+
+  .thought-container.is-collapsed .thought-content {
+    display: none;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .thought-content {
+    padding: 1.2rem;
+  }
+
+  .thought-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+  }
+
+  .thought-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    min-width: 0; /* Crucial for preventing grid item overflow */
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-alt);
+    opacity: 0.8;
+  }
+
+  .section-a {
+    grid-column: 1 / 2;
+    border-right: 1px solid rgba(var(--rgb-brand-1), 0.12);
+    padding-right: 1.2rem;
+  }
+
+  .section-b {
+    grid-column: 2 / 3;
+    padding-left: 0.2rem;
+    position: relative;
+    max-height: 0; /* Important: allow grid to define row height, then fill it */
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .scroll-wrapper-b {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 0.8rem;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--rgb-brand-1), 0.2) transparent;
+  }
+
+  .scroll-wrapper-b::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scroll-wrapper-b::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scroll-wrapper-b::-webkit-scrollbar-thumb {
+    background: rgba(var(--rgb-brand-1), 0.2);
+    border-radius: 10px;
+  }
+
+  .section-c {
+    grid-column: 1 / 3;
+    border-top: 1px solid rgba(var(--rgb-brand-1), 0.15);
+    padding-top: 1.2rem;
+    margin-top: 0.5rem;
+    min-height: auto;
+  }
+
+  /* ── Section I (Industry) ── */
+  .section-i {
+    grid-column: 1 / 3;
+    border-top: 1px solid rgba(var(--rgb-brand-1), 0.15);
+    padding-top: 1.2rem;
+    margin-top: 0.5rem;
+  }
+
+  .industry-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 1.5rem;
+    min-height: 500px;
+    margin-top: 0.5rem;
+  }
+
+  .wordcloud-container {
+    background: rgba(var(--rgb-brand-1), 0.02);
+    border: 1px solid rgba(var(--rgb-brand-1), 0.05);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    height: 500px;
+    padding: 0;
+    cursor: pointer;
+    box-sizing: border-box;
+  }
+
+  #industry-wordcloud {
+    width: 100%;
+    max-width: 100%;
+    height: 460px;
+    transition: transform 0.3s ease;
+    display: block;
+  }
+
+  .news-display {
+    background: var(--color-bg-alt);
+    border: 1px solid rgba(var(--rgb-brand-1), 0.08);
+    border-radius: 12px;
+    padding: 1rem;
+    overflow-y: auto;
+    height: 500px;
+    box-sizing: border-box;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--rgb-brand-1), 0.2) transparent;
+  }
+
+  .news-display::-webkit-scrollbar { width: 4px; }
+  .news-display::-webkit-scrollbar-thumb { background: rgba(var(--rgb-brand-1), 0.2); border-radius: 4px; }
+
+  .news-header {
+    position: sticky;
+    top: -1rem;
+    margin: -1rem -1rem 0.8rem -1rem;
+    padding: 0.8rem 1rem;
+    background: var(--color-bg-alt);
+    border-bottom: 1px solid rgba(var(--rgb-brand-1), 0.12);
+    font-size: 0.85rem;
+    color: var(--color-text-alt);
+    z-index: 3;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  .news-header b {
+    color: var(--color-brand-1);
+    font-weight: 700;
+  }
+
+  .news-placeholder {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: var(--color-text-alt);
+    opacity: 0.6;
+    text-align: center;
+  }
+
+  .placeholder-icon {
+    font-size: 2rem;
+  }
+
+  .news-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  :global(.news-item) {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.4rem 0.2rem;
+    border-bottom: 1px solid rgba(var(--rgb-brand-1), 0.04);
+    animation: news-slide-in 0.3s ease-out forwards;
+    transition: background 0.2s;
+    border-radius: 6px;
+  }
+
+  :global(.news-item:hover) {
+    background: rgba(var(--rgb-brand-1), 0.03);
+  }
+
+  :global(.news-bullet) {
+    color: var(--color-brand-1);
+    font-size: 1rem;
+    line-height: 1.4;
+    opacity: 0.6;
+    flex-shrink: 0;
+  }
+
+  :global(.news-title-wrapper) {
+    flex: 1;
+    line-height: 1.5;
+  }
+
+  :global(.news-title) {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--color-text);
+    margin-right: 0.4rem;
+    line-height: 1.4;
+  }
+
+  :global(.news-date) {
+    font-size: 0.75rem;
+    color: var(--color-text-alt);
+    opacity: 0.7;
+    margin-right: 0.4rem;
+    font-family: var(--font-mono, monospace);
+  }
+
+  :global(.meta-pill) {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 8px;
+    background: #3c3c3c;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 400;
+    text-decoration: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+    vertical-align: middle;
+    margin-bottom: 2px;
+  }
+
+  :global(.meta-pill:hover) {
+    background: #000;
+    color: #fff;
+  }
+
+  .meta-pill:hover {
+    background: var(--color-brand-1);
+    transform: translateY(-1px);
+  }
+
+  @keyframes news-slide-in {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    .industry-grid {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+
+    .wordcloud-container {
+      height: 380px;
+    }
+
+    #industry-wordcloud {
+      height: 350px;
+    }
+
+    .news-display {
+      height: auto;
+      min-height: 0;
+      overflow: visible;
+      background: transparent;
+      border: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+
+    .news-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      position: sticky;
+      top: 60px;
+      z-index: 9;
+      background: var(--color-surface);
+      border: 1px solid rgba(var(--rgb-brand-1), 0.15);
+      border-radius: 12px;
+      margin: 0;
+      padding: 0.8rem 1rem;
+      box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08);
+      backdrop-filter: blur(12px);
+      transition: top 0.3s ease;
+    }
+
+    :global(body.is-nav-hidden) .news-header {
+      top: 10px;
+    }
+
+    .news-header::after {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-right: 2px solid var(--color-brand-1);
+      border-bottom: 2px solid var(--color-brand-1);
+      transform: rotate(45deg);
+      transition: transform 0.3s;
+      margin-left: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .news-display:not(.is-collapsed) .news-header::after {
+      transform: rotate(-135deg);
+    }
+
+    .news-display.is-collapsed .news-header {
+      border-radius: 12px;
+    }
+
+    .news-display:not(.is-collapsed) .news-header {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    .news-display.is-collapsed .news-list {
+      display: none !important;
+    }
+
+    .news-display:not(.is-collapsed) .news-list {
+      display: flex !important;
+      background: var(--color-bg-alt);
+      border: 1px solid rgba(var(--rgb-brand-1), 0.08);
+      border-top: none;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+      padding: 1rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .check-page {
+      padding-top: 60px;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      overflow-x: hidden;
+    }
+    .u-container {
+      padding: 0 !important;
+      margin: 0 !important;
+      max-width: 100% !important;
+      width: 100% !important;
+    }
+    .results-container {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      gap: 1rem;
+    }
+    .thought-container {
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+      width: 100vw !important;
+    }
+    .thought-content {
+      padding: 0.75rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .thought-grid {
+      grid-template-columns: 1fr;
+      width: 100%;
+    }
+    .section-a, .section-b, .section-c {
+      grid-column: 1 / 2;
+      border-right: none;
+      padding-right: 0;
+      padding-left: 0;
+      width: 100%;
+      min-width: 0;
+    }
+    .section-b {
+      border-top: 1px solid rgba(var(--rgb-brand-1), 0.12);
+      padding-top: 1.2rem;
+      max-height: none;
+      min-height: auto;
+    }
+    .scroll-wrapper-b {
+      overflow-y: visible;
+      padding-right: 0;
+    }
+    .section-c {
+      max-height: none;
+    }
+    .col-title {
+      margin-left: 0.8rem;
+      margin-right: 0.8rem;
+    }
+    .summary-box {
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
+      padding: 1.2rem;
+    }
+  }
+
+  /* ── Chart Styles ── */
+  .mini-table {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(var(--rgb-brand-1), 0.1);
+    padding-bottom: 1rem;
+  }
+
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  .chart-item {
+    background: var(--color-bg-alt);
+    border-radius: 12px;
+    padding: 1rem;
+    border: 1px solid rgba(var(--rgb-brand-1), 0.08);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    display: none; /* Changed from flex */
+    flex-direction: column;
+    gap: 0.8rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .chart-item.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .chart-item:hover {
+    background: rgba(var(--rgb-brand-1), 0.05);
+    border-color: rgba(var(--rgb-brand-1), 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--rgb-brand-1), 0.08);
+  }
+
+  .chart-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-alt);
+    text-align: center;
+  }
+
+  .chart-canvas-wrapper {
+    position: relative;
+    height: 280px;
+    width: 100%;
+  }
+
+  /* ── Data & Text Styles ── */
+  .table-wrapper {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .financial-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    border-top: 2px solid var(--color-brand-1);
+  }
+
+  .financial-table tr {
+    transition: background 0.2s;
+  }
+
+  .financial-table tr:hover {
+    background: rgba(var(--rgb-brand-1), 0.04);
+  }
+
+  .financial-table th {
+    padding: 0.8rem 0.5rem;
+    text-align: left;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--color-text-alt);
+    border-bottom: 2px solid rgba(var(--rgb-brand-1), 0.15);
+    background: rgba(var(--rgb-brand-1), 0.02);
+  }
+
+  .financial-table th:last-child {
+    text-align: right;
+  }
+
+  .financial-table td {
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid rgba(var(--rgb-brand-1), 0.08);
+  }
+
+  .data-key {
+    color: var(--color-text-alt);
+    font-weight: 500;
+    font-size: 0.85rem;
+    width: 40%;
+  }
+
+  .data-value {
+    font-family: var(--font-mono, 'Inter', monospace);
+    font-weight: 700;
+    color: var(--color-brand-1);
+    font-size: 1.15rem; /* Larger than B/C */
+    text-align: right;
+    letter-spacing: -0.02em;
+  }
+
+  .numeric {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .text-output {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--color-text);
+    min-height: 1.5em;
+    opacity: 0.9;
+  }
+
+  /* ── Rich Text Analysis Cards (Section B) ── */
+  .analysis-card {
+    background: rgba(var(--rgb-brand-1), 0.03);
+    border-left: 4px solid var(--color-brand-1);
+    border-radius: 8px;
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  .analysis-card h3 {
+    margin: 0 0 0.8rem 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-brand-1);
+  }
+
+  .analysis-card .conclusion {
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    color: var(--color-text);
+  }
+
+  .analysis-card .details-list {
+    margin: 0.5rem 0;
+    padding-left: 1.2rem;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .analysis-card .details-list li {
+    font-size: 0.9rem;
+    position: relative;
+    padding-left: 1rem;
+    color: var(--color-text-alt);
+  }
+
+  .analysis-card .details-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--color-brand-1);
+    font-weight: bold;
+  }
+
+  .analysis-card .label {
+    font-weight: 700;
+    color: var(--color-text-alt);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    margin-right: 0.5rem;
+  }
+
+  .analysis-card .implication {
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 1px dashed rgba(var(--rgb-brand-1), 0.15);
+    font-style: italic;
+  }
+
+  /* ── Audit Items (Section C) ── */
+  .audit-item {
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    animation: slideIn 0.4s ease-out;
+  }
+
+  .audit-item.challenge {
+    background: rgba(239, 68, 68, 0.05);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+  }
+
+  .audit-item.resolved {
+    background: rgba(34, 197, 94, 0.05);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+  }
+
+  .audit-icon-text {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  .audit-item.challenge .audit-icon-text { color: #ef4444; }
+  .audit-item.resolved .audit-icon-text { color: #22c55e; }
+
+  .audit-content {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--color-text);
+  }
+
+  .audit-meta {
+    font-size: 0.75rem;
+    color: var(--color-text-alt);
+    margin-top: 0.3rem;
+  }
+
+  /* ── Progress Updates ── */
+  .progress-update {
+    font-size: 0.85rem;
+    color: var(--color-text-alt);
+    font-style: italic;
+    margin-bottom: 0.8rem;
+    opacity: 0.7;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-5px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .text-output::after {
+    content: '';
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: var(--color-brand-1);
+    margin-left: 2px;
+    vertical-align: middle;
+    animation: blink 0.8s infinite;
+  }
+
+  .text-output.is-done::after {
+    display: none;
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  /* ── Summary Container ── */
+  .summary-container {
+    padding-bottom: 2rem;
+  }
+
+  .col-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text-alt);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.8rem;
+  }
+
+  .summary-box {
+    background: var(--color-surface);
+    border: 2px solid var(--color-brand-1);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 4px 24px rgba(var(--rgb-brand-1), 0.12);
+  }
+
+  .final-result-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed rgba(var(--rgb-brand-1), 0.2);
+  }
+
+  @media (max-width: 768px) {
+    .final-result-wrapper {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1rem;
+    }
+  }
+
+  .final-result-output {
+    font-weight: 600;
+    color: var(--color-brand-1);
+    font-size: 1.1rem;
+  }
+
+  .is-placeholder {
+    color: var(--color-text-alt);
+    font-style: italic;
+    opacity: 0.6;
+    animation: pulse 2s infinite ease-in-out;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.7; }
+  }
+
+  /* ── Preview CTA ── */  /* ── Utility ── */
+  .hidden {
+    display: none !important;
+  }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  // ── i18n strings passed from Astro ──
+  const metaEl = document.querySelector('meta[name="check-i18n"]');
+  const i18n = metaEl ? JSON.parse(metaEl.getAttribute('content') || '{}') : {};
+
+  // ── Helper: get lang from URL ──
+  const isEn = window.location.pathname.startsWith('/en');
+  const lang = isEn ? 'en' : 'zh';
+
+  // ── Grab URL params ──
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+  const year = params.get('year');
+  const period = params.get('period');
+  const preview = params.get('preview');
+
+  let shouldRun = true;
+  // 1. No parameters -> Redirect to search
+  if (!code && !year && !period && !preview) {
+    window.location.href = lang === 'zh' ? '/search/' : '/en/search/';
+    shouldRun = false;
+  }
+
+  // 2. Auth check if not preview
+  if (shouldRun && preview !== 'true') {
+    const cookies = document.cookie || '';
+    const hasSession = cookies.includes('sb-msufgvqofnihylcnxyac-auth-token');
+    
+    if (!hasSession) {
+      const storedAff = localStorage.getItem('ezer_aff');
+      let loginUrl;
+      if (storedAff) {
+        loginUrl = `https://account.ezer.cc/${lang === 'en' ? 'en/' : ''}login/?aff=${storedAff}&step=register&redirect=${encodeURIComponent(window.location.href)}`;
+      } else {
+        loginUrl = `https://account.ezer.cc/${lang === 'en' ? 'en/' : ''}login/?redirect=${encodeURIComponent(window.location.href)}`;
+      }
+      window.location.href = loginUrl;
+      shouldRun = false;
+    } else {
+      localStorage.removeItem('ezer_aff');
+    }
+  }
+
+  // DOM refs
+  const loadingEl = document.getElementById('loading-container')!;
+  const errorEl = document.getElementById('error-container')!;
+  const resultsEl = document.getElementById('results-container')!;
+  const pageTitleEl = document.getElementById('page-title')!;
+  const loadingTextEl = document.getElementById('loading-text')!;
+  const progressBar = document.getElementById('progress-bar')!;
+  const progressLabel = document.getElementById('progress-label')!;
+  const errorTextEl = document.getElementById('error-text')!;
+
+  const thoughtContainer = document.getElementById('thought-container')!;
+  const thoughtToggle = document.getElementById('thought-toggle')!;
+  const textB = document.getElementById('text-b') as HTMLElement;
+  const textC = document.getElementById('text-c') as HTMLElement;
+  const summaryText = document.getElementById('summary-text')!;
+  const finalResultText = document.getElementById('final-result-text')!;
+
+  // ── Placeholder Manager for B & C ──
+  class PlaceholderManager {
+    private interval: any = null;
+    private messages: string[] = [];
+    private currentIndex = 0;
+
+    constructor(private element: HTMLElement, messages: string[]) {
+      this.messages = messages;
+    }
+
+    start() {
+      if (this.messages.length === 0) return;
+      this.element.classList.add('is-placeholder');
+      this.element.textContent = this.messages[0];
+      this.interval = setInterval(() => {
+        this.currentIndex = (this.currentIndex + 1) % this.messages.length;
+        this.element.textContent = this.messages[this.currentIndex];
+      }, 3000);
+    }
+
+    stop() {
+      if (this.interval) {
+        clearInterval(this.interval);
+        this.interval = null;
+        this.element.textContent = '';
+        this.element.classList.remove('is-placeholder');
+      }
+    }
+
+    isActive() {
+      return this.interval !== null;
+    }
+  }
+
+  const bcMessages = lang === 'zh' ? [
+    '正在多维核对财报钩稽关系...',
+    '正在执行收入截止性测试...',
+    '正在分析营运资金周转效率...',
+    '正在评估资产减值准备计提...',
+    '正在核算加权平均资本成本...',
+    '正在比对历史趋势异常波动...',
+    '正在检验研发投入资本化比例...',
+    '正在审计关联方交易公允性...',
+    '正在验证存货周转率合理性...',
+    '正在解析财报附注深度内涵...',
+    '正在扫描潜在表外融资风险...'
+  ] : [
+    'Cross-checking financial statement integrity...',
+    'Performing revenue cutoff tests...',
+    'Analyzing working capital efficiency...',
+    'Evaluating asset impairment provisions...',
+    'Calculating Weighted Average Cost of Capital...',
+    'Inspecting historical trend anomalies...',
+    'Verifying R&D capitalization ratios...',
+    'Auditing related-party transaction fairness...',
+    'Validating inventory turnover logic...',
+    'Parsing deep insights from footnotes...',
+    'Scanning for off-balance sheet risks...'
+  ];
+
+  const placeholderB = new PlaceholderManager(textB, bcMessages);
+  const placeholderC = new PlaceholderManager(textC, bcMessages);
+
+  // Initialize Summary Placeholder
+  summaryText.textContent = lang === 'zh' ? '正在等待分析完成...' : 'Waiting for analysis to complete...';
+  summaryText.classList.add('is-placeholder');
+
+  // Toggle thought process
+  thoughtToggle.addEventListener('click', () => {
+    thoughtContainer.classList.toggle('is-collapsed');
+    thoughtToggle.setAttribute('aria-expanded', String(!thoughtContainer.classList.contains('is-collapsed')));
+  });
+
+  // ── Chart Manager ──
+  class ChartManager {
+    private charts: Record<string, any> = {};
+
+    private getOptions(suffix: string, isRate: boolean) {
+      const isDark = document.documentElement.classList.contains('dark');
+      const textColor = isDark ? '#94a3b8' : '#64748b';
+      const gridColor = isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(100, 116, 139, 0.1)';
+      const growthSuffix = '%';
+
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+            itemSort: (a: any, b: any) => a.datasetIndex - b.datasetIndex,
+            usePointStyle: true,
+            boxWidth: 8,
+            boxHeight: 8,
+            callbacks: {
+              label: (context: any) => {
+                let l = context.dataset.label || '';
+                if (l) l += ': ';
+                const val = context.parsed.y;
+                if (val !== null) {
+                  if (context.datasetIndex === 0) {
+                    l += val.toLocaleString() + suffix;
+                  } else {
+                    l += (val >= 0 ? '+' : '') + val.toFixed(2) + growthSuffix;
+                  }
+                }
+                return l;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { color: textColor, font: { size: 10 } }
+          },
+          y: {
+            position: 'left',
+            grid: { color: gridColor },
+            ticks: { 
+              color: textColor, 
+              font: { size: 10 },
+              callback: (value: any) => {
+                if (suffix === '%') return value + '%';
+                if (value >= 100000000) return (value / 100000000).toFixed(1) + (lang === 'zh' ? '亿' : 'B');
+                if (value >= 10000) return (value / 10000).toFixed(0) + (lang === 'zh' ? '万' : 'k');
+                return value;
+              }
+            }
+          },
+          y1: {
+            position: 'right',
+            grid: { display: false },
+            ticks: {
+              color: textColor,
+              font: { size: 10 },
+              callback: (value: any) => value + growthSuffix
+            }
+          }
+        }
+      };
+    }
+
+    render(id: string, data: any[], label: string, suffix: string = '') {
+      const ctx = document.getElementById(id) as HTMLCanvasElement;
+      if (!ctx) return;
+
+      const container = ctx.closest('.chart-item') as HTMLElement;
+      if (container) {
+        container.style.display = 'flex';
+        setTimeout(() => container.classList.add('is-visible'), 10);
+      }
+
+      const sectionA = document.querySelector('.section-a');
+      if (sectionA) sectionA.classList.remove('hidden');
+
+      if (this.charts[id]) {
+        this.charts[id].destroy();
+      }
+
+      const isRate = label.includes('Revenue') || label.includes('营业收入') || 
+                     label.includes('Net Profit') || label.includes('净利润');
+      
+      const growthData = data.map((d, i) => {
+        if (i === 0) return null;
+        const prev = data[i-1].value;
+        const curr = d.value;
+        if (prev === null || curr === null) return null;
+        return isRate ? (prev === 0 ? 0 : ((curr - prev) / Math.abs(prev)) * 100) : (curr - prev);
+      });
+
+      // @ts-ignore
+      this.charts[id] = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: data.map(d => d.period),
+          datasets: [
+            {
+              label: label,
+              data: data.map(d => d.value),
+              backgroundColor: 'rgba(124, 58, 237, 0.2)',
+              borderColor: 'rgba(124, 58, 237, 0.8)',
+              borderWidth: 1,
+              borderRadius: 4,
+              yAxisID: 'y',
+              order: 2,
+              pointStyle: 'rect',
+            },
+            {
+              label: lang === 'zh' ? (isRate ? '环比增长率' : '环比增长量') : (isRate ? 'Growth Rate' : 'Growth Amt'),
+              data: growthData,
+              type: 'line',
+              borderColor: '#f59e0b',
+              backgroundColor: '#f59e0b',
+              borderWidth: 2,
+              pointRadius: 3,
+              pointBackgroundColor: '#f59e0b',
+              tension: 0.4,
+              yAxisID: 'y1',
+              order: 1,
+              pointStyle: 'rect',
+            }
+          ]
+        },
+        options: this.getOptions(suffix, isRate)
+      });
+    }
+  }
+
+  const chartManager = new ChartManager();
+
+  /**
+   * Simple Typewriter effect for streaming feel
+   */
+  class Typewriter {
+    private queue: { text?: string; html?: string }[] = [];
+    private isRunning = false;
+    private speed = 15; // ms per char
+    private scrollParent: HTMLElement | null = null;
+
+    constructor(private element: HTMLElement) {
+      this.scrollParent = element.closest('.scroll-wrapper-b') || element.closest('.text-output');
+    }
+
+    write(text: string) {
+      if (!text) return;
+      this.queue.push({ text });
+      if (!this.isRunning) this.run();
+    }
+
+    writeHTML(html: string) {
+      if (!html) return;
+      this.queue.push({ html });
+      if (!this.isRunning) this.run();
+    }
+
+    private async run() {
+      this.isRunning = true;
+      this.element.classList.remove('is-done');
+      while (this.queue.length > 0) {
+        const item = this.queue.shift();
+        if (!item) continue;
+
+        if (item.html) {
+          this.element.insertAdjacentHTML('beforeend', item.html);
+          this.autoScroll();
+          await new Promise(r => setTimeout(r, 200));
+        } else if (item.text) {
+          const chars = item.text.split('');
+          for (const char of chars) {
+            this.element.insertAdjacentText('beforeend', char);
+            if (char === '\n') this.autoScroll();
+            await new Promise(r => setTimeout(r, this.speed));
+          }
+        }
+        this.autoScroll();
+      }
+      this.isRunning = false;
+      this.element.classList.add('is-done');
+    }
+
+    private autoScroll() {
+      if (this.scrollParent) {
+        this.scrollParent.scrollTo({
+          top: this.scrollParent.scrollHeight,
+          behavior: 'smooth'
+        });
+      }
+    }
+
+    done() {
+      this.element.classList.add('is-done');
+    }
+  }
+
+  const writers = {
+    b: new Typewriter(textB),
+    c: new Typewriter(textC),
+    summary: new Typewriter(summaryText),
+  };
+
+  async function renderCharts(history: any[]) {
+    if (!history || history.length === 0) return;
+    
+    // Sort to show chronological order
+    const sorted = [...history].sort((a, b) => {
+        return a.reporting_period.localeCompare(b.reporting_period);
+    });
+
+    const revenueData = sorted.map(h => ({ period: h.reporting_period, value: h.revenue }));
+    const profitData = sorted.map(h => ({ period: h.reporting_period, value: h.net_profit }));
+    const marginData = sorted.map(h => ({ period: h.reporting_period, value: h.gross_margin }));
+    const debtData = sorted.map(h => ({ period: h.reporting_period, value: h.debt_to_asset }));
+
+    const chartConfigs = [
+      { id: 'chart-revenue', data: revenueData, label: formatKey('revenue'), suffix: '' },
+      { id: 'chart-profit', data: profitData, label: formatKey('net_profit'), suffix: '' },
+      { id: 'chart-margin', data: marginData, label: formatKey('gross_margin'), suffix: '%' },
+      { id: 'chart-debt', data: debtData, label: formatKey('debt_to_asset'), suffix: '%' },
+    ];
+
+    for (const config of chartConfigs) {
+      if (config.data.some(d => d.value !== null && d.value !== undefined)) {
+        chartManager.render(config.id, config.data, config.label, config.suffix);
+        await new Promise(r => setTimeout(r, 600)); // Sequential delay for streaming feel
+      }
+    }
+  }
+
+  function formatSymbol(codeParam: string | null): string {
+    if (!codeParam) return '';
+    if (codeParam.includes('.')) return codeParam;
+    const match = codeParam.match(/^([a-z]+)(\d+)$/i);
+    if (match) {
+      return `${match[2]}.${match[1].toUpperCase()}`;
+    }
+    return codeParam;
+  }
+
+  function formatKey(key: string): string {
+    const map: Record<string, string> = {
+      'name': lang === 'zh' ? '公司名称' : 'Company Name',
+      'ticker': lang === 'zh' ? '股票代码' : 'Ticker',
+      'reporting_period': lang === 'zh' ? '报告期' : 'Period',
+      'release_date': lang === 'zh' ? '发布日期' : 'Release Date',
+      'revenue': lang === 'zh' ? '营业收入' : 'Revenue',
+      'net_profit': lang === 'zh' ? '净利润' : 'Net Profit',
+      'gross_margin': lang === 'zh' ? '毛利率' : 'Gross Margin',
+      'roe': lang === 'zh' ? 'ROE' : 'ROE',
+      'total_assets': lang === 'zh' ? '总资产' : 'Total Assets',
+      'total_liabilities': lang === 'zh' ? '总负债' : 'Total Liabs',
+      'debt_to_asset': lang === 'zh' ? '资产负债率' : 'Debt Ratio',
+    };
+    return map[key] || key;
+  }
+
+  function showError(msg?: string) {
+    if (msg) console.error('[Analysis Error Detail]:', msg);
+    loadingEl.classList.add('hidden');
+    errorEl.classList.remove('hidden');
+
+    const backLink = document.getElementById('back-link');
+    const upgradeLink = document.getElementById('upgrade-link');
+
+    // If it's a quota error, swap buttons
+    if (msg && msg.toLowerCase().includes('quota exceeded')) {
+      errorTextEl.innerHTML = i18n['quota.limit_reached'];
+      if (backLink) backLink.classList.add('hidden');
+      if (upgradeLink) upgradeLink.classList.remove('hidden');
+    } else {
+      // Normal error
+      if (backLink) backLink.classList.remove('hidden');
+      if (upgradeLink) upgradeLink.classList.add('hidden');
+    }
+  }
+
+  async function typeText(el: HTMLElement, text: string, speed = 20) {
+    if (!el || !text) return;
+    const chars = text.split('');
+    for (const char of chars) {
+      el.textContent += char;
+      if (char === '\n' || char === '。' || char === '.') {
+        const scrollParent = el.closest('.scroll-wrapper-b') || el.closest('.text-output');
+        if (scrollParent) scrollParent.scrollTo({ top: scrollParent.scrollHeight, behavior: 'smooth' });
+      }
+      await new Promise(r => setTimeout(r, speed));
+    }
+    // Final scroll
+    const scrollParent = el.closest('.scroll-wrapper-b') || el.closest('.text-output');
+    if (scrollParent) scrollParent.scrollTo({ top: scrollParent.scrollHeight, behavior: 'smooth' });
+  }
+
+  function setProgress(pct: number, label?: string) {
+    progressBar.style.width = pct + '%';
+    progressLabel.textContent = pct + '%';
+    if (label) loadingTextEl.textContent = label;
+  }
+
+  /**
+   * Process a single event from the stream
+   */
+  async function processEvent(item: any) {
+    if (!item) return;
+    console.log('[Stream Event]', item);
+    const { producer, event, data } = item;
+    const value = item.value || data; // Handle alternate field names
+
+    if (event === 'a_data') {
+      const { label, data: chartData, type, suffix } = value;
+      if (label && chartData) {
+        const idMap: Record<string, string> = {
+          'Revenue': 'chart-revenue',
+          '营业收入': 'chart-revenue',
+          'Net Profit': 'chart-profit',
+          '净利润': 'chart-profit',
+          'Gross Margin': 'chart-margin',
+          '毛利率': 'chart-margin',
+          'Debt Ratio': 'chart-debt',
+          '资产负债率': 'chart-debt'
+        };
+        const id = idMap[label] || `chart-${label.toLowerCase()}`;
+        chartManager.render(id, chartData.map((d:any) => typeof d === 'object' ? d : {period: '', value: d}), label, suffix || '');
+        await new Promise(r => setTimeout(r, 400));
+      }
+      return;
+    }
+
+    // Normalize producer name (A, B, C or normalizer, analyzer, auditor)
+    const p = (producer || '').toUpperCase();
+
+    // Industry News Event (Section I)
+    if (event === 'i_industry_wordsea' || event === 'industry_wordsea' || event === 'i_industry_word_cloud' || (p === 'I' && (event === 'data' || event === 'wordsea' || event === 'i_industry_wordsea'))) {
+      const industryGrid = document.querySelector('.industry-grid');
+      if (industryGrid) industryGrid.classList.remove('hidden');
+      
+      let d = data || item.data || item;
+      if (typeof d === 'string') {
+        try {
+          d = JSON.parse(d);
+        } catch (e) {}
+      }
+      
+      const rows = d && (d.rows || d.items || d.list || (Array.isArray(d) ? d : null));
+      if (rows && Array.isArray(rows)) {
+        const keywords = rows.map((row: any) => {
+          const keyword = Array.isArray(row) ? row[0] : (row.keyword || row.word || '');
+          const count = Array.isArray(row) ? row[1] : (row.count || row.weight || 1);
+          return [keyword, count];
+        });
+        const newsMap = new Map();
+        rows.forEach((row: any) => {
+          const keyword = Array.isArray(row) ? row[0] : (row.keyword || row.word || '');
+          const count = Array.isArray(row) ? row[1] : (row.count || row.weight || 1);
+          const articles = Array.isArray(row) ? row[2] : (row.links || row.articles || []);
+          newsMap.set(keyword, { articles, totalCount: count });
+        });
+        renderWordCloud(keywords, newsMap);
+      }
+      return;
+    }
+
+    if ((p === 'A' || p === 'NORMALIZER') && (event === 'a_normalized' || event === 'data')) {
+      const d = data || item.data;
+      if (!d) return;
+      
+      const { company, report, income_statement, balance_sheet, key_ratios, history_12q } = d;
+      
+      if (history_12q) {
+        await renderCharts(history_12q);
+      }
+
+      if (company) {
+        const companyName = company.name || '';
+        let periodText = company.reporting_period || '';
+        if (lang === 'zh' && periodText.toLowerCase().includes('fy')) {
+          periodText = periodText.replace(/fy/i, '年度');
+        }
+
+        if (companyName) {
+          const titleSuffix = lang === 'zh' ? '财报分析' : 'Financial Report Analysis';
+          pageTitleEl.textContent = `${companyName} (${periodText}) ${titleSuffix}`;
+          document.title = `${companyName} (${periodText}) ${titleSuffix} - 弈泽`;
+        }
+      }
+    }
+
+    if ((p === 'B' || p === 'ANALYZER')) {
+      if (placeholderB.isActive()) placeholderB.stop();
+      const d = data || item.data;
+      if (!d) return;
+
+      if (event === 'b_progress') {
+        const stepPrefix = lang === 'zh' ? '正在' : 'Analyzing';
+        writers.b.writeHTML(`<div class="progress-update"><i>› ${stepPrefix} ${d.task || d.step || (lang === 'zh' ? '执行分析' : 'Performing Analysis')}...</i></div>`);
+        return;
+      }
+
+      if (event === 'b_card' || event === 'analysis') {
+        const card = document.createElement('div');
+        card.className = 'analysis-card';
+        
+        if (d.title) {
+          const h3 = document.createElement('h3');
+          h3.textContent = d.title;
+          card.appendChild(h3);
+        }
+        
+        const conclusion = document.createElement('p');
+        conclusion.className = 'conclusion';
+        card.appendChild(conclusion);
+        
+        writers.b.element.appendChild(card);
+        if (d.conclusion) await typeText(conclusion, d.conclusion, 15);
+
+        const detailsList = document.createElement('ul');
+        detailsList.className = 'details-list';
+        card.appendChild(detailsList);
+
+        const fields = [
+          { key: 'evidence', label: lang === 'zh' ? '依据' : 'Evidence' },
+          { key: 'cross_checks', label: lang === 'zh' ? '交叉验证' : 'Cross-checks' },
+          { key: 'counterpoints', label: lang === 'zh' ? '反向观点' : 'Counterpoints' }
+        ];
+
+        for (const field of fields) {
+          const val = d[field.key];
+          if (val && val.length) {
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="label">${field.label}:</span> `;
+            const textSpan = document.createElement('span');
+            li.appendChild(textSpan);
+            detailsList.appendChild(li);
+            const text = Array.isArray(val) ? val.join(', ') : val;
+            await typeText(textSpan, text, 10);
+          }
+        }
+
+        if (d.investor_implication) {
+          const implication = document.createElement('p');
+          implication.className = 'implication';
+          const labelImplication = lang === 'zh' ? '投资启示' : 'Investor Implication';
+          implication.innerHTML = `<span class="label">${labelImplication}:</span> `;
+          const textSpan = document.createElement('span');
+          implication.appendChild(textSpan);
+          card.appendChild(implication);
+          await typeText(textSpan, d.investor_implication, 15);
+        }
+      }
+    }
+
+    if ((p === 'C' || p === 'AUDITOR')) {
+      if (placeholderC.isActive()) placeholderC.stop();
+      const d = data || item.data;
+      if (!d) return;
+
+      if (event === 'c_progress') {
+        const stepPrefix = lang === 'zh' ? '正在' : 'Analyzing';
+        writers.c.writeHTML(`<div class="progress-update"><i>› ${stepPrefix} ${d.task || d.step || (lang === 'zh' ? '执行审计' : 'Performing Audit')}...</i></div>`);
+        return;
+      }
+
+      if (event === 'c_challenge') {
+        const div = document.createElement('div');
+        div.className = 'audit-item challenge';
+        const labelChallenge = lang === 'zh' ? '审计挑战' : 'Audit Challenge';
+        div.innerHTML = `<div class="audit-icon-text"><i class="fa-solid fa-triangle-exclamation"></i> ${labelChallenge} (${d.severity || 'MEDIUM'})</div>`;
+        const content = document.createElement('div');
+        content.className = 'audit-content';
+        div.appendChild(content);
+        if (d.target_card_id) {
+          const meta = document.createElement('div');
+          meta.className = 'audit-meta';
+          const labelTarget = lang === 'zh' ? '针对' : 'Target';
+          meta.textContent = `${labelTarget}: ${d.target_card_id}`;
+          div.appendChild(meta);
+        }
+        writers.c.element.appendChild(div);
+        if (d.issue) await typeText(content, d.issue, 15);
+      }
+
+      if (event === 'c_resolved' || event === 'audit') {
+        const div = document.createElement('div');
+        div.className = 'audit-item resolved';
+        const labelResolved = lang === 'zh' ? '审计通过' : 'Audit Resolved';
+        div.innerHTML = `<div class="audit-icon-text"><i class="fa-solid fa-circle-check"></i> ${labelResolved}</div>`;
+        const content = document.createElement('div');
+        content.className = 'audit-content';
+        div.appendChild(content);
+        if (d.target_card_id) {
+          const meta = document.createElement('div');
+          meta.className = 'audit-meta';
+          const labelFix = lang === 'zh' ? '解决项' : 'Fixed';
+          meta.textContent = `${labelFix}: ${d.target_card_id}`;
+          div.appendChild(meta);
+        }
+        writers.c.element.appendChild(div);
+        const textToType = d.rationale || d.content || d.text || '';
+        if (textToType) await typeText(content, textToType, 15);
+      }
+    }
+
+
+    if (event === 'final_summary' || event === 'summary') {
+      if (summaryText.classList.contains('is-placeholder')) {
+        summaryText.textContent = '';
+        summaryText.classList.remove('is-placeholder');
+      }
+      const d = data || item.data;
+      if (d) {
+        const text = d.summary || d.content || d.text || '';
+        await typeText(summaryText, text, 15);
+      }
+    }
+
+    if (event === 'final_result' || event === 'result') {
+      const d = data || item.data;
+      if (d) {
+        finalResultText.classList.remove('hidden');
+        const prefix = lang === 'zh' ? '最终结果：' : 'Final Result: ';
+        finalResultText.textContent = prefix + (d.final_status || d.status || d.result || '');
+      }
+    }
+
+    if (event === 'error' || event === 'task_failed') {
+      const d = data || item.data;
+      const msg = d?.message || d?.error || 'Unknown error occurred';
+      showError(msg);
+      return;
+    }
+  }
+
+  /**
+   * Main logic to handle simulated stream
+   */
+  async function processStream(stream: any[]) {
+    loadingEl.classList.add('hidden');
+    resultsEl.classList.remove('hidden');
+
+    // Start placeholders
+    placeholderB.start();
+    placeholderC.start();
+
+    for (const item of stream) {
+      processEvent(item);
+      await new Promise(r => setTimeout(r, 200));
+    }
+    window.dispatchEvent(new CustomEvent('analysis-complete'));
+  }
+
+  // ── Main entry point ──
+  async function main() {
+    let collectedData: any[] = [];
+    const cacheKey = `cache:check:${code}:${year}:${period}:${lang}`;
+
+    try {
+
+
+      const apiParams = new URLSearchParams(window.location.search);
+      apiParams.set('lang', lang);
+
+      console.log('--- Initiating Audit (Locally checking cache first) ---');
+      
+      let currentProgress = 5;
+      const startTime = Date.now();
+      const progressTimer = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        if (elapsed < 1200) {
+          currentProgress = 5 + (45 * (elapsed / 1200));
+        } else if (elapsed < 10000) {
+          currentProgress = 50 + (45 * ((elapsed - 1200) / 8800));
+        } else {
+          currentProgress = 95;
+        }
+        const label = currentProgress < 50 
+          ? (lang === 'zh' ? '正在连接安全审计服务器...' : 'Connecting to audit server...')
+          : (lang === 'zh' ? '正在深度穿透财务数据...' : 'Deeply analyzing financial data...');
+        setProgress(Math.floor(currentProgress), label);
+      }, 50);
+
+      const cleanup = () => clearInterval(progressTimer);
+
+      try {
+        const localResp = await fetch(`/api/check?${apiParams.toString()}`);
+        const contentType = localResp.headers.get('content-type');
+
+      // (A) Cache Hit Case: Process as a stream as before
+      if (contentType && contentType.includes('application/x-ndjson')) {
+        console.log('Cache Hit: Streaming from local API...');
+        cleanup(); 
+        await handleResponseStream(localResp);
+        return;
+      }
+
+      // (B) Cache Miss or Error Case: Handle JSON response
+      const serverResult = await localResp.json();
+      
+      if (serverResult.error) {
+        throw new Error(serverResult.error);
+      }
+
+      // (C) Direct Fetch Case: Bypassing Vercel timeouts
+      if (serverResult.action === 'direct_fetch') {
+        const { api, token, params } = serverResult.config;
+        console.log('Cache Miss: Initiating DIRECT fetch to backend to avoid 10s limits...');
+
+        // Step 1: Initialize Task (POST /api/tasks)
+        const taskResp = await fetch(api, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify(params)
+        });
+        if (!taskResp.ok) {
+            const errTxt = await taskResp.text();
+            throw new Error(`Task init failed: ${taskResp.status} ${errTxt}`);
+        }
+        
+        const taskData = await taskResp.json();
+        const taskId = taskData.task_id;
+        
+        const apiBase = new URL(api).origin;
+        function toBackendUrl(rawUrl?: string | null) {
+          if (!rawUrl) return null;
+          if (rawUrl.startsWith('http')) return rawUrl;
+          return `${apiBase}${rawUrl}`;
+        }
+
+        const streamUrl = toBackendUrl(taskData.stream_url);
+        const resultUrl = toBackendUrl(taskData.result_url);
+        const resultBrUrl = toBackendUrl(taskData.result_br_url);
+        const resultBrRawUrl = toBackendUrl(taskData.result_br_raw_url);
+
+        if (!streamUrl) throw new Error('No stream_url from backend');
+
+        // Step 2: Stream from backend with a 5-minute initial connection timeout
+        const controller = new AbortController();
+        let isSuccessfullyCompleted = false;
+        let timeoutId = setTimeout(() => {
+          controller.abort();
+          showError(lang === 'zh' ? '分析连接超时，请稍后刷新重试' : 'Connection timeout, please refresh later');
+        }, 300000);
+
+        console.log('Connecting to direct stream:', streamUrl);
+        const streamResp = await fetch(streamUrl, {
+            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'text/event-stream' },
+            signal: controller.signal
+        });
+
+        if (!streamResp.ok) {
+            clearTimeout(timeoutId);
+            throw new Error(`Stream download failed: ${streamResp.status}`);
+        }
+        
+        cleanup(); 
+        // Handle SSE stream using the pattern from public/examples/frontend_call_example_v1.md
+        await handleResponseStream(
+            streamResp, 
+            (item) => {
+                collectedData.push(item);
+                // Check if this is a completion event
+                if (item.event === 'final_result' || item.event === 'result') {
+                    isSuccessfullyCompleted = true;
+                }
+            }, 
+            true, // isSSE
+            () => {
+                // onFirstChunk: Clear initial timeout and start a new 5-minute data transfer timeout
+                console.log('First chunk received. Resetting timeout for data transfer...');
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => {
+                    controller.abort();
+                    showError(lang === 'zh' ? '报告生成超时，请稍后刷新重试' : 'Report generation timeout, please refresh later');
+                }, 300000);
+            }
+        );
+
+        clearTimeout(timeoutId);
+
+        // Step 3: Fetch Final Result from auto-decoding Brotli endpoint if available, otherwise fallback to resultUrl
+        const finalFetchUrl = resultBrUrl || resultUrl;
+        if (finalFetchUrl && collectedData.length > 0) {
+            console.log('Fetching final result for data verification from:', finalFetchUrl);
+            try {
+                const finalResp = await fetch(finalFetchUrl, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (finalResp.ok) {
+                    const finalData = await finalResp.json();
+                    console.log('Final Result Data:', finalData);
+                    const payload = finalData.final_payload;
+                    if (payload) {
+                        // Optionally merge or sync with collectedData
+                    }
+                }
+            } catch (e) {
+                console.error('Failed to fetch final result:', e);
+            }
+        }
+
+        // Step 4: Backfill Cache only if successfully completed
+        if (isSuccessfullyCompleted && collectedData.length > 0) {
+            console.log('Analysis complete and verified. Backfilling cache...');
+            
+            const backfillCache = async () => {
+              if (resultBrRawUrl) {
+                try {
+                  console.log('Fetching raw Brotli file for cache backfill:', resultBrRawUrl);
+                  const brResp = await fetch(resultBrRawUrl, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                  });
+                  if (brResp.ok) {
+                    const arrayBuffer = await brResp.arrayBuffer();
+                    const uint8Array = new Uint8Array(arrayBuffer);
+                    let binary = '';
+                    const len = uint8Array.byteLength;
+                    for (let i = 0; i < len; i++) {
+                      binary += String.fromCharCode(uint8Array[i]);
+                    }
+                    const base64Data = btoa(binary);
+                    
+                    console.log('Storing raw Brotli Base64 in Redis cache...');
+                    const postResp = await fetch('/api/check', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ cacheKey, data: base64Data })
+                    });
+                    console.log('Brotli cache backfill response code:', postResp.status);
+                    return;
+                  }
+                } catch (brErr) {
+                  console.warn('Failed to fetch raw Brotli file, falling back to resultUrl or collectedData:', brErr);
+                }
+              }
+              
+              // Fallback 1: Plain result JSON
+              if (resultUrl) {
+                try {
+                  console.log('Falling back: Fetching plain result JSON for cache backfill...');
+                  const resResp = await fetch(resultUrl, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                  });
+                  if (resResp.ok) {
+                    const resData = await resResp.json();
+                    await fetch('/api/check', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ cacheKey, data: resData })
+                    });
+                    console.log('Plain JSON cache backfill successful');
+                    return;
+                  }
+                } catch (resErr) {
+                  console.warn('Failed to fetch plain result JSON for cache backfill:', resErr);
+                }
+              }
+              
+              // Fallback 2: Stream events array
+              console.log('Falling back: Storing collectedData in cache...');
+              await fetch('/api/check', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ cacheKey, data: collectedData })
+              });
+              console.log('collectedData cache backfill successful');
+            };
+            
+            backfillCache().catch(err => console.error('Cache backfill failed:', err));
+        }
+      }
+    } finally {
+      cleanup();
+    }
+  } catch (err: any) {
+    cleanup();
+    if (err.name === 'AbortError') {
+      // Already handled by timer above, but safety catch
+    } else {
+      showError(err.message);
+    }
+  }
+}
+
+  /**
+   * Render Industry WordCloud
+   */
+  let wcInitialized = false;
+  function renderWordCloud(list: any[], newsMap: Map<string, any>) {
+    const canvas = document.getElementById('industry-wordcloud') as HTMLCanvasElement;
+    const newsPlaceholder = document.getElementById('news-placeholder');
+    const newsList = document.getElementById('news-list');
+
+    if (!canvas) return;
+
+    // Load WordCloud2.js if not already loaded
+    if (!wcInitialized) {
+      const script = document.createElement('script');
+      script.src = "https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.2.2/wordcloud2.min.js";
+      script.onload = () => {
+        wcInitialized = true;
+        doRender();
+      };
+      document.head.appendChild(script);
+    } else {
+      doRender();
+    }
+
+    function doRender() {
+      // Calculate responsive sizing
+      const containerWidth = (canvas.parentElement?.clientWidth || 500) - 40;
+      canvas.width = containerWidth;
+      canvas.height = 460;
+
+      // @ts-ignore
+      const maxCount = list.length > 0 ? Math.max(...list.map(i => i[1])) : 1;
+      console.log('Rendering WordCloud with maxCount:', maxCount, 'List length:', list.length);
+
+      (window as any).WordCloud(canvas, {
+        list: list.slice(0, 100),
+        gridSize: 10,
+        weightFactor: function (size: number) {
+          // Dynamic scaling: largest word around 105px, smallest around 16px
+          return size * 0.6 + 12;
+        },
+        fontWeight: 300,
+        fontFamily: 'Outfit, "PingFang SC", sans-serif',
+        minSize: 10,
+        drawOutOfBound: false,
+        ellipticity: 1,
+        color: function() {
+          const colors = ['#967041ff', '#2f804eff', '#7649c0ff', '#b22f2fff', '#4d70ceff', '#98487fff'];
+          return colors[Math.floor(Math.random() * colors.length)];
+        },
+        rotateRatio: 0,
+        backgroundColor: 'transparent',
+        click: (item: any) => {
+          const keyword = item[0];
+          const data = newsMap.get(keyword);
+          if (data) {
+            renderNews(data.articles, keyword, data.totalCount);
+          }
+        }
+      });
+    }
+  }
+
+  function renderNews(articles: any[], keyword: string, totalCount?: number) {
+    const newsPlaceholder = document.getElementById('news-placeholder');
+    const newsList = document.getElementById('news-list');
+    const newsHeader = document.getElementById('news-header');
+    const newsDisplay = document.querySelector('.news-display');
+    if (!newsPlaceholder || !newsList || !newsHeader || !newsDisplay) return;
+
+    newsPlaceholder.classList.add('hidden');
+    newsList.classList.remove('hidden');
+    newsHeader.classList.remove('hidden');
+    newsDisplay.classList.remove('is-collapsed');
+
+    // Ensure collapse toggle listener is set up for mobile
+    if (!newsDisplay.classList.contains('has-toggle-listener')) {
+      newsDisplay.classList.add('has-toggle-listener');
+      newsHeader.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          newsDisplay.classList.toggle('is-collapsed');
+        }
+      });
+    }
+
+    const count = totalCount !== undefined ? totalCount : articles.length;
+    if (lang === 'zh') {
+      newsHeader.innerHTML = `<span>共找到 <b>${count}</b> 条与 <span style="color:var(--color-brand-1);font-weight:600;">${keyword}</span> 相关的行业资讯</span>`;
+    } else {
+      newsHeader.innerHTML = `<span>Found <b>${count}</b> news articles related to <span style="color:var(--color-brand-1);font-weight:600;">${keyword}</span></span>`;
+    }
+
+    newsList.innerHTML = '';
+
+    const arr = Array.isArray(articles) ? articles : [];
+    arr.forEach((article, index) => {
+      if (!article) return;
+      
+      let itemObj = article;
+      if (typeof itemObj === 'string') {
+        try {
+          itemObj = JSON.parse(itemObj);
+        } catch (e) {
+          itemObj = [article, '', 'Choice金融数据库', ''];
+        }
+      }
+      
+      const title = Array.isArray(itemObj) ? itemObj[0] : (itemObj.title || '');
+      const rawDate = Array.isArray(itemObj) ? itemObj[1] : (itemObj.date || itemObj.generated_at || '');
+      const source = Array.isArray(itemObj) ? itemObj[2] : (itemObj.source || '');
+      const url = Array.isArray(itemObj) ? itemObj[3] : (itemObj.source_url || itemObj.url || '');
+      
+      // Format date: 2024-05-01 12:00 -> 24/05/01
+      const formattedDate = String(rawDate).substring(2, 10).replace(/-/g, '/');
+      
+      const sourceDisplay = source === 'UNKNOWN' ? 'Choice金融数据库' : (source || 'Choice金融数据库');
+      
+      const item = document.createElement('div');
+      item.className = 'news-item';
+      item.style.animationDelay = `${index * 0.05}s`;
+
+      const linkHtml = url 
+        ? `<a href="${url}" target="_blank" rel="noreferrer" class="meta-pill source">${sourceDisplay}</a>`
+        : `<span class="meta-pill source">${sourceDisplay}</span>`;
+
+      item.innerHTML = `
+        <span class="news-bullet">•</span>
+        <div class="news-title-wrapper">
+          <span class="news-title">${title}</span>
+          <span class="news-date">${formattedDate}</span>
+          ${linkHtml}
+        </div>
+      `;
+      newsList.appendChild(item);
+    });
+    
+    // Scroll to top of list
+    newsList.parentElement?.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /**
+   * Helper to handle stream decoding and line processing
+   * Supports both NDR-JSON and SSE (with data: prefix and \n\n separator)
+   */
+  async function handleResponseStream(
+    response: Response, 
+    onEachItem?: (item: any) => void, 
+    isSSE = false,
+    onFirstChunk?: () => void
+  ) {
+    if (preview === 'true') {
+      // Hijack and speed up to 99%
+      const startPct = parseInt(progressLabel.textContent || '50');
+      const duration = 3000;
+      const startTime = Date.now();
+      
+      const previewTimer = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const p = Math.min(1, elapsed / duration);
+        const currentPct = Math.floor(startPct + (99 - startPct) * p);
+        
+        const labels = lang === 'zh' 
+          ? ['数据链路验证成功...', '正在构建归一化大模型...', '正在执行交叉审计穿透...', '财务诊断报告生成中...']
+          : ['Link verified...', 'Building AI model...', 'Executing cross-audit...', 'Generating report...'];
+        const labelIdx = Math.min(labels.length - 1, Math.floor(p * labels.length));
+        
+        setProgress(currentPct, labels[labelIdx]);
+        if (p >= 1) clearInterval(previewTimer);
+      }, 50);
+
+      await new Promise(r => setTimeout(r, duration));
+      clearInterval(previewTimer);
+    }
+
+    loadingEl.classList.add('hidden');
+    resultsEl.classList.remove('hidden');
+    // Ensure all timers are truly gone when we show results
+    if (window.loadingInterval) clearInterval(window.loadingInterval);
+
+    placeholderB.start();
+    placeholderC.start();
+
+    if (!response.body) throw new Error('Response body is empty');
+    
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let isFirstChunk = true;
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      
+      if (isFirstChunk) {
+        isFirstChunk = false;
+        if (onFirstChunk) onFirstChunk();
+      }
+
+      buffer += decoder.decode(value, { stream: true });
+
+      if (isSSE) {
+        // SSE Logic (Uses \n\n as boundary)
+        while (true) {
+          const boundary = buffer.indexOf('\n\n');
+          if (boundary === -1) break;
+
+          const rawEvent = buffer.slice(0, boundary);
+          buffer = buffer.slice(boundary + 2);
+
+          for (const line of rawEvent.split('\n')) {
+            if (!line.startsWith('data: ')) continue;
+            const dataStr = line.slice(6).trim();
+            if (!dataStr || dataStr === '[DONE]') continue;
+
+            try {
+              const item = JSON.parse(dataStr);
+              if (onEachItem) onEachItem(item);
+              await processEvent(item);
+            } catch (e) {
+              console.error('SSE Line parse error:', dataStr, e);
+            }
+          }
+        }
+      } else {
+        // Standard NDR-JSON Logic (Uses \n as boundary)
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed || trimmed.startsWith(':')) continue;
+          let dataStr = trimmed;
+          if (dataStr.startsWith('data: ')) dataStr = dataStr.substring(6).trim();
+          if (!dataStr || dataStr === '[DONE]') continue;
+
+          try {
+            const item = JSON.parse(dataStr);
+            if (onEachItem) onEachItem(item);
+            await processEvent(item);
+          } catch (e) { 
+            console.error('NDR JSON Line parse error:', dataStr, e); 
+          }
+        }
+      }
+    }
+
+    // Process leftover buffer
+    if (buffer.trim()) {
+        const trimmed = buffer.trim();
+        let dataStr = trimmed;
+        if (dataStr.startsWith('data: ')) dataStr = dataStr.substring(6).trim();
+        if (dataStr && dataStr !== '[DONE]') {
+            try {
+                const item = JSON.parse(dataStr);
+                if (onEachItem) onEachItem(item);
+                await processEvent(item);
+            } catch (e) {}
+        }
+    }
+    window.dispatchEvent(new CustomEvent('analysis-complete'));
+  }
+
+  // ── Scroll Behavior for Area B/C (Desktop) ──
+  const setupAreaScroll = () => {
+    const wrappers = document.querySelectorAll('.scroll-wrapper-b, .news-display');
+    wrappers.forEach(wrapper => {
+      wrapper.addEventListener('wheel', (e: any) => {
+        if (window.innerWidth > 640) {
+          const el = e.currentTarget as HTMLElement;
+          const isScrollable = el.scrollHeight > el.clientHeight;
+          
+          if (!isScrollable) return;
+
+          const isAtTop = el.scrollTop <= 0;
+          const isAtBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
+          
+          // If scrolling down at the bottom or up at the top, let the page scroll
+          if (e.deltaY > 0 && isAtBottom) return;
+          if (e.deltaY < 0 && isAtTop) return;
+
+          // Otherwise, stop propagation to isolate scroll to the panel
+          e.stopPropagation();
+        }
+      }, { passive: true });
+    });
+  };
+  setupAreaScroll();
+
+  if (shouldRun) {
+    main();
+  }
+</script>

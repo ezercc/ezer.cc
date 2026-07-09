@@ -1,0 +1,504 @@
+---
+import Layout from "../layouts/Layout.astro";
+import TextMarquee from "../components/TextMarquee.astro";
+import Button from "../components/Button.astro";
+
+const values = [
+  {
+    title: "红蓝对抗",
+    text: "行业首创对抗式验证逻辑：红队挖掘疑点，蓝队反证校验，有效降低模型幻觉与误判风险。",
+  },
+  {
+    title: "证据可溯",
+    text: "拒绝“黑盒输出”。我们强调分析结果的确定性与可追溯性，每一项结论都有完整的证据链条支撑。",
+  },
+  {
+    title: "专业平民化",
+    text: "我们致力于消除专业审计与普通投资者之间的鸿沟，将顶级投研人员的工作流标准化、产品化。",
+  },
+  {
+    title: "高效协同",
+    text: "利用自研编排中枢驱动多智能体集群并行处理，覆盖财报全维度，实现分析效率的量级提升。",
+  },
+];
+---
+
+<Layout 
+  title="重新定义财报分析"
+  description="了解关于弈泽财报分析背后的技术理念、团队使命和红蓝对抗机制。我们致力于利用 AI 技术消除投研门槛，让真相不再被信息掩盖。"
+  keywords="弈泽使命, 财务审计技术, 团队愿景, 财报分析革命, 透明投研"
+>
+  <section class="intro">
+    <div class="u-container">
+      <h1 class="u-heading large-title" data-sy-reveal="blurIn">
+        重新定义<span class="brand-color">财报研究</span>的未来
+      </h1>
+      <p class="u-text intro-text" data-sy-reveal="slideUp">
+        我们是理性敏锐、交叉创新的金融科技新锐。通过将红蓝对抗机制引入财报审计，我们旨在赋能1.5亿泛投资人群，以专家级视野重构财报分析体验，直击数据背后的真实价值
+      </p>
+    </div>
+  </section>
+
+  <section class="story">
+    <div id="story-canvas" class="story-canvas"></div>
+    <div class="u-container">
+      <div class="u-row align-items-center">
+        <div class="u-col-6 u-col-md-12 story-content">
+          <h2 class="u-heading section-title" data-sy-reveal="words">我们的使命</h2>
+          <div class="u-text story-text" data-sy-reveal="fade">
+            <p>
+              面对长篇累牍的术语与真假难辨的数据，普通投资者在财报研究中长期处于劣势。弈泽的使命是消除专业投研门槛，让真相不再被臃肿的信息掩盖。
+            </p>
+            <p>
+              通过全流程闭环逻辑，我们实现了从 "信息提取" 到 "深度审计" 的范式跨越。弈泽拒绝流于表面的内容概括，而是通过严苛的对抗验证，让投资风险由虚转实，有据可依
+            </p>
+          </div>
+        </div>
+        <div class="u-col-6 u-col-md-12" data-sy-reveal="scaleUp">
+          <div class="image-placeholder">
+            <img src="/image-4.jpg" alt="弈泽 智能分析场景" class="story-image" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="data-source">
+    <div class="u-container">
+      <div class="data-grid">
+        <div class="data-title">
+          <h2 class="u-heading section-title" data-sy-reveal="words">数据来源及合规保障</h2>
+        </div>
+        <div class="data-cards" data-sy-reveal="scaleUp">
+          <div class="data-badge-container">
+            <div class="data-badge-item">
+              <span class="icon"><i class="fa-solid fa-chart-simple"></i></span>
+              <div>
+                <h4>权威数据终端</h4>
+                <p>数据深度对接 Choice 等主流金融终端，确保源数据精确无误。</p>
+              </div>
+            </div>
+            <div class="data-badge-item">
+              <span class="icon"><i class="fa-solid fa-file-invoice"></i></span>
+              <div>
+                <h4>公开定期报告</h4>
+                <p>严格匹配上市公司披露的招股书、年报、季报及公告原件。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="data-text" data-sy-reveal="fade">
+          <div class="u-text">
+            <p>
+              弈泽分析数据源严选自上市公司依据法定披露程序发布的定期财务报告（如年报、季报、半年度报告等）及官方监管披露，同时以主流权威金融数据终端进行多渠道交叉比对。
+            </p><br/>
+            <p>
+              我们承诺所有处理的底层明细与披露凭证支持在报告中一键穿透反查。本站提供的数据与推理逻辑仅做历史数据审计和客观推导，不含任何主观盈利预测，确保分析的独立性、客观性与高可信度。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="values">
+    <div class="u-container">
+      <h2 class="u-heading section-title center" data-sy-reveal="blurIn">核心技术理念</h2>
+      <div class="u-row">
+        {values.map((value, i) => (
+          <div class="u-col-3 u-col-md-6 u-col-sm-12">
+            <div class="value-card" data-sy-reveal="slideUp" style={`--d: ${i * 0.1}s`}>
+              <h3 class="u-heading card-title">{value.title}</h3>
+              <p class="u-text card-text">{value.text}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="marquee-section">
+    <TextMarquee
+      class="about-marquee"
+      texts={[
+        "对抗验证",
+        "拒绝幻觉",
+        "证据可循",
+        "赋能投资者",
+      ]}
+    />
+  </section>
+
+
+</Layout>
+
+<style>
+  /* 样式部分保持不变 */
+  section {
+    padding: 8rem 0;
+  }
+
+  .align-items-center {
+    align-items: center;
+  }
+
+  /* Intro Section */
+  .intro {
+    padding-top: 12rem;
+    text-align: center;
+  }
+
+  .large-title {
+    --fs: 5rem;
+    --lh: 1.3;
+    max-width: 15em;
+    margin: 0 auto 2rem;
+
+    @media (--mq-phone) {
+      --fs: 3rem;
+    }
+  }
+
+  .brand-color {
+    color: var(--color-brand-1);
+  }
+
+  .intro-text {
+    --fs: 1.5rem;
+    --lh: 1.6;
+    max-width: 35em;
+    margin: 0 auto;
+    opacity: 0.8;
+
+    @media (--mq-phone) {
+      --fs: 1.2rem;
+    }
+  }
+
+  /* Story Section */
+  .story {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .story-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .story-content {
+    @media (--mq-tablet) {
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+  }
+
+  .section-title {
+    --fs: 3rem;
+    margin-bottom: 2rem;
+
+    @media (--mq-phone) {
+      --fs: 2.25rem;
+    }
+  }
+
+  .center {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .story-text p {
+    margin-bottom: 1.5rem;
+  }
+
+  .image-placeholder {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: var(--color-brand-3);
+    border-radius: 2rem;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .story-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 1rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    transition: transform 0.5s var(--ease-out-expo);
+
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+
+  .image-placeholder::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(var(--rgb-brand-1), 0.1), transparent);
+  }
+
+  /* Values Section */
+  .values .u-row {
+    @media (--mq-tablet) {
+      row-gap: 1.5rem;
+    }
+  }
+
+  .value-card {
+    height: 100%;
+    padding: 3rem;
+    background: rgba(var(--rgb-white), 0.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(var(--rgb-brand-1), 0.1);
+    border-radius: 1.5rem;
+    transition: transform 0.3s var(--ease-out-expo), border-color 0.3s;
+    animation-delay: var(--d);
+
+    @media (--mq-tablet) {
+      padding: 1.5rem;
+    }
+
+    :global([data-theme="dark"]) & {
+      background: rgba(30, 30, 36, 0.5);
+      border-color: rgba(var(--rgb-brand-1), 0.2);
+    }
+
+    &:hover {
+      transform: translateY(-0.5rem);
+      border-color: var(--color-brand-1);
+    }
+  }
+
+  .card-title {
+    --fs: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-brand-1);
+  }
+
+  .card-text {
+    --fs: var(--font-size-sm);
+  }
+
+  /* Marquee Section */
+  .marquee-section {
+    padding: 4rem 0;
+    background: var(--color-brand-1);
+    color: var(--color-brand-3);
+  }
+
+  .about-marquee {
+    --c: var(--color-brand-3);
+  }
+
+  /* Data Source Section */
+  .data-source {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .data-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "cards title"
+      "cards text";
+    gap: 2rem 0.5rem;
+    align-items: center;
+
+    @media (--mq-tablet) {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "title"
+        "cards"
+        "text";
+      gap: 1.5rem;
+      text-align: center;
+    }
+  }
+
+  .data-title {
+    grid-area: title;
+    align-self: end;
+
+    @media (--mq-tablet) {
+      align-self: center;
+    }
+
+    h2 {
+      margin-bottom: 0;
+    }
+  }
+
+  .data-cards {
+    grid-area: cards;
+  }
+
+  .data-text {
+    grid-area: text;
+    align-self: start;
+
+    @media (--mq-tablet) {
+      align-self: center;
+    }
+  }
+
+  .data-badge-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-right: 3rem;
+
+    @media (--mq-tablet) {
+      padding-right: 0;
+    }
+  }
+
+  .data-badge-item {
+    display: flex;
+    gap: 1.5rem;
+    padding: 2rem;
+    background: rgba(var(--rgb-white), 0.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(var(--rgb-brand-1), 0.1);
+    border-radius: 1.5rem;
+    transition: transform 0.3s var(--ease-out-expo), border-color 0.3s;
+
+    :global([data-theme="dark"]) & {
+      background: rgba(30, 30, 36, 0.5);
+      border-color: rgba(var(--rgb-brand-1), 0.2);
+    }
+
+    &:hover {
+      transform: translateY(-0.25rem);
+      border-color: var(--color-brand-1);
+    }
+
+    .icon {
+      font-size: 2.5rem;
+      flex-shrink: 0;
+    }
+
+    h4 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--color-text-title);
+    }
+
+    p {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      opacity: 0.8;
+    }
+  }
+</style>
+
+<script>
+  /* 脚本部分保持不变 */
+  import * as THREE from 'three';
+
+  function initStoryBackground() {
+    const container = document.getElementById('story-canvas');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight || 1, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+
+    const group = new THREE.Group();
+    scene.add(group);
+
+    const geometry = new THREE.IcosahedronGeometry(1, 15);
+    const material = new THREE.MeshPhysicalMaterial({
+      color: 0x8d73f5,
+      metalness: 0,
+      roughness: 0.2,
+      transmission: 0.8,
+      thickness: 0.5,
+      transparent: true,
+      opacity: 0.3,
+    });
+
+    const particles = [];
+    for (let i = 0; i < 4; i++) {
+      const mesh = new THREE.Mesh(geometry, material.clone());
+      const scale = 0.5 + Math.random() * 1.5;
+      mesh.scale.set(scale, scale, scale);
+      mesh.position.set(
+        (Math.random() - 0.5) * 10,
+        (Math.random() - 0.5) * 6,
+        (Math.random() - 0.5) * 4
+      );
+      
+      const colors = [0x8d73f5, 0xec77fd, 0x8caf31];
+      mesh.material.color.set(colors[Math.floor(Math.random() * colors.length)]);
+      
+      group.add(mesh);
+      particles.push(mesh);
+    }
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+
+    const pointLight = new THREE.PointLight(0xffffff, 1);
+    pointLight.position.set(5, 5, 5);
+    scene.add(pointLight);
+
+    camera.position.z = 8;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      
+      particles.forEach((p, i) => {
+        p.rotation.x += 0.0005 * (i % 2 === 0 ? 1 : -1);
+        p.rotation.y += 0.0008 * (i % 3 === 0 ? 1 : -1);
+        p.position.y += Math.sin(Date.now() * 0.0005 + i) * 0.001;
+        p.position.x += Math.cos(Date.now() * 0.0005 + i) * 0.001;
+      });
+
+      group.rotation.y = Math.sin(Date.now() * 0.0001) * 0.03;
+      group.rotation.x = Math.cos(Date.now() * 0.0001) * 0.03;
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = container.clientWidth / container.clientHeight || 1;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+  }
+
+  function init() {
+    setTimeout(() => {
+      initStoryBackground();
+    }, 100);
+  }
+
+  if (document.readyState === 'complete') {
+    init();
+  } else {
+    window.addEventListener('load', init);
+  }
+
+  document.addEventListener('astro:page-load', init);
+</script>
+

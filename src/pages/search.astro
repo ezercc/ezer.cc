@@ -1,0 +1,1001 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const currentYear = new Date().getFullYear();
+const years = [2026, 2025, 2024, 2023, 2022, 2021];
+
+const periods = [
+  { value: "full", label: t("search.period.annual") },
+  { value: "q1", label: t("search.period.q1") },
+  { value: "q2", label: t("search.period.q2") },
+  { value: "q3", label: t("search.period.q3") },
+  { value: "q4", label: t("search.period.q4") },
+];
+
+const hotSearches = [
+  { rank: 1, name: "美光", code: "mu", symbol: "mu.oq", year: "2026", period: "q1", periodLabel: "第一季度", displayPeriod: "2026Q1", trend: "up", hotIndex: "98.5万", badge: "新" },
+  { rank: 2, name: "英伟达", code: "nvda", symbol: "nvda.oq", year: "2026", period: "q1", periodLabel: "第一季度", displayPeriod: "2026Q1", trend: "up", badge: "爆" },
+  { rank: 3, name: "阿里巴巴", code: "baba", symbol: "baba.n", year: "2025", period: "full", periodLabel: "年报", displayPeriod: "2025年报", trend: "neutral", hotIndex: "85.4万", badge: "" },
+  { rank: 4, name: "中际旭创", code: "300308", symbol: "300308.sz", year: "2026", period: "q1", periodLabel: "第一季度", displayPeriod: "2026Q1", trend: "up", badge: "热" },
+  { rank: 5, name: "新易盛", code: "300502", symbol: "300502.sz", year: "2026", period: "q1", periodLabel: "第一季度", displayPeriod: "2026Q1", trend: "down", badge: "" },
+  { rank: 6, name: "北方华创", code: "002371", symbol: "002371.sz", year: "2025", period: "full", periodLabel: "年报", displayPeriod: "2025年报", trend: "up", badge: "" },
+];
+---
+
+<Layout 
+  title={t("search.title")}
+  description="搜索并获取上市公司历年和季度财报分析。输入公司名称或股票代码，即可发起深度分析任务。"
+  keywords="财报搜索, 历年财报, 季度报分析, 股票查询, 财务分析入口"
+>
+  <div class="search-page">
+    <div class="u-container">
+      <div class="search-container">
+        <h1 class="search-title">{t("search.title")}</h1>
+        
+        <div class="search-box-wrapper">
+          <div class="search-box">
+            <!-- Part 1: Stock Search -->
+            <div class="search-input-section">
+              <input 
+                type="text" 
+                id="stock-input" 
+                placeholder={t("search.placeholder")} 
+                autocomplete="off"
+              />
+              <div id="search-results" class="search-results hidden"></div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <!-- Part 2: Period Selection (Custom Dropdowns) -->
+            <div class="period-section">
+              <div class="custom-select" id="year-dropdown">
+                <div class="select-trigger" id="year-trigger">
+                  <span class="selected-value">2025</span>
+                  <svg class="arrow" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="select-options hidden" id="year-options">
+                  {years.map(year => (
+                    <div class="select-option" data-value={year}>{year}</div>
+                  ))}
+                </div>
+              </div>
+
+              <div class="custom-select" id="period-dropdown">
+                <div class="select-trigger" id="period-trigger">
+                  <span class="selected-value">{t("search.period.annual")}</span>
+                  <svg class="arrow" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="select-options hidden" id="period-options">
+                  {periods.map(p => (
+                    <div class="select-option" data-value={p.value}>{p.label}</div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <button id="check-btn" class="pill-check-btn">
+              {t("search.check")}
+            </button>
+          </div>
+
+          <!-- Hot Searches Section -->
+          <div class="hot-searches-container">
+            <div class="hot-searches-header">
+              <div class="header-left">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="fire-icon">
+                  <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+                </svg>
+                <span>{t("search.hot.title")}</span>
+              </div>
+              <a href="#" class="header-right-link" onclick="event.preventDefault();">
+                <span>换一换</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="refresh-icon"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              </a>
+            </div>
+            <div class="hot-searches-list">
+              <div class="hot-searches-col">
+                {hotSearches.slice(0, 3).map((item) => (
+                  <div 
+                    class="hot-search-item" 
+                    data-code={item.code} 
+                    data-name={item.name} 
+                    data-symbol={item.symbol}
+                    data-year={item.year}
+                    data-period={item.period}
+                    data-period-label={item.periodLabel}
+                  >
+                    <div class="hot-search-left">
+                      <span class="hot-rank">{item.rank}</span>
+                      <span class="hot-title">
+                        <span class="hot-company">{item.name}</span>
+                        <span class="hot-dot">·</span>
+                        <span class="hot-period">{item.displayPeriod}</span>
+                      </span>
+                      {item.badge && (
+                        <span class={`hot-badge badge-${item.trend}`}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div class="hot-searches-col">
+                {hotSearches.slice(3).map((item) => (
+                  <div 
+                    class="hot-search-item" 
+                    data-code={item.code} 
+                    data-name={item.name} 
+                    data-symbol={item.symbol}
+                    data-year={item.year}
+                    data-period={item.period}
+                    data-period-label={item.periodLabel}
+                  >
+                    <div class="hot-search-left">
+                      <span class="hot-rank">{item.rank}</span>
+                      <span class="hot-title">
+                        <span class="hot-company">{item.name}</span>
+                        <span class="hot-dot">·</span>
+                        <span class="hot-period">{item.displayPeriod}</span>
+                      </span>
+                      {item.badge && (
+                        <span class={`hot-badge badge-${item.trend}`}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .search-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 15vh 1rem 2rem;
+    background: var(--color-bg);
+  }
+
+  .search-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .search-title {
+    font-size: 3rem;
+    font-family: var(--font-roboto-slab);
+    margin-bottom: 3rem;
+    color: var(--color-text);
+  }
+  .search-box-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--color-bg-alt, #fff);
+    border: 1px solid var(--color-border, #dfe1e5);
+    border-radius: 30px;
+    padding: 0.5rem 1.5rem;
+    width: 100%;
+    box-shadow: 0 1px 6px rgba(32,33,36,0.28);
+    transition: box-shadow 0.3s ease;
+    background-color: var(--color-bg-card);
+  }
+
+  .search-box:hover, .search-box:focus-within {
+    box-shadow: 0 1px 8px rgba(32,33,36,0.35);
+  }
+
+  .search-input-section {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  #stock-input {
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 0.8rem 0.5rem;
+    font-size: 1.1rem;
+    background: transparent;
+    color: var(--color-text);
+  }
+
+  .divider {
+    width: 1px;
+    height: 30px;
+    background: var(--color-border, #dfe1e5);
+    margin: 0 1rem;
+  }
+
+  .period-section {
+    display: flex;
+    gap: 0.8rem;
+    margin-right: 0.5rem;
+  }
+
+  .custom-select {
+    position: relative;
+    min-width: 90px;
+    font-size: 0.95rem;
+  }
+
+  .select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.5rem 0.8rem;
+    background: rgba(var(--rgb-brand-1), 0.05);
+    border-radius: 12px;
+    cursor: pointer;
+    color: var(--color-text);
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .select-trigger:hover {
+    background: rgba(var(--rgb-brand-1), 0.1);
+    border-color: var(--color-brand-1);
+  }
+
+  .search-results {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    min-width: 280px;
+    background: var(--color-surface, #fff);
+    border: 1px solid var(--color-border, #dfe1e5);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    z-index: 1000;
+    max-height: 400px;
+    overflow-y: auto;
+    text-align: left;
+    padding: 0.8rem 0;
+  }
+
+  .search-results :global(div) {
+    padding: 0.4em 1.25rem !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--color-text);
+    line-height: 1.3 !important;
+    font-size: 1.05rem;
+  }
+
+  .search-results :global(div:hover) {
+    background: var(--color-brand-3, #ece7fd) !important;
+    color: var(--color-brand-1) !important;
+  }
+
+  [data-theme="dark"] .search-results {
+    background: #202124;
+    border-color: #5f6368;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  }
+
+  [data-theme="dark"] .search-results :global(div:hover) {
+    background: #3c4043 !important;
+  }
+
+  [data-theme="dark"] .select-trigger {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  [data-theme="dark"] .select-options {
+    background: #202124;
+    border-color: #5f6368;
+  }
+
+  .select-options {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    min-width: 120px;
+    background: var(--color-surface, #fff);
+    border: 1px solid var(--color-border, #dfe1e5);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    z-index: 110;
+    padding: 0.5rem 0;
+    overflow: hidden;
+  }
+
+  .select-option {
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    color: var(--color-text);
+  }
+
+  .select-option:hover {
+    background: var(--color-brand-3, #ece7fd);
+    color: var(--color-brand-1);
+  }
+
+  .arrow {
+    transition: transform 0.3s ease;
+  }
+
+  .select-trigger.open .arrow {
+    transform: rotate(180deg);
+  }
+
+  [data-theme="dark"] .select-trigger {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  [data-theme="dark"] .select-options {
+    background: #202124;
+    border-color: #5f6368;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .pill-check-btn {
+    background: var(--color-brand-1);
+    color: var(--color-white);
+    border: none;
+    padding: 0.6rem 1.8rem;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out-expo);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .pill-check-btn:hover {
+    filter: brightness(1.1);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(var(--rgb-brand-1), 0.3);
+  }
+
+  .check-btn:active {
+    transform: translateY(0);
+  }
+
+  [data-theme="dark"] .search-box {
+    box-shadow: 0 1px 6px rgba(0,0,0,0.5);
+    border-color: #5f6368;
+    background-color: #202124;
+  }
+
+  @media (max-width: 768px) {
+    .search-page {
+      padding: 10vh 0.5rem 2rem;
+    }
+
+    .u-container {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .search-title {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .search-box {
+      flex-direction: column;
+      padding: 1rem;
+      border-radius: 24px;
+      gap: 0.8rem;
+    }
+
+    .search-input-section {
+      width: 100%;
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      margin: 0;
+    }
+
+    .period-section {
+      width: 100%;
+      justify-content: center;
+      margin-right: 0;
+      flex-wrap: wrap;
+    }
+
+    .pill-check-btn {
+      width: 100%;
+      padding: 1rem 1.2rem;
+    }
+  }
+
+  /* Hot Searches Styles (Baidu Style - Single Column Vertical) */
+  .hot-searches-container {
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1rem;
+    padding: 0.6rem 0.8rem;
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid var(--color-border, #dfe1e5);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    text-align: left;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+  }
+
+  :global([data-theme="dark"]) .hot-searches-container {
+    background: rgba(30, 30, 36, 0.85);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 
+      0 10px 30px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  :global([data-theme="dark"]) .hot-period {
+    color: #c5b5ff;
+  }
+
+  .hot-searches-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.4rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-border, rgba(0,0,0,0.06));
+    padding-bottom: 0.4rem;
+  }
+
+  :global([data-theme="dark"]) .hot-searches-header {
+    border-color: rgba(255,255,255,0.08);
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .header-right-link {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--color-text-alt);
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .header-right-link:hover {
+    color: var(--color-brand-1);
+  }
+
+  .refresh-icon {
+    transition: transform 0.5s ease;
+  }
+
+  .header-right-link:hover .refresh-icon {
+    transform: rotate(180deg);
+  }
+
+  .fire-icon {
+    color: #ff4d4f;
+    animation: firePulse 2s infinite ease-in-out;
+  }
+
+  @keyframes firePulse {
+    0% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255, 77, 79, 0.2)); }
+    50% { transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(255, 77, 79, 0.6)); }
+    100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255, 77, 79, 0.2)); }
+  }
+
+  .hot-searches-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 1.5rem;
+  }
+
+  .hot-searches-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  @media (max-width: 768px) {
+    .hot-searches-list {
+      grid-template-columns: 1fr;
+      row-gap: 0.1rem;
+    }
+  }
+
+  .hot-search-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.4rem 0.6rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    min-width: 0;
+  }
+
+  .hot-search-item:hover {
+    background: rgba(var(--rgb-brand-1), 0.05);
+    padding-left: 0.9rem;
+  }
+
+  .hot-search-item.active {
+    background: rgba(var(--rgb-brand-1), 0.1);
+    transform: scale(0.99);
+  }
+
+  .hot-search-left {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .hot-rank {
+    font-size: 1rem;
+    font-weight: 700;
+    width: 20px;
+    text-align: center;
+    color: var(--color-text-alt);
+    font-family: var(--font-roboto-mono, monospace);
+    flex-shrink: 0;
+  }
+
+  .hot-searches-col:first-child .hot-search-item:nth-child(1) .hot-rank {
+    color: #ff4d4f;
+  }
+
+  .hot-searches-col:first-child .hot-search-item:nth-child(2) .hot-rank {
+    color: #ff7a45;
+  }
+
+  .hot-searches-col:first-child .hot-search-item:nth-child(3) .hot-rank {
+    color: #ffc069;
+  }
+
+  .hot-title {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--color-text);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .hot-company {
+    font-weight: 600;
+  }
+
+  .hot-dot {
+    color: var(--color-text-alt);
+    opacity: 0.5;
+    margin: 0 0.25rem;
+  }
+
+  .hot-period {
+    color: var(--color-brand-1);
+    font-weight: 500;
+  }
+
+  .hot-badge {
+    padding: 0.15rem 0.4rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .badge-up {
+    background: linear-gradient(135deg, #ff4d4f, #ff7875);
+  }
+
+  .badge-down {
+    background: linear-gradient(135deg, #ff7a45, #ff9c6e);
+  }
+
+  .badge-neutral {
+    background: #1890ff;
+  }
+
+  .hot-search-right {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-left: 1rem;
+    flex-shrink: 0;
+  }
+
+  .hot-index {
+    font-size: 0.8rem;
+    color: var(--color-text-alt);
+    font-family: var(--font-roboto-mono, monospace);
+  }
+
+  .hot-trend {
+    display: flex;
+    align-items: center;
+    font-size: 0.75rem;
+  }
+
+  .trend-up {
+    color: #52c41a;
+  }
+
+  .trend-down {
+    color: #ff4d4f;
+  }
+
+  .trend-neutral {
+    color: var(--color-text-alt);
+    opacity: 0.5;
+  }
+
+  /* Fix for the black bar at the bottom */
+  :global(footer) {
+    position: static !important;
+  }
+  :global(sy-footer) {
+    height: auto !important;
+  }
+</style>
+
+<script>
+  // Custom selection values
+  let selectedStock = null;
+  let selectedYear = "2025";
+  let selectedPeriod = "full";
+
+  async function getSession() {
+    // @ts-ignore
+    if (!window.auth) return null;
+    // @ts-ignore
+    return window.auth.getSession();
+  }
+
+  const stockInput = document.getElementById('stock-input');
+  const resultsContainer = document.getElementById('search-results');
+  const checkBtn = document.getElementById('check-btn');
+
+  const allHotSearches = [
+    { name: "美光", code: "mu", symbol: "mu.oq", year: "2026", period: "q1", periodLabel: "第一季度", displayPeriod: "2026Q1", trend: "up", badge: "新" },
+    { name: "英伟达", code: "nvda", symbol: "nvda.oq", year: "2026", period: "q1", periodLabel: "第一季度", displayPeriod: "2026Q1", trend: "up", badge: "爆" },
+    { name: "阿里巴巴", code: "baba", symbol: "baba.n", year: "2025", period: "full", periodLabel: "年报", displayPeriod: "2025年报", trend: "neutral", badge: "" },
+    { name: "中际旭创", code: "300308", symbol: "300308.sz", year: "2026", period: "q1", periodLabel: "第一季度", displayPeriod: "2026Q1", trend: "up", badge: "热" },
+    { name: "新易盛", code: "300502", symbol: "300502.sz", year: "2026", period: "q1", periodLabel: "第一季度", displayPeriod: "2026Q1", trend: "down", badge: "" },
+    { name: "北方华创", code: "002371", symbol: "002371.sz", year: "2025", period: "full", periodLabel: "年报", displayPeriod: "2025年报", trend: "up", badge: "" },
+    { name: "苹果", code: "aapl", symbol: "aapl.oq", year: "2025", period: "full", periodLabel: "年报", displayPeriod: "2025年报", trend: "up", badge: "" },
+    { name: "腾讯控股", code: "00700", symbol: "00700.hk", year: "2025", period: "full", periodLabel: "年报", displayPeriod: "2025年报", trend: "up", badge: "" },
+    { name: "谷歌", code: "goog", symbol: "goog.oq", year: "2026", period: "q1", periodLabel: "第一季度", displayPeriod: "2026Q1", trend: "neutral", badge: "" },
+    { name: "寒武纪", code: "688256", symbol: "688256.sh", year: "2026", period: "q1", periodLabel: "第一季度", displayPeriod: "2026Q1", trend: "up", badge: "新" }
+  ];
+
+  function getRandomHotSearches() {
+    const shuffled = [...allHotSearches].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 6);
+  }
+
+  function renderHotSearches(items) {
+    const listEl = document.querySelector('.hot-searches-list');
+    const astroClass = listEl ? (Array.from(listEl.classList).find(c => c.startsWith('astro-')) || '') : '';
+
+    const cols = document.querySelectorAll('.hot-searches-list .hot-searches-col');
+    if (cols.length < 2) return;
+
+    const col1Items = items.slice(0, 3);
+    const col2Items = items.slice(3, 6);
+
+    const renderCol = (colEl, colItems, startRank) => {
+      colEl.innerHTML = colItems.map((item, idx) => {
+        const rank = startRank + idx;
+        const badgeHTML = item.badge ? `<span class="hot-badge badge-${item.trend} ${astroClass}">${item.badge}</span>` : '';
+        return `
+          <div 
+            class="hot-search-item ${astroClass}" 
+            data-code="${item.code}" 
+            data-name="${item.name}" 
+            data-symbol="${item.symbol}"
+            data-year="${item.year}"
+            data-period="${item.period}"
+            data-period-label="${item.periodLabel}"
+          >
+            <div class="hot-search-left ${astroClass}">
+              <span class="hot-rank ${astroClass}">${rank}</span>
+              <span class="hot-title ${astroClass}">
+                <span class="hot-company ${astroClass}">${item.name}</span>
+                <span class="hot-dot ${astroClass}">·</span>
+                <span class="hot-period ${astroClass}">${item.displayPeriod}</span>
+              </span>
+              ${badgeHTML}
+            </div>
+          </div>
+        `;
+      }).join('');
+    };
+
+    renderCol(cols[0], col1Items, 1);
+    renderCol(cols[1], col2Items, 4);
+  }
+
+  // Hot Search Items Click Event using Event Delegation
+  const hotSearchesList = document.querySelector('.hot-searches-list');
+  if (hotSearchesList) {
+    hotSearchesList.addEventListener('click', (e) => {
+      const target = e.target;
+      const item = target.closest('.hot-search-item');
+      if (!item) return;
+
+      const code = item.dataset.code;
+      const name = item.dataset.name;
+      const symbol = item.dataset.symbol;
+      const year = item.dataset.year;
+      const period = item.dataset.period;
+      const periodLabel = item.dataset.periodLabel;
+
+      if (stockInput instanceof HTMLInputElement && code && name) {
+        stockInput.value = `${code} ${name}`;
+      }
+      
+      // @ts-ignore
+      selectedStock = { code, name, symbol };
+
+      // Sync Year selection
+      if (year) {
+        selectedYear = year;
+        const yearTriggerVal = document.querySelector('#year-trigger .selected-value');
+        if (yearTriggerVal) yearTriggerVal.textContent = year;
+      }
+
+      // Sync Period selection
+      if (period && periodLabel) {
+        selectedPeriod = period;
+        const periodTriggerVal = document.querySelector('#period-trigger .selected-value');
+        if (periodTriggerVal) periodTriggerVal.textContent = periodLabel;
+      }
+
+      item.classList.add('active');
+
+      setTimeout(() => {
+        item.classList.remove('active');
+        if (checkBtn) checkBtn.click();
+      }, 200);
+    });
+  }
+
+  // Refresh Link Click Event
+  const refreshLink = document.querySelector('.header-right-link');
+  let currentRotation = 0;
+  if (refreshLink) {
+    refreshLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      currentRotation += 360;
+      const icon = refreshLink.querySelector('.refresh-icon');
+      if (icon instanceof HTMLElement) {
+        icon.style.transform = `rotate(\${currentRotation}deg)`;
+      }
+      renderHotSearches(getRandomHotSearches());
+    });
+  }
+  
+  // Year Dropdown Logic
+  const yearTrigger = document.getElementById('year-trigger');
+  const yearOptions = document.getElementById('year-options');
+  const yearSelectedValue = yearTrigger.querySelector('.selected-value');
+
+  yearTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    yearTrigger.classList.toggle('open');
+    yearOptions.classList.toggle('hidden');
+    // Close other dropdown
+    periodTrigger.classList.remove('open');
+    periodOptions.classList.add('hidden');
+  });
+
+  yearOptions.addEventListener('click', (e) => {
+    const option = e.target.closest('.select-option');
+    if (option) {
+      selectedYear = option.dataset.value;
+      yearSelectedValue.textContent = option.textContent;
+      yearOptions.classList.add('hidden');
+      yearTrigger.classList.remove('open');
+    }
+  });
+
+  // Period Dropdown Logic
+  const periodTrigger = document.getElementById('period-trigger');
+  const periodOptions = document.getElementById('period-options');
+  const periodSelectedValue = periodTrigger.querySelector('.selected-value');
+
+  periodTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    periodTrigger.classList.toggle('open');
+    periodOptions.classList.toggle('hidden');
+    // Close other dropdown
+    yearTrigger.classList.remove('open');
+    yearOptions.classList.add('hidden');
+  });
+
+  periodOptions.addEventListener('click', (e) => {
+    const option = e.target.closest('.select-option');
+    if (option) {
+      selectedPeriod = option.dataset.value;
+      periodSelectedValue.textContent = option.textContent;
+      periodOptions.classList.add('hidden');
+      periodTrigger.classList.remove('open');
+    }
+  });
+
+  // Close dropdowns on click outside
+  document.addEventListener('click', () => {
+    yearOptions.classList.add('hidden');
+    yearTrigger.classList.remove('open');
+    periodOptions.classList.add('hidden');
+    periodTrigger.classList.remove('open');
+  });
+
+  // Using Tencent's Smartbox API for stock search
+  async function searchStocks(query) {
+    if (!query) return [];
+    return new Promise((resolve) => {
+      // The Tencent API returns a script that assigns to a global variable `v_hint`
+      const script = document.createElement('script');
+      script.src = `https://smartbox.gtimg.cn/s3/?v=2&q=${encodeURIComponent(query)}&t=all`;
+      script.onload = () => {
+        const data = window.v_hint;
+        let results = [];
+        if (data && typeof data === 'string') {
+          // split results by '^'
+          results = data.split('^').map(item => {
+            const parts = item.split('~');
+            const hasDot = parts[1].includes('.');
+            return {
+              code: hasDot ? parts[1].split('.')[0].toLowerCase() : parts[1].toLowerCase(), 
+              name: parts[2], 
+              symbol: hasDot ? parts[1].toLowerCase() : (parts[1] + '.' + parts[0]).toLowerCase(), 
+              type: parts[4] ? parts[4].toUpperCase() : ''
+            };
+          }).filter(item => item.name && item.type.includes('GP'))
+            .slice(0, 5);
+        }
+        script.remove();
+        resolve(results);
+      };
+      script.onerror = () => {
+        script.remove();
+        resolve([]);
+      };
+      document.body.appendChild(script);
+    });
+  }
+
+  stockInput.addEventListener('input', async (e) => {
+    const query = e.target.value.trim();
+    if (query.length < 2) {
+      resultsContainer.classList.add('hidden');
+      return;
+    }
+
+    const results = await searchStocks(query);
+    if (results.length > 0) {
+      resultsContainer.innerHTML = results.map(stock => `
+        <div data-code="${stock.code}" data-name="${stock.name}" data-symbol="${stock.symbol}">
+          <strong>${stock.code}</strong> - ${stock.name}
+        </div>
+      `).join('');
+      resultsContainer.classList.remove('hidden');
+    } else {
+      resultsContainer.classList.add('hidden');
+    }
+  });
+
+  resultsContainer.addEventListener('click', (e) => {
+    const item = e.target.closest('div');
+    if (item) {
+      const code = item.dataset.code;
+      const name = item.dataset.name;
+      const symbol = item.dataset.symbol;
+      stockInput.value = `${code} ${name}`;
+      selectedStock = { code, name, symbol };
+      resultsContainer.classList.add('hidden');
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!stockInput.contains(e.target) && !resultsContainer.contains(e.target)) {
+      resultsContainer.classList.add('hidden');
+    }
+  });
+
+  checkBtn.addEventListener('click', async () => {
+    if (!selectedStock) {
+      alert('请先输入并选择一个公司或股票代码');
+      return;
+    }
+
+    const year = selectedYear;
+    const period = selectedPeriod;
+
+    const checkUrl = `/check/?code=${selectedStock.symbol}&year=${year}&period=${period}`;
+    
+    // Check session
+    const session = await getSession();
+    if (session) {
+      localStorage.removeItem('ezer_aff');
+      window.location.href = checkUrl;
+    } else {
+      const lang = window.location.pathname.startsWith('/en') ? 'en/' : '';
+      const storedAff = localStorage.getItem('ezer_aff');
+      let loginUrl;
+      if (storedAff) {
+        loginUrl = `https://account.ezer.cc/${lang}login/?aff=${storedAff}&step=register&redirect=${encodeURIComponent(window.location.origin + checkUrl)}`;
+      } else {
+        loginUrl = `https://account.ezer.cc/${lang}login/?redirect=${encodeURIComponent(window.location.origin + checkUrl)}`;
+      }
+      window.location.href = loginUrl;
+    }
+  });
+
+  // Handle Enter key
+  stockInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      if (resultsContainer.querySelectorAll('div').length > 0 && !selectedStock) {
+        // Automatically select the first result if none selected
+        const first = resultsContainer.querySelector('div');
+        const code = first.dataset.code;
+        const name = first.dataset.name;
+        const symbol = first.dataset.symbol;
+        stockInput.value = `${code} ${name}`;
+        selectedStock = { code, name, symbol };
+        resultsContainer.classList.add('hidden');
+      } else if (selectedStock) {
+        checkBtn.click();
+      }
+    }
+  });
+</script>

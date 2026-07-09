@@ -1,0 +1,311 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { Redis } from '@upstash/redis';
+import { brotliDecompressSync } from 'zlib';
+import nvdaData from "../../data/nvda_oq_2026fy_en_result_latest.json";
+import zhongjiData from "../../data/zhongji_300308_sz_2026q1_zh_result_latest.json";
+
+/**
+ * Helper to decompress Brotli data from a Base64 string
+ */
+function decompressBrotliBase64(base64Str: string): any {
+  try {
+    const buffer = Buffer.from(base64Str, 'base64');
+    const decompressed = brotliDecompressSync(buffer);
+    const jsonStr = decompressed.toString('utf8');
+    return JSON.parse(jsonStr);
+  } catch (err) {
+    console.error('[Brotli Decompression Error in [slug]]', err);
+    return null;
+  }
+}
+
+export const prerender = false; // SSR mode
+
+const { slug } = Astro.params;
+
+// 1. Handle Preview
+let data;
+let code = "";
+let year = "";
+let period = "";
+const lang = 'zh';
+
+const kvRestUrl = import.meta.env.UPSTASH_REDIS_KV_REST_API_URL;
+const kvRestToken = import.meta.env.UPSTASH_REDIS_KV_REST_API_TOKEN;
+
+// Initialize KV if credentials exist
+const kv = (kvRestUrl && kvRestToken) ? new Redis({ url: kvRestUrl, token: kvRestToken }) : null;
+
+if (slug === 'preview') {
+  data = lang === 'en' ? nvdaData.stream : zhongjiData.stream;
+  code = "601899.SH";
+  year = "2024";
+  period = "FY";
+} else {
+  const parts = slug?.split('-') || [];
+  if (parts.length < 3) return new Response(null, { status: 404 });
+  code = parts[0].replace('_', '.');
+  year = parts[1];
+  period = parts[2];
+  
+  const redisPeriod = period === 'FY' ? 'full' : period;
+  const cacheKey = `cache:check:${code}:${year}:${redisPeriod}:${lang}`;
+  let rawData = kv ? await kv.get<any>(cacheKey) : null;
+
+  // Fallback for historical 'zh-CN' keys during transition
+  if (!rawData && lang === 'zh' && kv) {
+    const fallbackKey = `cache:check:${code}:${year}:${redisPeriod}:zh-CN`;
+    rawData = await kv.get<any>(fallbackKey);
+  }
+
+  // Handle parsing/decompression
+  if (rawData) {
+    if (typeof rawData === 'string') {
+      try {
+        const parsed = JSON.parse(rawData);
+        if (Array.isArray(parsed)) {
+          data = parsed;
+        } else if (parsed && Array.isArray(parsed.stream)) {
+          data = parsed.stream;
+        } else {
+          const decompressed = decompressBrotliBase64(rawData);
+          if (decompressed) {
+            data = Array.isArray(decompressed) ? decompressed : (decompressed.stream || decompressed);
+          }
+        }
+      } catch (e) {
+        const decompressed = decompressBrotliBase64(rawData);
+        if (decompressed) {
+          data = Array.isArray(decompressed) ? decompressed : (decompressed.stream || decompressed);
+        }
+      }
+    } else if (Array.isArray(rawData)) {
+      data = rawData;
+    } else if (rawData && Array.isArray(rawData.stream)) {
+      data = rawData.stream;
+    }
+  }
+}
+
+// 2. Ensure data is valid array
+if (!data || !Array.isArray(data)) {
+  return new Response('Analysis document is being generated, expired, or data format is invalid.', { 
+    status: 503,
+    headers: { 'Retry-After': '3600' }
+  });
+}
+
+// 3. Dynamic Data Extraction
+const a_data = data.find(i => i.event === 'a_normalized')?.data || {};
+const final_result = data.find(i => i.event === 'final_result')?.data || {};
+
+const companyName = a_data.company?.name || code;
+const reportType = period === 'FY' ? '年报' : period;
+const pageTitle = `${companyName} ${year}${reportType} 分析`;
+
+// Helper for safe display
+const formatValue = (val: any) => {
+  if (val === null || val === undefined || isNaN(val)) return null;
+  return val;
+};
+
+const displayMetrics = [
+  { label: '营业收入', value: formatValue(a_data.income_statement?.revenue), unit: '元', div: 1 },
+  { label: '归母净利润', value: formatValue(a_data.income_statement?.net_profit), unit: '元', div: 1 },
+  { label: '毛利率', value: formatValue(a_data.income_statement?.gross_margin), unit: '%', div: 1 },
+  { label: 'ROE', value: formatValue(a_data.key_ratios?.roe), unit: '%', div: 1 }
+].filter(m => m.value !== null);
+
+const seoMetricsStr = displayMetrics.map(m => {
+  const displayVal = m.unit === '元' ? (m.value / 1e8).toFixed(2) + '亿' : m.value + m.unit;
+  return `${m.label}${displayVal}`;
+}).join('，');
+
+const seoDescription = `${companyName}（${code}）${year}${reportType}详细分析。${seoMetricsStr}。Ezer通过历史财务数据，外部数据交叉验证和风险审计，让财务真相不再难以触及。`;
+
+const checkUrl = slug === 'preview' ? '/check?preview=true' : `/check?code=${code}&year=${year}&period=${period === 'FY' ? 'full' : period}`;
+
+// Match check.astro exactly: prefix + raw value
+const displayStatus = final_result.final_status || final_result.status || final_result.result || '';
+const finalPrefix = '最终结果：';
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "NewsArticle",
+  "headline": pageTitle,
+  "description": seoDescription,
+  "publisher": {
+    "@type": "Organization",
+    "name": "弈泽 (Ezer)",
+    "logo": {
+      "@type": "ImageObject",
+      "url": new URL('/pwa-512x512.png', Astro.site || 'https://www.ezer.cc').toString()
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": new URL(Astro.url.pathname, Astro.site || 'https://www.ezer.cc').toString()
+  }
+};
+---
+
+<Layout 
+  title={pageTitle}
+  description={seoDescription}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  <div class="check-page">
+    <div class="u-container">
+      <!-- Page Header -->
+      <div class="check-header">
+        <h1 class="check-title">{companyName} {year}{reportType} 分析</h1>
+      </div>
+
+      <div class="results-container">
+        <!-- Stats Preview (Dynamic) -->
+        {displayMetrics.length > 0 && (
+          <div class="stats-preview-grid">
+            {displayMetrics.map(m => (
+              <div class="stat-box">
+                <span class="stat-label">{m.label}</span>
+                <span class="stat-value">
+                  {m.unit === '元' ? (m.value / 1e8).toFixed(2) + '亿' : m.value + m.unit}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <!-- CTA Box -->
+        <div class="thought-container">
+          <div class="thought-header">
+            <span class="thought-icon"><i class="fa-solid fa-chart-simple"></i></span>
+            <span class="thought-title">详细分析与证据链</span>
+          </div>
+          <div class="cta-inner">
+             <a href={checkUrl} class="primary-cta-btn" rel="nofollow">点击查看</a>
+          </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="summary-container">
+          <h2 class="col-title">核心结论</h2>
+          <div class="summary-box">
+            <div class="text-output">
+               {final_result.summary}
+            </div>
+            {displayStatus && (
+              <div class="final-result-output">
+                {finalPrefix}{displayStatus}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .u-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .check-page {
+    min-height: 100vh;
+    padding: 10vh 0 4rem;
+    background: var(--color-bg);
+  }
+
+  .check-header { text-align: center; margin-bottom: 2.5rem; }
+  .check-title { 
+    font-family: var(--font-roboto-slab); 
+    font-size: clamp(1.4rem, 3.5vw, 2.4rem); 
+    font-weight: 800;
+  }
+
+  .stats-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .stat-box {
+    background: var(--color-surface);
+    border: 1px solid rgba(var(--rgb-brand-1), 0.1);
+    padding: 1.2rem;
+    border-radius: 12px;
+    text-align: center;
+  }
+  .stat-label { font-size: 0.75rem; color: var(--color-text-alt); display: block; margin-bottom: 5px; opacity: 0.8; }
+  .stat-value { font-size: 1.2rem; font-weight: 700; color: var(--color-brand-1); }
+
+  .results-container { display: flex; flex-direction: column; gap: 1.5rem; }
+  
+  .thought-container {
+    background: var(--color-surface);
+    border: 1px solid rgba(var(--rgb-brand-1), 0.15);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .thought-header {
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(var(--rgb-brand-1), 0.03);
+    border-bottom: 1px solid rgba(var(--rgb-brand-1), 0.1);
+    justify-content: center;
+  }
+  .thought-title {
+    font-size: 1.4rem;
+    color: var(--color-brand-1);
+    font-weight: 700;
+  }
+  .cta-inner {
+    padding: 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .primary-cta-btn {
+    display: inline-block;
+    background: var(--color-brand-1);
+    color: #fff;
+    padding: 0.8rem 3.5rem;
+    border-radius: 20px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.2s;
+    box-shadow: 0 4px 15px rgba(var(--rgb-brand-1), 0.2);
+  }
+  .primary-cta-btn:hover { transform: scale(1.04); filter: brightness(1.1); }
+
+  .summary-container { padding-bottom: 2rem; }
+  .col-title { 
+    font-size: 1.1rem; font-weight: 700; color: var(--color-text-alt); 
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.8rem;
+  }
+  .summary-box {
+    background: var(--color-surface);
+    border: 2px solid var(--color-brand-1);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 4px 24px rgba(var(--rgb-brand-1), 0.12);
+  }
+  .text-output { font-size: 0.95rem; line-height: 1.7; color: var(--color-text); opacity: 0.95; }
+  .final-result-output {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed rgba(var(--rgb-brand-1), 0.2);
+    font-weight: 600;
+    color: var(--color-brand-1);
+    font-size: 1.1rem;
+  }
+</style>

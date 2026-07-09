@@ -1,0 +1,458 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import HeroHome from "../../components/HeroHome.astro";
+import TextMarquee from "../../components/TextMarquee.astro";
+import GalleryText from "../../components/GalleryText.astro";
+import ImageMarquee from "../../components/ImageMarquee.astro";
+import Faqs from "../../components/Faqs.astro";
+import StepsTimeline from "../../components/StepsTimeline.astro";
+import Plans from "../../components/Plans.astro";
+import Introducing from "../../components/Introducing.astro";
+import GL from "../../components/GL.astro";
+import GLPlaces from "../../components/GlPlaces.astro";
+
+import logo1 from "../../assets/astro_transparent.png";
+import logo2 from "../../assets/azure_transparent.png";
+import logo3 from "../../assets/bailian_transparent.png";
+import logo4 from "../../assets/cloudflare_transparent.png";
+import logo5 from "../../assets/eastmoney_transparent.png";
+import logo6 from "../../assets/github_transparent.png";
+import logo7 from "../../assets/huggingface_transparent.png";
+import logo8 from "../../assets/hugo_transparent.png";
+import logo9 from "../../assets/openclaw_transparent.png";
+import logo10 from "../../assets/spaceship_transparent.png";
+import logo11 from "../../assets/supabase_transparent.png";
+import logo12 from "../../assets/vercel_transparent.png";
+---
+
+<Layout 
+  title="Ezer Financial Analysis - Through the numbers, define the value"
+  description="Ezer (弈泽) is an audit-grade financial-report analysis system. It connects data normalization, professional metric decomposition, industry context, external data, and audit-style review into one workflow."
+  keywords="Ezer, Ezer Audit, financial analysis, financial audit, premium models, proprietary financial model, evidence review, investment research"
+>
+  <script is:inline>
+    (function() {
+      var cookies = document.cookie || '';
+      var isLoggedIn = cookies.indexOf('sb-msufgvqofnihylcnxyac-auth-token') !== -1;
+      if (isLoggedIn) {
+        var referer = document.referrer;
+        var isInternal = false;
+        if (referer) {
+          try {
+            var url = new URL(referer);
+            isInternal = url.hostname.indexOf('ezer.cc') !== -1 || url.hostname === 'localhost' || url.hostname === '127.0.0.1';
+          } catch (e) {}
+        }
+        if (!isInternal) {
+          window.location.href = '/en/search/';
+        }
+      }
+    })();
+  </script>
+  <HeroHome
+    title="Through the numbers<br/>define the value"
+    subtitle="Giving institutional-grade research capabilities to every ordinary investor. Ezer is where the world decodes financial truth."
+    cta={{
+      title: "Get Started",
+      url: "/en/check/?preview=true",
+    }}
+  />
+
+  <Introducing
+    title="Ezer is an audit-grade financial-report analysis system"
+    text="Ezer is built for financial-report research and risk discovery. It connects data normalization, professional metric decomposition, industry context, external data, and audit-style review into one workflow. It does not rewrite filings into summaries; it turns them into traceable, reviewable, and further-investigable analysis."
+    cta={{
+      title: "Start Analysis",
+      url: "/en/search/",
+    }}
+  />
+
+  <section class="model-proof">
+    <div class="u-container">
+      <div class="model-proof__grid">
+        <div class="model-proof__copy" data-sy-reveal="slideUp">
+          <p class="model-proof__eyebrow">EFFECTIVE INPUT DENSITY</p>
+          <h2 class="u-heading model-proof__title">Same as AI, different input density</h2>
+          <p class="u-text model-proof__text">
+            When users upload a PDF directly to a web AI chat, much of the context is spent on tables, headers, footers, duplicated text, layout noise, and parsing errors. Even when the web interface advertises a 30k-60k token context window, the equivalent high-density structured financial input can be closer to 8k-10k tokens.
+          </p>
+          <p class="u-text model-proof__text">
+            Ezer first parses, cleans, normalizes, and compresses the filing, then sends an average of about 80k tokens of high-density structured data into the model chain. A more professional orchestration flow, deeper audit aligned with real investment blind spots, and far more effective input are why users choose Ezer.
+          </p>
+        </div>
+        <div class="input-density-card" data-sy-reveal="blurIn">
+          <div class="density-path is-diy">
+            <div class="density-head">
+              <strong>DIY PDF to web AI</strong>
+              <em>30k-60k token raw context</em>
+            </div>
+            <div class="density-funnel">
+              <span>Tables</span>
+              <span>Headers</span>
+              <span>Layout noise</span>
+              <span>Duplicates</span>
+              <span>Parsing errors</span>
+            </div>
+            <div class="density-meter" aria-label="About 8k-10k tokens of structured effective input">
+              <span style="--w: 12%;"></span>
+            </div>
+            <p>~8k-10k tokens of structured effective input</p>
+          </div>
+
+          <div class="density-path is-ezer">
+            <div class="density-head">
+              <strong>Ezer audit chain</strong>
+              <em>~80k tokens of high-density structured data on average</em>
+            </div>
+            <div class="density-flow">
+              <span>Parse</span>
+              <span>Clean</span>
+              <span>Normalize</span>
+              <span>Compress</span>
+              <span>Audit orchestration</span>
+            </div>
+            <div class="density-meter" aria-label="About 80k tokens of high-density structured data on average">
+              <span style="--w: 100%;"></span>
+            </div>
+            <p>More effective information for judgment, counter-checking, and review</p>
+          </div>
+
+          <p class="density-note">
+            Note: This compares effective structured input at similar information density, not the raw context window advertised by model interfaces.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <StepsTimeline
+    title="Advantages"
+    items={[
+      {
+        title: "White-box analysis",
+        text: "Untraceable reasoning is a major risk in financial analysis. Ezer prevents hallucinations by anchoring every judgment to verified metrics, definitions, sources, and rationale.",
+      },
+      {
+        title: "Best models across the full chain",
+        text: "Analysis demands quality over cost. Ezer avoids cheap summary chains, using premier models for all critical steps to ensure the high judgment quality our users expect.",
+      },
+      {
+        title: "Proprietary orchestration + small models + professional databases",
+        text: "Our orchestration manages tasks and review; specialized small models and professional databases supply the data needed for comprehensive audit coverage.",
+      },
+    ]}
+  />
+
+  <GalleryText
+    title="Premium models + proprietary components, not an api wrapper"
+    text="Ezer uses proprietary financial normalization components and a Hugging Face-published component model for specialized tasks inside the pipeline. Complex financial reasoning and audit review are handled by high-value foundation models. The smaller model proves Ezer has its own task-specific engineering."
+    cta={{
+      title: "View Demo",
+      url: "/en/check/?preview=true",
+    }}
+    video="/ezer.mp4"
+    marqueeTexts={[
+      "No cheap-model-first routing",
+      "Hugging Face component model",
+      "Premium model chain",
+      "Audit-style review",
+    ]}
+  />
+
+
+  <TextMarquee
+    class="marquee"
+    texts={[
+      "Cheap AI summarizes",
+      "Ezer audits",
+      "No cheap-model-first routing",
+      "Evidence-linked output",
+    ]}
+  />
+
+  <Plans
+    title="Plans & Pricing"
+    subtitle="Start with a limited free experience. Upgrade when you need higher quota and fuller outputs."
+    items={[
+      {
+        title: "Free",
+        price: {
+          amount: "$0",
+          duration: "month",
+        },
+        link: {
+          title: "Get Started",
+          url: "/en/check/?preview=true",
+        },
+        features: [
+          { title: "3 Financial Analyses Monthly" },
+          { title: "Basic audit-chain experience" },
+          { title: "Core conclusions and evidence notes" },
+          { title: "Community Support", disabled: true },
+          { title: "Export Professional PDF Reports", disabled: true },
+        ],
+      },
+      {
+        title: "Premium",
+        price: {
+          amount: "$4.99",
+          oldAmount: "$7.99",
+          duration: "month",
+        },
+        badge: "Limited",
+        link: {
+          title: "Buy Now",
+          url: "/en/premium/?from=home",
+        },
+        features: [
+          { title: "Higher report-analysis quota" },
+          { title: "High-value model chain" },
+          { title: "Audit-style review and evidence links" },
+          { title: "Analysis history", disabled: true },
+          { title: "Export Professional PDF Reports", disabled: true },
+        ],
+      },
+    ]}
+  />
+
+  <Faqs
+    title="Frequently Asked Questions"
+    mobileTitle="FAQs"
+    subtitle="Understand how Ezer is redefining the financial research workflow."
+    items={[
+      {
+        question: "Is Ezer just calling one large model?",
+        answer:
+          "No. Ezer's core is an “audit-style analysis chain.”\n\nWhile generic AI often treats PDFs as simple text summaries, Ezer uses a structured engineering pipeline—including parsing, normalization, metric decomposition, and audit review—to output conclusions. The model is just the compute unit; the true value lies in the data structuring and orchestration logic.",
+      },
+      {
+        question: "How is Ezer fundamentally different from ChatGPT or Claude?",
+        answer:
+          "The core difference is that generic AI “generates content,” whereas Ezer performs “analysis and review.”\n\nGeneric AI outputs untraceable text summaries; Ezer uses structured financial data and a multi-stage chain to ensure every key conclusion is anchored to original data sources, making the results fully verifiable.",
+      },
+      {
+        question: "Why are Ezer's analysis results more trustworthy?",
+        answer:
+          "Because Ezer’s output is not a black-box “model hallucination.”\n\nOur underlying design mandates that key conclusions must be linked to data sources and major judgments must include audit evidence. The result is not just “what the model said,” but a chain of evidence that can be inspected, reviewed, and deeply traced.",
+      },
+      {
+        question: "Why use the best models across the entire analysis chain?",
+        answer:
+          "In financial auditing, there is no room for “second-best” models. A single error in middle reasoning can contaminate the entire chain.\n\nInstead of using low-cost models and trying to fix the output later, Ezer matches the premier solution for every step of the chain, ensuring quality without compromise.",
+      },
+      {
+        question: "What if there is an error in the analysis?",
+        answer:
+          "Ezer's core value lies in its “traceability.”\n\nWe don't promise absolute perfection, but we guarantee that errors are discoverable and correctable. You can precisely locate the data source for every conclusion, inspect the reasoning path, and perform secondary verification whenever an issue is identified.",
+      },
+    ]}
+  />
+
+  <ImageMarquee
+    images={[
+      {
+        src: logo1.src,
+        alt: "Logo 1",
+      },
+      {
+        src: logo2.src,
+        alt: "Logo 2",
+      },
+      {
+        src: logo3.src,
+        alt: "Logo 3",
+      },
+      {
+        src: logo4.src,
+        alt: "Logo 4",
+      },
+      {
+        src: logo5.src,
+        alt: "Logo 5",
+      },
+      {
+        src: logo6.src,
+        alt: "Logo 6",
+      },
+      {
+        src: logo7.src,
+        alt: "Logo 7",
+      },
+      {
+        src: logo8.src,
+        alt: "Logo 8",
+      },
+      {
+        src: logo9.src,
+        alt: "Logo 9",
+      },
+      {
+        src: logo10.src,
+        alt: "Logo 10",
+      },
+      {
+        src: logo11.src,
+        alt: "Logo 11",
+      },
+      {
+        src: logo12.src,
+        alt: "Logo 12",
+      },
+    ]}
+  />
+
+  <GL />
+  <GLPlaces />
+</Layout>
+
+<style>
+  .marquee {
+    padding: 2rem 0;
+    z-index: 9;
+  }
+
+  .model-proof {
+    padding: 6rem 0 4rem;
+  }
+
+  .model-proof__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(320px, 1fr);
+    gap: 3rem;
+    align-items: center;
+
+    @media (--mq-tablet) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .model-proof__eyebrow {
+    margin: 0 0 1rem;
+    font-size: 0.8rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    color: var(--color-brand-1);
+  }
+
+  .model-proof__title {
+    --fs: clamp(2.4rem, 5vw, 4.8rem);
+    --lh: 1.05;
+    margin-bottom: 1.5rem;
+  }
+
+  .model-proof__text {
+    max-width: 36rem;
+    opacity: 0.78;
+  }
+
+  .input-density-card {
+    display: grid;
+    gap: 1rem;
+    padding: clamp(1.4rem, 4vw, 3rem);
+    border: 1px solid rgba(var(--rgb-text), 0.1);
+    border-radius: 2rem;
+    position: relative;
+    z-index: 9;
+    background: rgba(var(--rgb-white), 0.3);
+    backdrop-filter: blur(2px);
+    box-shadow: 0 28px 80px rgba(0, 0, 0, 0.05);
+
+    :global([data-theme="dark"]) & {
+      background: rgba(24, 24, 30, 0.3);
+    }
+  }
+
+  .density-path {
+    padding: 1.2rem;
+    border: 1px solid rgba(var(--rgb-text), 0.1);
+    border-radius: 1.25rem;
+    background: rgba(var(--rgb-text), 0.035);
+  }
+
+  .density-path.is-ezer {
+    border-color: rgba(var(--rgb-brand-1), 0.4);
+    background: linear-gradient(135deg, rgba(var(--rgb-brand-1), 0.12), rgba(var(--rgb-brand-2), 0.08));
+  }
+
+  .density-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: baseline;
+
+    @media (--mq-phone) {
+      display: block;
+    }
+  }
+
+  .density-head strong,
+  .density-head em {
+    display: block;
+  }
+
+  .density-head strong {
+    font-size: 1.05rem;
+  }
+
+  .density-head em,
+  .density-path p,
+  .density-note {
+    font-size: 0.85rem;
+    color: var(--color-text-alt);
+  }
+
+  .density-funnel,
+  .density-flow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin: 1rem 0;
+  }
+
+  .density-funnel span,
+  .density-flow span {
+    padding: 0.4rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    line-height: 1;
+  }
+
+  .density-funnel span {
+    background: rgba(var(--rgb-text), 0.08);
+    color: var(--color-text-alt);
+  }
+
+  .density-flow span {
+    background: rgba(var(--rgb-brand-1), 0.16);
+    color: var(--color-brand-1);
+    font-weight: 700;
+  }
+
+  .density-meter {
+    height: 0.85rem;
+    border-radius: 999px;
+    background: rgba(var(--rgb-text), 0.08);
+    overflow: hidden;
+  }
+
+  .density-meter span {
+    display: block;
+    width: var(--w);
+    height: 100%;
+    border-radius: inherit;
+    transition: width 900ms ease;
+  }
+
+  .is-diy .density-meter span {
+    background: rgba(var(--rgb-text), 0.32);
+  }
+
+  .is-ezer .density-meter span {
+    background: linear-gradient(90deg, var(--color-brand-1), var(--color-brand-2));
+  }
+
+  .density-path p,
+  .density-note {
+    margin: 0.75rem 0 0;
+  }
+</style>

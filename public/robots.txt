@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Disallow dynamic checking pages to prevent duplicate content and api loading issues
+Disallow: /check
+Disallow: /en/check
+Disallow: /api/
+Disallow: /en/api/
+Disallow: /analysis/preview
+Disallow: /en/analysis/preview
+
+Sitemap: https://www.ezer.cc/sitemap-index.xml

@@ -1,0 +1,685 @@
+---
+interface Props {
+  slug: string;
+  lang?: 'zh' | 'en';
+}
+
+const { slug, lang = 'zh' } = Astro.props;
+
+// Bilingual translations
+const t = {
+  zh: {
+    title: "评估分析",
+    subtitle: "您的评分对其他用户不可见，仅用于协助改进分析逻辑。",
+    loginPrompt: "您当前未登录，请点击下方按钮登录后提交评分。",
+    commentPlaceholder: "请详细描述具体偏差或建议，这能极大地帮助我们改进算法...",
+    charLimit: "最少5个字，上限200字",
+    submitBtn: "提交评估",
+    submitLoginBtn: "登录以提交评估",
+    submittingBtn: "提交中...",
+    successMsg: "感谢您的反馈！我们将针对您指出的问题进行改进。",
+    errorMsg: "提交失败，请稍后重试。",
+    commentLabel: "留言反馈 (必填)",
+    labels: {
+      S: "完美",
+      A: "准确",
+      B: "有瑕疵",
+      C: "有错误"
+    }
+  },
+  en: {
+    title: "Feedback",
+    subtitle: "Your rating is invisible to others and is only used to improve the backend algorithms.",
+    loginPrompt: "You are not logged in. Click the button below to sign in and submit.",
+    commentPlaceholder: "Please describe the issues or suggestions in detail...",
+    charLimit: "Min 5 chars, Max 200 chars",
+    submitBtn: "Submit Feedback",
+    submitLoginBtn: "Sign in to submit",
+    submittingBtn: "Submitting...",
+    successMsg: "Thank you! Your feedback helps us continuously improve the model.",
+    errorMsg: "Submission failed, please try again.",
+    commentLabel: "Detailed Feedback (Required)",
+    labels: {
+      S: "Perfect",
+      A: "Accurate",
+      B: "Deficient",
+      C: "Incorrect"
+    }
+  }
+}[lang];
+
+const loginUrl = `https://account.ezer.cc/${lang === 'en' ? 'en/' : ''}login/`;
+---
+
+<div class="rating-panel" id="analysis-rating-panel" data-slug={slug} data-lang={lang} data-login-url={loginUrl}>
+  <button type="button" class="rating-close-btn" id="rating-close-btn" aria-label="Close">×</button>
+
+  <div class="rating-header">
+    <h3 class="rating-title">
+      {t.title}
+      <span class="tooltip-icon" data-tooltip={t.subtitle}>i</span>
+    </h3>
+  </div>
+
+  <!-- Main Interactive Section (Always visible) -->
+  <div id="rating-interactive-section" class="rating-interactive">
+    <div class="rating-buttons">
+      {['S', 'A', 'B', 'C'].map((level) => (
+        <button 
+          type="button" 
+          class={`rating-btn btn-level-${level.toLowerCase()}`} 
+          data-level={level}
+          aria-label={`Rate ${level}`}
+        >
+          <span class="level-indicator">{level}</span>
+          <span class="level-text">{t.labels[level as 'S'|'A'|'B'|'C']}</span>
+        </button>
+      ))}
+    </div>
+
+    <!-- Comment box for B & C ratings -->
+    <div id="rating-comment-container" class="comment-container collapsed">
+      <label for="rating-comment" class="comment-label">{t.commentLabel}</label>
+      <textarea 
+        id="rating-comment" 
+        rows="2" 
+        maxlength="200" 
+        placeholder={t.commentPlaceholder}
+      ></textarea>
+      <div class="comment-footer">
+        <span id="char-counter" class="char-counter">0 / 200</span>
+        <span class="char-limit-note">{t.charLimit}</span>
+      </div>
+    </div>
+
+    <!-- Login/Submit Notice (Only shown if logged out) -->
+    <div id="rating-login-notice" class="rating-notice hidden">
+      <p>{t.loginPrompt}</p>
+    </div>
+
+    <!-- Action Bar -->
+    <div class="rating-actions">
+      <button id="rating-submit-btn" class="submit-btn" disabled>
+        {t.submitBtn}
+      </button>
+    </div>
+  </div>
+
+  <!-- Success/Status State -->
+  <div id="rating-success-message" class="success-message hidden">
+    <div class="success-icon">✓</div>
+    <p>{t.successMsg}</p>
+  </div>
+</div>
+
+<style>
+  .rating-panel {
+    position: relative;
+    margin-left: auto;
+    width: 350px;
+    background: var(--color-bg-alt);
+    border: 1px solid rgba(var(--rgb-brand-1), 0.12);
+    border-radius: 12px;
+    padding: 0;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transform: translateY(10px);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .rating-panel.visible {
+    padding: 1rem;
+    max-height: 600px;
+    opacity: 1;
+    transform: translateY(0);
+    margin-top: 0;
+    overflow: visible;
+  }
+
+  .rating-close-btn {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    background: transparent;
+    border: none;
+    font-size: 1rem;
+    color: var(--color-text-alt);
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    line-height: 1;
+    padding: 0;
+  }
+
+  .rating-close-btn:hover {
+    opacity: 1;
+  }
+
+  .rating-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.8rem;
+    padding-right: 1.2rem;
+  }
+
+  .rating-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-alt);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Tooltip CSS */
+  .tooltip-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid var(--color-text-alt);
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--color-text-alt);
+    cursor: help;
+    position: relative;
+    opacity: 0.6;
+    vertical-align: middle;
+    line-height: 1;
+  }
+
+  .tooltip-icon:hover {
+    opacity: 1;
+    background: rgba(var(--rgb-brand-1), 0.1);
+  }
+
+  .tooltip-icon::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-surface);
+    border: 1px solid rgba(var(--rgb-brand-1), 0.15);
+    color: var(--color-text);
+    padding: 0.5rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: normal;
+    white-space: normal;
+    width: 180px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 1000;
+    line-height: 1.3;
+    text-align: left;
+  }
+
+  .tooltip-icon:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-2px);
+  }
+
+  .rating-notice {
+    font-size: 0.75rem;
+    color: var(--color-brand-1);
+    background: rgba(var(--rgb-brand-1), 0.03);
+    padding: 0.6rem 0.8rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border: 1px dashed rgba(var(--rgb-brand-1), 0.15);
+  }
+
+  .rating-notice.hidden,
+  .rating-interactive.hidden,
+  .success-message.hidden {
+    display: none !important;
+  }
+
+  .rating-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.4rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .rating-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.1rem;
+    padding: 0.35rem 0.2rem;
+    border: 1px solid rgba(var(--rgb-brand-1), 0.12);
+    background: rgba(var(--rgb-brand-1), 0.01);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--color-text);
+  }
+
+  .rating-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(var(--rgb-brand-1), 0.3);
+    background: rgba(var(--rgb-brand-1), 0.03);
+  }
+
+  .level-indicator {
+    font-size: 0.95rem;
+    font-weight: 800;
+    font-family: var(--font-roboto-slab), serif;
+  }
+
+  .level-text {
+    font-size: 0.6rem;
+    font-weight: 500;
+    opacity: 0.8;
+  }
+
+  /* Level Color Highlights when Active */
+  .rating-btn.active.btn-level-s {
+    background: rgba(212, 175, 55, 0.15);
+    border-color: #d4af37;
+    color: #e5b82e;
+    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.15);
+  }
+  .rating-btn.active.btn-level-a {
+    background: rgba(46, 125, 50, 0.15);
+    border-color: #2e7d32;
+    color: #388e3c;
+    box-shadow: 0 4px 10px rgba(46, 125, 50, 0.15);
+  }
+  .rating-btn.active.btn-level-b {
+    background: rgba(239, 108, 0, 0.15);
+    border-color: #ef6c00;
+    color: #f57c00;
+    box-shadow: 0 4px 10px rgba(239, 108, 0, 0.15);
+  }
+  .rating-btn.active.btn-level-c {
+    background: rgba(198, 40, 40, 0.15);
+    border-color: #c62828;
+    color: #d32f2f;
+    box-shadow: 0 4px 10px rgba(198, 40, 40, 0.15);
+  }
+
+  /* Comment Container styling */
+  .comment-container {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .comment-container.collapsed {
+    margin-bottom: 0;
+  }
+
+  .comment-container:not(.collapsed) {
+    max-height: 180px;
+    opacity: 1;
+    margin-bottom: 1rem;
+  }
+
+  .comment-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  textarea {
+    width: 100%;
+    background: rgba(var(--rgb-brand-1), 0.02);
+    border: 1px solid rgba(var(--rgb-brand-1), 0.12);
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.8rem;
+    color: var(--color-text);
+    resize: none;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+
+  textarea:focus {
+    outline: none;
+    border-color: var(--color-brand-1);
+    background: var(--color-surface);
+    box-shadow: 0 0 0 3px rgba(var(--rgb-brand-1), 0.08);
+  }
+
+  .comment-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: var(--color-text-alt);
+    opacity: 0.8;
+  }
+
+  /* Submit button styling */
+  .rating-actions {
+    display: flex;
+    justify-content: stretch;
+  }
+
+  .submit-btn {
+    background: var(--color-brand-1);
+    color: white;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+    width: 100%;
+    box-shadow: 0 4px 10px rgba(var(--color-brand-1-rgb), 0.15);
+  }
+
+  .submit-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    filter: brightness(1.1);
+    box-shadow: 0 6px 12px rgba(var(--color-brand-1-rgb), 0.25);
+  }
+
+  .submit-btn:disabled {
+    background: rgba(var(--rgb-brand-1), 0.12);
+    color: var(--color-text-alt);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .submit-btn.btn-login-action {
+    background: transparent;
+    color: var(--color-text);
+    border: 2px solid var(--color-brand-1);
+    box-shadow: none;
+  }
+
+  .submit-btn.btn-login-action:hover:not(:disabled) {
+    background: var(--color-brand-1);
+    color: white;
+  }
+
+  /* Success Message styling */
+  .success-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 1rem 0;
+    text-align: center;
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  .success-icon {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: rgba(46, 125, 50, 0.1);
+    color: #2e7d32;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: 1px solid rgba(46, 125, 50, 0.2);
+  }
+
+  .success-message p {
+    font-size: 0.85rem;
+    color: var(--color-text);
+    font-weight: 600;
+    margin: 0;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 640px) {
+    .rating-panel {
+      width: 100%;
+    }
+  }
+</style>
+
+<script is:inline define:vars={{ slug, lang, t_submittingBtn: t.submittingBtn, t_submitBtn: t.submitBtn, t_submitLoginBtn: t.submitLoginBtn, t_errorMsg: t.errorMsg }}>
+  function initRatingPanel() {
+    const panel = document.getElementById('analysis-rating-panel');
+    if (!panel) return;
+
+    const loginNotice = document.getElementById('rating-login-notice');
+    const interactiveSec = document.getElementById('rating-interactive-section');
+    const successMsg = document.getElementById('rating-success-message');
+    
+    const ratingButtons = panel.querySelectorAll('.rating-btn');
+    const commentContainer = document.getElementById('rating-comment-container');
+    const commentTextarea = document.getElementById('rating-comment');
+    const charCounter = document.getElementById('char-counter');
+    const submitBtn = document.getElementById('rating-submit-btn');
+    const closeBtn = document.getElementById('rating-close-btn');
+
+    const loginUrl = panel.getAttribute('data-login-url');
+
+    // Resolve slug dynamically if empty (e.g. check page)
+    let targetSlug = slug || panel.getAttribute('data-slug');
+    if (!targetSlug || targetSlug === '') {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+      const year = params.get('year');
+      const period = params.get('period');
+      const preview = params.get('preview');
+      
+      if (preview === 'true') {
+        targetSlug = 'preview';
+      } else if (code && year && period) {
+        const formattedCode = code.replace('.', '_');
+        const formattedPeriod = period === 'full' ? 'FY' : period;
+        targetSlug = `${formattedCode}-${year}-${formattedPeriod}`;
+      }
+    }
+
+    if (!targetSlug) {
+      console.warn('AnalysisRating: Unable to resolve targetSlug');
+      return;
+    }
+
+    let currentRating = null;
+    let initialised = false;
+    let isLoggedIn = false;
+    const isPreviewMode = targetSlug === 'preview';
+
+    // Check if textarea validation is met
+    function validateForm(ratingValue) {
+      if (!ratingValue) return false;
+      if (['B', 'C'].includes(ratingValue)) {
+        const commentVal = commentTextarea.value.trim();
+        return commentVal.length >= 5 && commentVal.length <= 200;
+      }
+      return true;
+    }
+
+    function updateSubmitButtonState() {
+      if (!isLoggedIn && !isPreviewMode) {
+        submitBtn.disabled = !currentRating;
+        return;
+      }
+      submitBtn.disabled = !validateForm(currentRating);
+    }
+
+    // Bind events
+    function setupListeners() {
+      if (initialised) return;
+
+      ratingButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const ratingValue = btn.getAttribute('data-level');
+          currentRating = ratingValue;
+
+          // Toggle active class
+          ratingButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          // Show comment container for B/C, hide for S/A
+          if (['B', 'C'].includes(ratingValue)) {
+            commentContainer.classList.remove('collapsed');
+            commentTextarea.required = true;
+          } else {
+            commentContainer.classList.add('collapsed');
+            commentTextarea.required = false;
+          }
+
+          updateSubmitButtonState();
+        });
+      });
+
+      commentTextarea.addEventListener('input', () => {
+        const len = commentTextarea.value.trim().length;
+        charCounter.textContent = `${len} / 200`;
+        
+        if (len > 0 && len < 5) {
+          charCounter.style.color = '#c62828';
+        } else {
+          charCounter.style.color = '';
+        }
+
+        updateSubmitButtonState();
+      });
+
+      submitBtn.addEventListener('click', async () => {
+        if (!isLoggedIn && !isPreviewMode) {
+          const redirectUrl = `${loginUrl}?redirect=${encodeURIComponent(window.location.href)}`;
+          window.location.href = redirectUrl;
+          return;
+        }
+
+        if (!validateForm(currentRating)) return;
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = t_submittingBtn;
+
+        if (isPreviewMode) {
+          await new Promise(r => setTimeout(r, 1000));
+          interactiveSec.classList.add('hidden');
+          successMsg.classList.remove('hidden');
+          return;
+        }
+
+        try {
+          const response = await fetch('/api/rate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              slug: targetSlug,
+              rating: currentRating,
+              comment: ['B', 'C'].includes(currentRating) ? commentTextarea.value : null
+            })
+          });
+
+          if (!response.ok) {
+            const errData = await response.json();
+            throw new Error(errData.error || t_errorMsg);
+          }
+
+          interactiveSec.classList.add('hidden');
+          successMsg.classList.remove('hidden');
+        } catch (e) {
+          alert(e.message || t_errorMsg);
+          submitBtn.disabled = false;
+          submitBtn.textContent = t_submitBtn;
+        }
+      });
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          panel.classList.remove('visible');
+        });
+      }
+
+      // Show panel only when analysis is complete
+      window.addEventListener('analysis-complete', () => {
+        panel.classList.add('visible');
+      });
+
+      initialised = true;
+    }
+
+    // Check user auth and load past rating
+    async function checkStateAndPrefill() {
+      try {
+        let session = null;
+        
+        if (isPreviewMode) {
+          isLoggedIn = false;
+        } else {
+          session = await window.auth?.getSession();
+          isLoggedIn = !!session;
+        }
+
+        setupListeners();
+
+        if (!isLoggedIn && !isPreviewMode) {
+          loginNotice.classList.remove('hidden');
+          submitBtn.textContent = t_submitLoginBtn;
+          submitBtn.classList.add('btn-login-action');
+          return;
+        }
+
+        loginNotice.classList.add('hidden');
+        submitBtn.textContent = t_submitBtn;
+        submitBtn.classList.remove('btn-login-action');
+
+        if (isPreviewMode) {
+          return;
+        }
+
+        const response = await fetch(`/api/rate?slug=${encodeURIComponent(targetSlug)}`);
+        if (!response.ok) return;
+
+        const state = await response.json();
+        
+        if (state.hasRated && state.rating) {
+          const prevLevel = state.rating;
+          currentRating = prevLevel;
+
+          const targetBtn = Array.from(ratingButtons).find(btn => btn.getAttribute('data-level') === prevLevel);
+          if (targetBtn) {
+            targetBtn.classList.add('active');
+          }
+
+          if (['B', 'C'].includes(prevLevel)) {
+            commentContainer.classList.remove('collapsed');
+            commentTextarea.value = state.comment || '';
+            charCounter.textContent = `${commentTextarea.value.trim().length} / 200`;
+          }
+          
+          updateSubmitButtonState();
+          
+          // If already rated previously, wait for analysis-complete to show it
+        }
+
+      } catch (e) {
+        console.error('Error prefilling rating panel:', e);
+      }
+    }
+
+    checkStateAndPrefill();
+  }
+
+  if (document.readyState === 'complete') {
+    initRatingPanel();
+  } else {
+    window.addEventListener('load', initRatingPanel);
+  }
+  document.addEventListener('astro:after-swap', initRatingPanel);
+</script>

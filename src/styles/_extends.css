@@ -1,0 +1,34 @@
+%u-container {
+  margin-right: auto;
+  margin-left: auto;
+  width: calc(100% - var(--container-offset) * 2);
+  max-width: calc(var(--container-max-width) - var(--container-offset) * 2);
+}
+
+%u-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+%u-text {
+  font-family: 'Roboto', 'Noto Sans SC', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+  font-weight: var(--fw, 400);
+  font-size: var(--fs, var(--font-size-base));
+  line-height: var(--fh, 1.5);
+  letter-spacing: var(--ls, -0.01em);
+}
+
+%u-heading {
+  font-family: 'Roboto Slab', 'Noto Serif SC', serif;
+  font-weight: var(--fw, 350);
+  font-size: var(--fs, var(--font-size-base));
+  line-height: var(--lh, 1.2);
+  letter-spacing: var(--ls, -0.01em);
+}
