@@ -1,0 +1,426 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<Layout 
+  title={t('nav.premium')}
+  description="加入弈泽财报分析高级版，解锁无限次深度分析、离线 PDF 报告导出以及多维度高级财务指标。"
+  keywords="高级版订阅, 无限分析次数, 审计级PDF导出, 专业投研工具"
+>
+  <div class="premium-container">
+    <canvas id="tubes-cursor-canvas" class="tubes-cursor-canvas"></canvas>
+    
+    <div class="content-wrapper">
+      <h1 class="premium-title fade-in-up">专业版</h1>
+      <p class="description fade-in-up delay-1">
+        {t('premium.desc')}
+      </p>
+      
+      <div class="waitlist-card fade-in-up delay-3">
+        <div class="discount-tag">{t('premium.off_tag')}</div>
+        <h3>{t('premium.waitlist_title')}</h3>
+        <p>{t('premium.waitlist_subtitle')}</p>
+        
+        <div class="form-group">
+          <button id="join-waitlist-btn" class="primary-btn">
+            <span class="btn-text">{t('premium.join_waitlist')}</span>
+            <span class="loader hidden"></span>
+          </button>
+        </div>
+        <p id="user-display-email" class="user-email-hint hidden"></p>
+      </div>
+
+
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .premium-container {
+    min-height: 100vh;
+    padding: 10rem 2rem 6rem;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #050505;
+  }
+
+  .tubes-cursor-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+
+  .content-wrapper {
+    max-width: 1000px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .premium-badge {
+    display: inline-block;
+    padding: 0.6rem 1.8rem;
+    background: rgba(var(--rgb-brand-1), 0.1);
+    color: var(--color-brand-1);
+    border-radius: 100px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    border: 1.5px solid rgba(var(--rgb-brand-1), 0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .premium-title {
+    font-size: clamp(3rem, 12vw, 5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 2rem;
+    color: #ffffff;
+    background: linear-gradient(to bottom, #ffffff 60%, rgba(255, 255, 255, 0.6));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.04em;
+    display: block;
+  }
+
+  .description {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 2rem;
+    line-height: 1.2;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .waitlist-card {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 32px;
+    padding: 3rem 3rem;
+    margin-bottom: 2rem;
+    position: relative;
+    box-shadow: 0 30px 60px -10px rgba(0, 0, 0, 0.5);
+  }
+
+  .discount-tag {
+    position: absolute;
+    top: -15px;
+    right: 30px;
+    background: var(--color-brand-1);
+    color: white;
+    padding: 0.4rem 1.2rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 900;
+    box-shadow: 0 6px 20px rgba(var(--rgb-brand-1), 0.4);
+    transform: rotate(2deg);
+  }
+
+  .waitlist-card h3 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: #ffffff;
+  }
+
+  .waitlist-card p {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 2.5rem;
+  }
+
+  .form-group {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+  }
+
+  .user-email-hint {
+    margin-top: 1.5rem;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 500;
+  }
+
+  .primary-btn {
+    background: var(--color-brand-1);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 1.2rem 4rem;
+    font-weight: 700;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out-expo);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 280px;
+    box-shadow: 0 10px 30px rgba(var(--rgb-brand-1), 0.5);
+  }
+
+  .primary-btn:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(var(--rgb-brand-1), 0.4);
+    filter: brightness(1.1);
+  }
+
+  .primary-btn:active {
+    transform: translateY(-2px);
+  }
+
+  .primary-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+
+
+  .message {
+    margin-top: 2rem;
+    font-size: 1rem;
+    padding: 1rem;
+    border-radius: 12px;
+    font-weight: 600;
+  }
+
+  .message.success {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+  }
+
+  .message.error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .loader {
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Animations */
+  .fade-in-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s var(--ease-out-expo) forwards;
+  }
+
+  .delay-1 { animation-delay: 0.15s; }
+  .delay-2 { animation-delay: 0.3s; }
+  .delay-3 { animation-delay: 0.45s; }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 900px) {
+    .features-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    
+    .premium-container {
+      padding-top: 8rem;
+    }
+
+    .premium-title {
+      font-size: 3.5rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .premium-container {
+      padding: 6rem 1rem 4rem;
+    }
+
+    .premium-title {
+      font-size: 2.8rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .description {
+      font-size: 1.1rem;
+      margin-bottom: 2.5rem;
+      padding: 0 1rem;
+    }
+
+    .waitlist-card {
+      padding: 3rem 1.5rem;
+      border-radius: 24px;
+      margin-bottom: 3rem;
+    }
+
+    .discount-tag {
+      right: 20px;
+      padding: 0.3rem 0.8rem;
+      font-size: 0.8rem;
+    }
+
+    .waitlist-card h3 {
+      font-size: 1.8rem;
+    }
+
+    .primary-btn {
+      width: 100%;
+      min-width: 0;
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+    }
+
+    .feature-item {
+      padding: 1.5rem;
+    }
+
+    .feature-item .icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-item h4 {
+      font-size: 1.2rem;
+    }
+  }
+</style>
+
+<script is:inline define:vars={{ 
+  t_success: t('premium.waitlist_success'), 
+  t_error: t('premium.waitlist_error'),
+  t_signin: t('premium.signin_first'),
+  lang
+}}>
+  async function initPremiumPage() {
+    const joinBtn = document.getElementById('join-waitlist-btn');
+    const btnText = joinBtn.querySelector('.btn-text');
+    const loader = joinBtn.querySelector('.loader');
+    const emailHint = document.getElementById('user-display-email');
+
+    const session = await window.auth?.getSession();
+    if (session) {
+      const hintPrefix = lang === 'en' ? 'Joining as: ' : '加入身份：';
+      emailHint.textContent = `${hintPrefix}${session.user.email}`;
+      emailHint.classList.remove('hidden');
+    } else {
+      joinBtn.disabled = true;
+      btnText.textContent = t_signin;
+      return;
+    }
+
+    joinBtn.addEventListener('click', async () => {
+      joinBtn.disabled = true;
+      btnText.classList.add('hidden');
+      loader.classList.remove('hidden');
+
+      try {
+        const { error } = await window.auth.client
+          .from('waitlist')
+          .insert({
+            uid: session.user.id,
+            email: session.user.email
+          });
+
+        if (error) {
+          if (error.code === '23505') {
+            const alreadyMsg = lang === 'en' ? "You're already on the waitlist!" : "您已在等候名单中！";
+            btnText.textContent = alreadyMsg;
+          } else {
+            throw error;
+          }
+        } else {
+          btnText.textContent = t_success;
+        }
+        
+        // 成功后保持禁用状态，显示成功信息
+        joinBtn.style.background = '#10b981'; // 变成绿色
+      } catch (err) {
+        console.error('Waitlist error:', err);
+        btnText.textContent = t_error;
+        joinBtn.disabled = false;
+      } finally {
+        btnText.classList.remove('hidden');
+        loader.classList.add('hidden');
+      }
+    });
+  }
+
+  if (document.readyState === 'complete') {
+    initPremiumPage();
+  } else {
+    window.addEventListener('load', initPremiumPage);
+  }
+  document.addEventListener('astro:after-swap', initPremiumPage);
+</script>
+<script is:inline type="module">
+  import TubesCursor from "https://cdn.jsdelivr.net/npm/threejs-components@0.0.19/build/cursors/tubes1.min.js"
+
+  function initTubes() {
+    const el = document.getElementById('tubes-cursor-canvas')
+    if (!el) return
+
+    const app = TubesCursor(el, {
+      tubes: {
+        colors: ["#f967fb", "#53bc28", "#6958d5"],
+        lights: {
+          intensity: 200,
+          colors: ["#83f36e", "#fe8a2e", "#ff008a", "#60aed5"]
+        }
+      }
+    })
+
+    el.addEventListener('click', () => {
+      const colors = randomColors(3)
+      const lightsColors = randomColors(4)
+      app.tubes.setColors(colors)
+      app.tubes.setLightsColors(lightsColors)
+    })
+  }
+
+  function randomColors(count) {
+    return new Array(count)
+      .fill(0)
+      .map(() => "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0'))
+  }
+
+  if (document.readyState === 'complete') {
+    initTubes()
+  } else {
+    window.addEventListener('load', initTubes)
+  }
+
+  document.addEventListener('astro:after-swap', initTubes)
+</script>

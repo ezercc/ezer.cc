@@ -1,0 +1,43 @@
+[data-sy-reveal="lines"],
+[data-sy-reveal="words"] {
+  display: block;
+  overflow: hidden;
+  padding: 0.2em 0;
+  margin-block: -0.2em;
+  text-rendering: optimizespeed;
+
+  &.is-in {
+    opacity: 1;
+  }
+
+  .i-mask {
+    display: inline-block;
+    clip-path: inset(-10% -10% -10%);
+  }
+
+  .i {
+    display: inline-block;
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  &.u-heading {
+    .i-mask {
+      clip-path: inset(-10% -1% -10%);
+    }
+  }
+}
+
+[data-sy-reveal="lines"] {
+  .i-mask {
+    display: block;
+  }
+}
+
+[data-sy-reveal] {
+  opacity: 0;
+
+  &.is-in {
+    opacity: 1;
+  }
+}

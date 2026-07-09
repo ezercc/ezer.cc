@@ -1,0 +1,292 @@
+---
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const premiumUrl = lang === 'zh' ? '/premium/?from=quota' : '/en/premium/?from=quota';
+---
+
+<div id="quota-banner" class="quota-banner hidden">
+  <div class="quota-content">
+    <span id="quota-text"></span>
+    <a href={premiumUrl} id="quota-upgrade-link" class="upgrade-link">{t('quota.upgrade_now')}</a>
+  </div>
+  <button id="close-quota-banner" class="close-btn" aria-label="Close">&times;</button>
+</div>
+
+<style>
+  .quota-banner {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: 100px;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    max-width: 90vw;
+  }
+
+  :global([data-theme="light"]) .quota-banner {
+    background: rgba(247, 248, 242, 0.3);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: #0b1f5b;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  }
+
+  :global([data-theme="dark"]) .quota-banner {
+    background: rgba(13, 17, 23, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  }
+
+  .quota-banner.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 20px);
+  }
+
+  .quota-content {
+    font-size: 0.9rem;
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+  }
+
+  #quota-text {
+    flex: 1;
+    line-height: 1.4;
+  }
+
+  .upgrade-link {
+    background: var(--color-brand-1);
+    color: white !important;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(var(--color-brand-1-rgb), 0.2);
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .upgrade-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(var(--color-brand-1-rgb), 0.3);
+    filter: brightness(1.1);
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    color: var(--color-text);
+    opacity: 0.3;
+    cursor: pointer;
+    font-size: 1.5rem;
+    padding: 0.2rem;
+    margin-left: 0.5rem;
+    line-height: 1;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .close-btn:hover {
+    opacity: 1;
+    transform: rotate(90deg);
+  }
+
+  @media (max-width: 768px) {
+    .quota-banner {
+      bottom: 1.5rem;
+      width: calc(100% - 2.5rem);
+      border-radius: 20px;
+      padding: 1rem 1.25rem;
+      gap: 0.75rem;
+      flex-direction: column;
+      align-items: stretch;
+      text-align: left;
+    }
+    
+    .quota-content {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.8rem;
+    }
+
+    #quota-text {
+      font-size: 0.85rem;
+      line-height: 1.4;
+      padding-right: 1.5rem; /* Space for close button */
+    }
+
+    .upgrade-link {
+      width: 100%;
+      justify-content: center;
+      padding: 0.6rem;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      margin: 0;
+      font-size: 1.2rem;
+    }
+  }
+</style>
+
+<script is:inline define:vars={{ 
+  t_remaining: t('quota.remaining'), 
+  t_limit_reached: t('quota.limit_reached'),
+  t_preview_msg: t('quota.preview_msg'),
+  t_start_now: t('quota.start_now'),
+  lang
+}}>
+  async function initQuotaBanner() {
+    const banner = document.getElementById('quota-banner');
+    const textEl = document.getElementById('quota-text');
+    const linkEl = document.getElementById('quota-upgrade-link');
+    const closeBtn = document.getElementById('close-quota-banner');
+
+    if (!banner || !textEl || !linkEl || !closeBtn) return;
+
+    // Always show if logic allows (reset visible state)
+    banner.classList.add('hidden');
+
+    const params = new URLSearchParams(window.location.search);
+    const isPreview = params.get('preview') === 'true';
+
+    if (isPreview) {
+      // Special case for preview mode
+      textEl.textContent = t_preview_msg;
+      linkEl.textContent = t_start_now;
+      linkEl.href = lang === 'zh' ? '/search/' : '/en/search/';
+      banner.classList.remove('hidden');
+      
+      closeBtn.addEventListener('click', () => {
+        banner.classList.add('hidden');
+      });
+      return; // Stop here for preview mode
+    }
+
+    const session = await window.auth?.getSession();
+    if (!session) return;
+
+    const { data: plan, error } = await window.auth.client
+      .from('user_plans')
+      .select('*')
+      .eq('uid', session.user.id)
+      .single();
+    
+    if (error && error.code !== 'PGRST116') return; // Ignore "not found"
+
+    if (plan && plan.plan_type === 'premium') {
+      // Premium users don't see the banner
+      return;
+    }
+
+    // Default values if no plan record yet
+    let remaining = plan ? plan.quota_remaining : 3;
+    const lastDate = plan ? plan.last_used_date : '';
+    const today = new Date().toISOString().split('T')[0];
+
+    const lastMonth = lastDate ? lastDate.substring(0, 7) : '';
+    const currentMonth = today.substring(0, 7);
+    if (lastMonth && lastMonth !== currentMonth) {
+      remaining = 3;
+    }
+
+    let inviteeRemaining = 0;
+    let inviterRemaining = 0;
+
+    if (remaining <= 0) {
+      try {
+        const [profResult, invResult] = await Promise.all([
+          window.auth.client
+            .from('profiles')
+            .select('created_at, referred_by, invitee_quota_used')
+            .eq('id', session.user.id)
+            .maybeSingle(),
+          window.auth.client
+            .from('invitations')
+            .select('remaining_uses')
+            .eq('user_id', session.user.id)
+            .maybeSingle()
+        ]);
+
+        if (profResult && profResult.data) {
+          const profile = profResult.data;
+          if (profile.referred_by && profile.created_at) {
+            const regDate = new Date(profile.created_at);
+            const expireDate = new Date(regDate);
+            expireDate.setMonth(expireDate.getMonth() + 1);
+            if (expireDate > new Date()) {
+              inviteeRemaining = Math.max(0, 3 - (profile.invitee_quota_used || 0));
+            }
+          }
+        }
+
+        if (invResult && invResult.data) {
+          inviterRemaining = invResult.data.remaining_uses || 0;
+        }
+      } catch (e) {
+        console.error('Error fetching invitation quota:', e);
+      }
+    }
+
+    const totalRewardRemaining = inviteeRemaining + inviterRemaining;
+
+    if (remaining <= 0) {
+      if (totalRewardRemaining > 0) {
+        textEl.textContent = lang === 'zh' 
+          ? '您正在使用奖励额度，邀请好友获得更多奖励' 
+          : 'You are using reward quota. Invite friends to get more rewards.';
+        linkEl.textContent = lang === 'zh' ? '立即邀请' : 'Invite Now';
+        linkEl.href = lang === 'zh' ? 'https://account.ezer.cc/invite/' : 'https://account.ezer.cc/en/invite/';
+      } else {
+        textEl.innerHTML = t_limit_reached;
+        linkEl.textContent = lang === 'zh' ? '立即升级' : 'Upgrade Now';
+        linkEl.href = lang === 'zh' ? '/premium/?from=quota' : '/en/premium/?from=quota';
+      }
+      banner.style.border = '1px solid var(--color-brand-1)';
+    } else {
+      textEl.textContent = t_remaining.replace('{n}', remaining.toString());
+      linkEl.textContent = lang === 'zh' ? '立即升级' : 'Upgrade Now';
+      linkEl.href = lang === 'zh' ? '/premium/?from=quota' : '/en/premium/?from=quota';
+      banner.style.border = '';
+    }
+
+    banner.classList.remove('hidden');
+
+    closeBtn.addEventListener('click', () => {
+      banner.classList.add('hidden');
+    });
+
+    // Share quota status globally for the analysis button to check
+    window.userQuota = {
+      remaining: remaining + totalRewardRemaining,
+      plan_type: plan ? plan.plan_type : 'free',
+      hoursToReset: Math.ceil((new Date(new Date().setUTCHours(24,0,0,0)) - new Date()) / 3600000)
+    };
+  }
+
+  // Run on load and after navigation
+  if (document.readyState === 'complete') {
+    initQuotaBanner();
+  } else {
+    window.addEventListener('load', initQuotaBanner);
+  }
+  document.addEventListener('astro:after-swap', initQuotaBanner);
+</script>

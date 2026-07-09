@@ -1,0 +1,131 @@
+---
+import type { Link, Image } from "../types";
+import Button from "./Button.astro";
+import Gallery from "./Gallery.astro";
+import GradientBackground from "./GradientBackground.astro";
+import TextMarquee from "../components/TextMarquee.astro";
+
+interface Props {
+  images?: Image[];
+  video?: string;
+  title: string;
+  text?: string;
+  cta?: Link;
+  marqueeTexts: string[];
+}
+
+const { title, text, cta, images, marqueeTexts, video } = Astro.props;
+---
+
+<div class="sy-gallery-text">
+  <div class="u-container container">
+    <div class="content">
+      <h2 class="u-heading title" data-sy-reveal="words">{title}</h2>
+      <p class="u-text text" data-sy-reveal="fade">{text}</p>
+      {cta ? <Button {...cta} arrow class="cta" /> : null}
+    </div>
+    {video ? (
+      <div class="gallery video-container" data-sy-reveal="fade">
+        <video src={video} autoplay loop muted playsinline class="showcase-video"></video>
+      </div>
+    ) : (
+      images && <Gallery class="gallery" images={images} />
+    )}
+  </div>
+  <TextMarquee class="marquee" texts={marqueeTexts} direction={-1} />
+  <GradientBackground />
+</div>
+
+<style>
+  .sy-gallery-text {
+    margin: 8rem 0 0;
+    padding: 10rem 0 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 3rem;
+    position: relative;
+    z-index: 9;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    backdrop-filter: blur(6px) saturate(1.05);
+
+    @media (--mq-tablet) {
+      gap: 2rem;
+    }
+
+    @media (--mq-tablet-sm) {
+      flex-direction: column-reverse;
+    }
+
+    @media (--mq-phone) {
+      padding: 1rem 0;
+    }
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem 0;
+    flex: 1;
+  }
+
+  .title {
+    --fs: 2rem;
+    --fw: 600;
+    --lh: 1.2;
+    max-width: 10em;
+    margin-bottom: 1rem;
+  }
+
+  .text {
+    max-width: 25em;
+  }
+
+  .cta {
+    margin-top: 1.5rem;
+  }
+
+  .gallery {
+    max-width: 32rem;
+    min-height: 22rem;
+
+    @media (--mq-desktop-sm) {
+      max-width: 27rem;
+    }
+
+    @media (--mq-tablet) {
+      max-width: 25rem;
+    }
+  }
+
+  .video-container {
+    width: 100%;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(var(--rgb-text), 0.1);
+    background: rgba(var(--rgb-text), 0.05);
+    min-height: 0;
+  }
+
+  .showcase-video {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .marquee {
+    z-index: 9;
+    padding: 2rem 0;
+    margin: 6rem 0 0;
+    --c: var(--color-white);
+  }
+</style>

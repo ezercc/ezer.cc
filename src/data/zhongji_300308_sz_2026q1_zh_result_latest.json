@@ -1,0 +1,1371 @@
+{
+  "task": {
+    "task_id": "task_300308.SZ_2026Q1_e3a70481",
+    "status": "completed",
+    "request": {
+      "code": "300308.SZ",
+      "period": "Q1",
+      "year": 2026,
+      "lang": "zh-CN",
+      "company_name": "中际旭创",
+      "industry_bucket_hint": "semiconductor_fabless"
+    },
+    "created_at": "2026-04-18T13:41:16Z",
+    "updated_at": "2026-04-18T13:42:04Z",
+    "timing": {
+      "b_first_chunk_sec": 4.87,
+      "b_completed_sec": 14.628,
+      "b_model_used": "google/gemini-3-flash-preview",
+      "b_provider_used": "primary",
+      "c_first_chunk_sec": 4.492,
+      "c_completed_sec": 9.748,
+      "c_model_used": "google/gemini-3-flash-preview",
+      "c_provider_used": "primary",
+      "c_mode": "c_plus_retriever_compat"
+    }
+  },
+  "stream": [
+    {
+      "event": "task_started",
+      "producer": "SYSTEM",
+      "role": "orchestrator",
+      "data": {
+        "task_id": "task_300308.SZ_2026Q1_e3a70481",
+        "request": {
+          "code": "300308.SZ",
+          "period": "Q1",
+          "year": 2026,
+          "lang": "zh-CN",
+          "company_name": "中际旭创",
+          "industry_bucket_hint": "semiconductor_fabless"
+        }
+      }
+    },
+    {
+      "event": "a_normalized",
+      "producer": "A",
+      "role": "normalizer",
+      "data": {
+        "company": {
+          "name": "中际旭创",
+          "ticker": "300308.SZ",
+          "reporting_period": "2026Q1"
+        },
+        "report": {
+          "type": "Q1",
+          "release_date": null
+        },
+        "income_statement": {
+          "revenue": 19496398083.95,
+          "net_profit": 5734501526.83,
+          "gross_margin": null
+        },
+        "balance_sheet": {
+          "total_assets": 56580677310.74,
+          "total_liabilities": 18465774898.96,
+          "cash_equivalents": 12176254035.58
+        },
+        "cashflow_statement": {
+          "operating_cashflow": 3367573676.62,
+          "investing_cashflow": -1947791652.29,
+          "financing_cashflow": 7587642.85
+        },
+        "key_ratios": {
+          "roe": null,
+          "roa": null,
+          "debt_to_asset": null
+        },
+        "history_12q": [
+          {
+            "reporting_period": "2026Q1",
+            "source_report_period": "2026Q1",
+            "report_date": "2026-03-31",
+            "release_date": null,
+            "revenue": 19496398083.95,
+            "net_profit": 5734501526.83,
+            "operating_cashflow": 3367573676.62,
+            "gross_margin": null,
+            "debt_to_asset": null,
+            "flow_basis": "single_quarter_from_cumulative_q1",
+            "gross_margin_basis": "unknown",
+            "revenue_basis": "derived_single_quarter_from_q1_cumulative",
+            "net_profit_basis": "derived_single_quarter_from_q1_cumulative",
+            "operating_cashflow_basis": "derived_single_quarter_from_q1_cumulative",
+            "metric_semantics": {
+              "revenue": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_q1_cumulative"
+              },
+              "net_profit": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_q1_cumulative"
+              },
+              "operating_cashflow": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_q1_cumulative"
+              },
+              "gross_margin": {
+                "period_scope": "cumulative_ytd_ratio",
+                "value_basis": "unknown"
+              },
+              "debt_to_asset": {
+                "period_scope": "point_in_time_period_end",
+                "value_basis": "reported_period_end_ratio"
+              }
+            }
+          },
+          {
+            "reporting_period": "2025Q4",
+            "source_report_period": "2025FY",
+            "report_date": "2025-12-31",
+            "release_date": null,
+            "revenue": 13235134789.349998,
+            "net_profit": 3665321863.750001,
+            "operating_cashflow": 5441304932.6,
+            "gross_margin": 42.0356317148,
+            "debt_to_asset": 30.1790303958,
+            "flow_basis": "single_quarter_derived_from_cumulative",
+            "gross_margin_basis": "cumulative_ytd",
+            "revenue_basis": "derived_single_quarter_from_cumulative",
+            "net_profit_basis": "derived_single_quarter_from_cumulative",
+            "operating_cashflow_basis": "derived_single_quarter_from_cumulative",
+            "metric_semantics": {
+              "revenue": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "net_profit": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "operating_cashflow": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "gross_margin": {
+                "period_scope": "cumulative_ytd_ratio",
+                "value_basis": "cumulative_ytd"
+              },
+              "debt_to_asset": {
+                "period_scope": "point_in_time_period_end",
+                "value_basis": "reported_period_end_ratio"
+              }
+            }
+          },
+          {
+            "reporting_period": "2025Q3",
+            "source_report_period": "2025Q3",
+            "report_date": "2025-09-30",
+            "release_date": null,
+            "revenue": 10215726013.52,
+            "net_profit": 3136817052.0,
+            "operating_cashflow": 2236357940.13,
+            "gross_margin": 40.7411487935,
+            "debt_to_asset": 29.473424731,
+            "flow_basis": "single_quarter_derived_from_cumulative",
+            "gross_margin_basis": "cumulative_ytd",
+            "revenue_basis": "derived_single_quarter_from_cumulative",
+            "net_profit_basis": "derived_single_quarter_from_cumulative",
+            "operating_cashflow_basis": "derived_single_quarter_from_cumulative",
+            "metric_semantics": {
+              "revenue": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "net_profit": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "operating_cashflow": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "gross_margin": {
+                "period_scope": "cumulative_ytd_ratio",
+                "value_basis": "cumulative_ytd"
+              },
+              "debt_to_asset": {
+                "period_scope": "point_in_time_period_end",
+                "value_basis": "reported_period_end_ratio"
+              }
+            }
+          },
+          {
+            "reporting_period": "2025Q2",
+            "source_report_period": "2025Q2",
+            "report_date": "2025-06-30",
+            "release_date": null,
+            "revenue": 8114898350.57,
+            "net_profit": 2412239256.0299997,
+            "operating_cashflow": 1054003717.1400003,
+            "gross_margin": 39.3270577222,
+            "debt_to_asset": 30.3072835406,
+            "flow_basis": "single_quarter_derived_from_cumulative",
+            "gross_margin_basis": "cumulative_ytd",
+            "revenue_basis": "derived_single_quarter_from_cumulative",
+            "net_profit_basis": "derived_single_quarter_from_cumulative",
+            "operating_cashflow_basis": "derived_single_quarter_from_cumulative",
+            "metric_semantics": {
+              "revenue": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "net_profit": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "operating_cashflow": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "gross_margin": {
+                "period_scope": "cumulative_ytd_ratio",
+                "value_basis": "cumulative_ytd"
+              },
+              "debt_to_asset": {
+                "period_scope": "point_in_time_period_end",
+                "value_basis": "reported_period_end_ratio"
+              }
+            }
+          },
+          {
+            "reporting_period": "2025Q1",
+            "source_report_period": "2025Q1",
+            "report_date": "2025-03-31",
+            "release_date": null,
+            "revenue": 6674176487.23,
+            "net_profit": 1582876128.67,
+            "operating_cashflow": 2164459570.16,
+            "gross_margin": 36.7009988471,
+            "debt_to_asset": 30.3935075221,
+            "flow_basis": "single_quarter_from_cumulative_q1",
+            "gross_margin_basis": "cumulative_ytd",
+            "revenue_basis": "derived_single_quarter_from_q1_cumulative",
+            "net_profit_basis": "derived_single_quarter_from_q1_cumulative",
+            "operating_cashflow_basis": "derived_single_quarter_from_q1_cumulative",
+            "metric_semantics": {
+              "revenue": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_q1_cumulative"
+              },
+              "net_profit": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_q1_cumulative"
+              },
+              "operating_cashflow": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_q1_cumulative"
+              },
+              "gross_margin": {
+                "period_scope": "cumulative_ytd_ratio",
+                "value_basis": "cumulative_ytd"
+              },
+              "debt_to_asset": {
+                "period_scope": "point_in_time_period_end",
+                "value_basis": "reported_period_end_ratio"
+              }
+            }
+          },
+          {
+            "reporting_period": "2024Q4",
+            "source_report_period": "2024FY",
+            "report_date": "2024-12-31",
+            "release_date": null,
+            "revenue": 6549557918.219997,
+            "net_profit": 1418826797.7000003,
+            "operating_cashflow": 1848716664.1999998,
+            "gross_margin": 33.8049582366,
+            "debt_to_asset": 29.7005239301,
+            "flow_basis": "single_quarter_derived_from_cumulative",
+            "gross_margin_basis": "cumulative_ytd",
+            "revenue_basis": "derived_single_quarter_from_cumulative",
+            "net_profit_basis": "derived_single_quarter_from_cumulative",
+            "operating_cashflow_basis": "derived_single_quarter_from_cumulative",
+            "metric_semantics": {
+              "revenue": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "net_profit": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "operating_cashflow": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "gross_margin": {
+                "period_scope": "cumulative_ytd_ratio",
+                "value_basis": "cumulative_ytd"
+              },
+              "debt_to_asset": {
+                "period_scope": "point_in_time_period_end",
+                "value_basis": "reported_period_end_ratio"
+              }
+            }
+          },
+          {
+            "reporting_period": "2024Q3",
+            "source_report_period": "2024Q3",
+            "report_date": "2024-09-30",
+            "release_date": null,
+            "revenue": 6514007634.400002,
+            "net_profit": 1394238118.73,
+            "operating_cashflow": 347764773.70000005,
+            "gross_margin": 33.3214470022,
+            "debt_to_asset": 31.1071440624,
+            "flow_basis": "single_quarter_derived_from_cumulative",
+            "gross_margin_basis": "cumulative_ytd",
+            "revenue_basis": "derived_single_quarter_from_cumulative",
+            "net_profit_basis": "derived_single_quarter_from_cumulative",
+            "operating_cashflow_basis": "derived_single_quarter_from_cumulative",
+            "metric_semantics": {
+              "revenue": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "net_profit": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "operating_cashflow": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "gross_margin": {
+                "period_scope": "cumulative_ytd_ratio",
+                "value_basis": "cumulative_ytd"
+              },
+              "debt_to_asset": {
+                "period_scope": "point_in_time_period_end",
+                "value_basis": "reported_period_end_ratio"
+              }
+            }
+          },
+          {
+            "reporting_period": "2024Q2",
+            "source_report_period": "2024Q2",
+            "report_date": "2024-06-30",
+            "release_date": null,
+            "revenue": 5956047261.52,
+            "net_profit": 1349154753.68,
+            "operating_cashflow": 317597872.72,
+            "gross_margin": 33.1322785221,
+            "debt_to_asset": 29.8203261612,
+            "flow_basis": "single_quarter_derived_from_cumulative",
+            "gross_margin_basis": "cumulative_ytd",
+            "revenue_basis": "derived_single_quarter_from_cumulative",
+            "net_profit_basis": "derived_single_quarter_from_cumulative",
+            "operating_cashflow_basis": "derived_single_quarter_from_cumulative",
+            "metric_semantics": {
+              "revenue": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "net_profit": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "operating_cashflow": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "gross_margin": {
+                "period_scope": "cumulative_ytd_ratio",
+                "value_basis": "cumulative_ytd"
+              },
+              "debt_to_asset": {
+                "period_scope": "point_in_time_period_end",
+                "value_basis": "reported_period_end_ratio"
+              }
+            }
+          },
+          {
+            "reporting_period": "2024Q1",
+            "source_report_period": "2024Q1",
+            "report_date": "2024-03-31",
+            "release_date": null,
+            "revenue": 4842546924.23,
+            "net_profit": 1009266297.74,
+            "operating_cashflow": 650503647.23,
+            "gross_margin": 32.7590848845,
+            "debt_to_asset": 25.4453602387,
+            "flow_basis": "single_quarter_from_cumulative_q1",
+            "gross_margin_basis": "cumulative_ytd",
+            "revenue_basis": "derived_single_quarter_from_q1_cumulative",
+            "net_profit_basis": "derived_single_quarter_from_q1_cumulative",
+            "operating_cashflow_basis": "derived_single_quarter_from_q1_cumulative",
+            "metric_semantics": {
+              "revenue": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_q1_cumulative"
+              },
+              "net_profit": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_q1_cumulative"
+              },
+              "operating_cashflow": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_q1_cumulative"
+              },
+              "gross_margin": {
+                "period_scope": "cumulative_ytd_ratio",
+                "value_basis": "cumulative_ytd"
+              },
+              "debt_to_asset": {
+                "period_scope": "point_in_time_period_end",
+                "value_basis": "reported_period_end_ratio"
+              }
+            }
+          },
+          {
+            "reporting_period": "2023Q4",
+            "source_report_period": "2023FY",
+            "report_date": "2023-12-31",
+            "release_date": null,
+            "revenue": 3687694099.4300003,
+            "net_profit": 877659868.1399999,
+            "operating_cashflow": 454406344.48,
+            "gross_margin": 32.9922768888,
+            "debt_to_asset": 26.1524187657,
+            "flow_basis": "single_quarter_derived_from_cumulative",
+            "gross_margin_basis": "cumulative_ytd",
+            "revenue_basis": "derived_single_quarter_from_cumulative",
+            "net_profit_basis": "derived_single_quarter_from_cumulative",
+            "operating_cashflow_basis": "derived_single_quarter_from_cumulative",
+            "metric_semantics": {
+              "revenue": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "net_profit": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "operating_cashflow": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "gross_margin": {
+                "period_scope": "cumulative_ytd_ratio",
+                "value_basis": "cumulative_ytd"
+              },
+              "debt_to_asset": {
+                "period_scope": "point_in_time_period_end",
+                "value_basis": "reported_period_end_ratio"
+              }
+            }
+          },
+          {
+            "reporting_period": "2023Q3",
+            "source_report_period": "2023Q3",
+            "report_date": "2023-09-30",
+            "release_date": null,
+            "revenue": 3026309127.2900004,
+            "net_profit": 682115099.5700002,
+            "operating_cashflow": 287094488.53999996,
+            "gross_margin": 31.7465213637,
+            "debt_to_asset": 25.9106455963,
+            "flow_basis": "single_quarter_derived_from_cumulative",
+            "gross_margin_basis": "cumulative_ytd",
+            "revenue_basis": "derived_single_quarter_from_cumulative",
+            "net_profit_basis": "derived_single_quarter_from_cumulative",
+            "operating_cashflow_basis": "derived_single_quarter_from_cumulative",
+            "metric_semantics": {
+              "revenue": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "net_profit": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "operating_cashflow": {
+                "period_scope": "single_quarter",
+                "value_basis": "derived_single_quarter_from_cumulative"
+              },
+              "gross_margin": {
+                "period_scope": "cumulative_ytd_ratio",
+                "value_basis": "cumulative_ytd"
+              },
+              "debt_to_asset": {
+                "period_scope": "point_in_time_period_end",
+                "value_basis": "reported_period_end_ratio"
+              }
+            }
+          }
+        ],
+        "market_context": [
+          {
+            "title": "中际旭创(300308.SZ)的合同负债、购建固定资产、无形资产和其他长期资产支付的现金",
+            "entity_name": "中际旭创(300308.SZ)",
+            "points": [
+              "合同负债: 4559万元",
+              "购建固定资产、无形资产和其他长期资产支付的现金: 19.29亿元"
+            ],
+            "source": "mx_searchData"
+          }
+        ],
+        "data_gaps": [
+          "总资产收益率ROA缺失"
+        ]
+      }
+    },
+    {
+      "event": "b_progress",
+      "producer": "B",
+      "role": "analyzer",
+      "data": {
+        "message": "证据读取完成，开始输出分析卡片。"
+      }
+    },
+    {
+      "event": "b_card",
+      "producer": "B",
+      "role": "analyzer",
+      "data": {
+        "card_id": "profitability_overview",
+        "title": "盈利能力分析",
+        "conclusion": "中际旭创在2026年第一季度实现了爆发式增长，单季营业收入与净利润均创历史新高，体现了AI算力需求下高端光模块市场的强劲动能。",
+        "evidence": "根据2026一季报，公司实现营业总收入19,496,398,083.95元，归属于母公司股东的净利润为5,734,501,526.83元。对比2025年报披露的2025Q4单季收入（约132.35亿元）和净利润（约36.65亿元），环比增长显著。",
+        "cross_checks": "2026一季报中扣除非经常性损益后归属于母公司股东的净利润为5,717,748,340.78元，与归母净利润高度接近，显示盈利质量极高。",
+        "counterpoints": "虽然利润总额巨大，但2026Q1单季的销售毛利率数据在原始DTO中缺失，需结合历史趋势（2025年报为42.04%）观察高毛利产品占比是否持续提升。",
+        "investor_implication": "公司已进入业绩兑现的高速期，需关注未来季度毛利率是否受行业竞争或降价压力影响而出现波动。"
+      }
+    },
+    {
+      "event": "b_card",
+      "producer": "B",
+      "role": "analyzer",
+      "data": {
+        "card_id": "revenue_structure",
+        "title": "业务结构与市场分布",
+        "conclusion": "公司高度依赖光通信收发模块业务，且海外市场是其核心收入来源，具有极强的全球竞争力。",
+        "evidence": "2025年报主营构成分析显示，光通信收发模块收入达37,456,518,745.90元，占比97.95%，毛利率42.61%。国外地区收入占比达90.58%，毛利率44.64%，显著高于中国大陆的17.04%。",
+        "cross_checks": "2025年报显示光通信收发模块销量为2109万只，生产量为2376万只，产销率维持在较高水平。",
+        "counterpoints": "极高的海外收入占比（超90%）使公司面临潜在的贸易政策风险及汇率波动风险。",
+        "investor_implication": "中际旭创是典型的AI算力出海龙头，其估值逻辑与全球云厂商资本开支高度绑定。"
+      }
+    },
+    {
+      "event": "b_card",
+      "producer": "B",
+      "role": "analyzer",
+      "data": {
+        "card_id": "cash_flow_quality",
+        "title": "现金流与营运质量",
+        "conclusion": "2026年一季度经营活动现金流表现稳健，但由于大规模资本开支，整体现金净增加额受限。",
+        "evidence": "2026一季报显示，经营活动产生的现金流量净额为3,367,573,676.62元。同期购建固定资产、无形资产和其他长期资产支付的现金高达1,929,199,282.88元。",
+        "cross_checks": "2026一季报期末现金及现金等价物余额为12,176,254,035.58元，现金储备充足。",
+        "counterpoints": "2026Q1经营现金流净额（33.68亿元）低于同期归母净利润（57.35亿元），需关注应收账款回款周期或存货备货占用的影响。",
+        "investor_implication": "大规模的资本开支预示着公司仍在积极扩产以应对旺盛订单，短期现金流压力可控，长期产能释放将支撑业绩。"
+      }
+    },
+    {
+      "event": "b_card",
+      "producer": "B",
+      "role": "analyzer",
+      "data": {
+        "card_id": "rd_innovation",
+        "title": "研发投入与技术壁垒",
+        "conclusion": "公司维持高强度的研发投入，研发人员占比近两成，为高端产品迭代提供技术支撑。",
+        "evidence": "2025年报显示，研发支出合计1,675,931,098.18元，研发人员数量2169人，占比18.66%。研发投入占营业收入比例为4.38%。",
+        "cross_checks": "资本化研发支出占研发投入比例仅为3.62%，显示研发会计处理非常稳健，利润含金量高。",
+        "counterpoints": "随着光模块向1.6T及更高速率演进，研发投入的绝对值可能进一步攀升，对利润率构成一定压力。",
+        "investor_implication": "低资本化率意味着未来的折旧摊销压力较小，技术领先优势是维持高毛利的关键。"
+      }
+    },
+    {
+      "event": "b_card",
+      "producer": "B",
+      "role": "analyzer",
+      "data": {
+        "card_id": "liability_solvency",
+        "title": "负债结构与偿债能力",
+        "conclusion": "公司财务结构稳健，资产负债率长期维持在较低水平，财务风险较小。",
+        "evidence": "根据历史12季度数据，资产负债率从2023Q3的25.91%小幅波动至2025年报的30.18%。2026一季报显示负债合计为18,465,774,898.96元，资产总计为56,580,677,310.74元。",
+        "cross_checks": "2026一季报中流动负债合计16,302,769,791.49元，占总负债比例较高，主要为经营性负债。",
+        "counterpoints": "2026Q1合同负债仅为45,593,201.52元，相对于近200亿的单季营收规模，预收款项占比极低，显示行业普遍采用信用账期模式。",
+        "investor_implication": "低杠杆经营为公司未来的融资扩产留下了充足空间，财务安全性极高。"
+      }
+    },
+    {
+      "event": "b_card",
+      "producer": "B",
+      "role": "analyzer",
+      "data": {
+        "card_id": "growth_trend",
+        "title": "历史增长趋势分析",
+        "conclusion": "公司经历了从2023年开始的阶梯式增长，2025年起进入斜率更陡峭的爆发期。",
+        "evidence": "营业总收入从2023Q1的18.37亿元增长至2025Q1的66.74亿元，再到2026Q1的194.96亿元，呈现指数级增长态势。",
+        "cross_checks": "归母净利润同步从2023Q1的2.50亿元飙升至2026Q1的57.35亿元。",
+        "counterpoints": "历史高基数下，未来维持翻倍增长的难度加大，需关注行业需求见顶风险。",
+        "investor_implication": "业绩增长斜率已达历史高位，市场预期可能已充分计入，需警惕增速放缓带来的估值修正。"
+      }
+    },
+    {
+      "event": "b_card",
+      "producer": "B",
+      "role": "analyzer",
+      "data": {
+        "card_id": "asset_composition",
+        "title": "资产构成分析",
+        "conclusion": "公司资产结构以流动资产为主，体现了轻资产组装与高周转的经营特点。",
+        "evidence": "2026一季报显示，流动资产合计40,125,459,627.71元，占资产总计（565.81亿元）的70.9%。固定资产为7,907,322,983.19元。",
+        "cross_checks": "2025年报显示光通信模块库存量为521万只，相对于2109万只的年销量，库存水平处于合理区间。",
+        "counterpoints": "随着自建产能增加，固定资产规模正在快速扩张（2026Q1单季资本开支近20亿），资产结构正逐渐变重。",
+        "investor_implication": "关注产能利用率指标，若需求不及预期，高额的固定资产折旧将对利润产生较大反噬。"
+      }
+    },
+    {
+      "event": "b_done",
+      "producer": "B",
+      "role": "analyzer",
+      "data": {
+        "status": "success",
+        "total_cards": 7
+      }
+    },
+    {
+      "event": "c_progress",
+      "producer": "C",
+      "role": "auditor",
+      "data": {
+        "step": "复核并挑战 历史增长趋势分析",
+        "percentage": 20
+      }
+    },
+    {
+      "event": "c_challenge",
+      "producer": "C",
+      "role": "auditor",
+      "data": {
+        "target_card_id": "历史增长趋势分析",
+        "issue": "原结论：营业总收入从2023Q1的18.37亿元增长至2025Q1的66.74亿元... 修正为：营业总收入从2024Q1的48.43亿元增长至2025Q1的66.74亿元，再到2026Q1的194.96亿元。。原因：根据近12季度历史序列，2024Q1收入为48.43亿元，原结论中引用的18.37亿元可能为更早年份数据，需修正以匹配当前数据窗口。",
+        "severity": "LOW"
+      }
+    },
+    {
+      "event": "c_progress",
+      "producer": "C",
+      "role": "auditor",
+      "data": {
+        "step": "复核通过 盈利能力分析",
+        "percentage": 40
+      }
+    },
+    {
+      "event": "c_resolved",
+      "producer": "C",
+      "role": "auditor",
+      "data": {
+        "target_card_id": "盈利能力分析",
+        "rationale": "2026年一季度营业收入（194.96亿元）与归母净利润（57.35亿元）数据准确，环比2025年第四季度增长趋势符合财务序列事实。"
+      }
+    },
+    {
+      "event": "c_progress",
+      "producer": "C",
+      "role": "auditor",
+      "data": {
+        "step": "复核通过 业务结构与市场分布",
+        "percentage": 60
+      }
+    },
+    {
+      "event": "c_resolved",
+      "producer": "C",
+      "role": "auditor",
+      "data": {
+        "target_card_id": "业务结构与市场分布",
+        "rationale": "业务结构数据与2025年报主营构成分析一致，光通信收发模块占比及海外收入占比（90.58%）均有原始数据支撑。"
+      }
+    },
+    {
+      "event": "c_progress",
+      "producer": "C",
+      "role": "auditor",
+      "data": {
+        "step": "复核通过 研发投入与技术壁垒",
+        "percentage": 80
+      }
+    },
+    {
+      "event": "c_resolved",
+      "producer": "C",
+      "role": "auditor",
+      "data": {
+        "target_card_id": "研发投入与技术壁垒",
+        "rationale": "研发投入金额、人员占比及极低的资本化率（3.62%）均与原始数据表述一致，体现了稳健的会计处理。"
+      }
+    },
+    {
+      "event": "c_progress",
+      "producer": "C",
+      "role": "auditor",
+      "data": {
+        "step": "复核通过 负债结构与偿债能力",
+        "percentage": 100
+      }
+    },
+    {
+      "event": "c_resolved",
+      "producer": "C",
+      "role": "auditor",
+      "data": {
+        "target_card_id": "负债结构与偿债能力",
+        "rationale": "2026年一季度末的总资产与总负债数据准确，合同负债（4559万元）极低的观察符合行业信用账期特征。"
+      }
+    },
+    {
+      "event": "c_done",
+      "producer": "C",
+      "role": "auditor",
+      "data": {
+        "final_status": "PASS"
+      }
+    },
+    {
+      "event": "final_summary",
+      "producer": "C",
+      "role": "auditor",
+      "data": {
+        "final_status": "PASS",
+        "summary": "中际旭创在2026年一季度展现了极强的业绩爆发力，作为全球光模块龙头，充分享受了AI算力基础设施建设的红利。 公司正处于高端产品放量带来的业绩红利期，技术领先与规模效应构筑了深厚护城河，建议关注1.6T等下一代产品的迭代进度及行业需求持续性。"
+      }
+    },
+    {
+      "event": "final_result",
+      "producer": "C",
+      "role": "auditor",
+      "data": {
+        "final_status": "PASS",
+        "summary": "中际旭创在2026年一季度展现了极强的业绩爆发力，作为全球光模块龙头，充分享受了AI算力基础设施建设的红利。 公司正处于高端产品放量带来的业绩红利期，技术领先与规模效应构筑了深厚护城河，建议关注1.6T等下一代产品的迭代进度及行业需求持续性。",
+        "challenge_points": [
+          {
+            "target_card_id": "历史增长趋势分析",
+            "issue": "原结论：营业总收入从2023Q1的18.37亿元增长至2025Q1的66.74亿元... 修正为：营业总收入从2024Q1的48.43亿元增长至2025Q1的66.74亿元，再到2026Q1的194.96亿元。。原因：根据近12季度历史序列，2024Q1收入为48.43亿元，原结论中引用的18.37亿元可能为更早年份数据，需修正以匹配当前数据窗口。",
+            "severity": "LOW"
+          }
+        ],
+        "resolved_points": [
+          {
+            "target_card_id": "盈利能力分析",
+            "rationale": "2026年一季度营业收入（194.96亿元）与归母净利润（57.35亿元）数据准确，环比2025年第四季度增长趋势符合财务序列事实。"
+          },
+          {
+            "target_card_id": "业务结构与市场分布",
+            "rationale": "业务结构数据与2025年报主营构成分析一致，光通信收发模块占比及海外收入占比（90.58%）均有原始数据支撑。"
+          },
+          {
+            "target_card_id": "研发投入与技术壁垒",
+            "rationale": "研发投入金额、人员占比及极低的资本化率（3.62%）均与原始数据表述一致，体现了稳健的会计处理。"
+          },
+          {
+            "target_card_id": "负债结构与偿债能力",
+            "rationale": "2026年一季度末的总资产与总负债数据准确，合同负债（4559万元）极低的观察符合行业信用账期特征。"
+          }
+        ],
+        "groups": [
+          "结论修订",
+          "已确认结论"
+        ],
+        "source_refs": [
+          {
+            "field": "2026年一季度公司购建固定资产、无形资产和其他长期资产支付的现金高达19.29亿元。",
+            "source": "现金流量表"
+          },
+          {
+            "field": "2025年国外地区业务毛利率为44.64%，显著高于中国大陆地区的17.04%。",
+            "source": "主营构成分析表"
+          }
+        ],
+        "meta": {
+          "auditor_model": "c_plus_retriever_compat",
+          "audit_scope": "结论确认与修订"
+        }
+      }
+    }
+  ],
+  "final_payload": {
+    "normalized": {
+      "company": {
+        "name": "中际旭创",
+        "ticker": "300308.SZ",
+        "reporting_period": "2026Q1"
+      },
+      "report": {
+        "type": "Q1",
+        "release_date": null
+      },
+      "income_statement": {
+        "revenue": 19496398083.95,
+        "net_profit": 5734501526.83,
+        "gross_margin": null
+      },
+      "balance_sheet": {
+        "total_assets": 56580677310.74,
+        "total_liabilities": 18465774898.96,
+        "cash_equivalents": 12176254035.58
+      },
+      "cashflow_statement": {
+        "operating_cashflow": 3367573676.62,
+        "investing_cashflow": -1947791652.29,
+        "financing_cashflow": 7587642.85
+      },
+      "key_ratios": {
+        "roe": null,
+        "roa": null,
+        "debt_to_asset": null
+      },
+      "history_12q": [
+        {
+          "reporting_period": "2026Q1",
+          "source_report_period": "2026Q1",
+          "report_date": "2026-03-31",
+          "release_date": null,
+          "revenue": 19496398083.95,
+          "net_profit": 5734501526.83,
+          "operating_cashflow": 3367573676.62,
+          "gross_margin": null,
+          "debt_to_asset": null,
+          "flow_basis": "single_quarter_from_cumulative_q1",
+          "gross_margin_basis": "unknown",
+          "revenue_basis": "derived_single_quarter_from_q1_cumulative",
+          "net_profit_basis": "derived_single_quarter_from_q1_cumulative",
+          "operating_cashflow_basis": "derived_single_quarter_from_q1_cumulative",
+          "metric_semantics": {
+            "revenue": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_q1_cumulative"
+            },
+            "net_profit": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_q1_cumulative"
+            },
+            "operating_cashflow": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_q1_cumulative"
+            },
+            "gross_margin": {
+              "period_scope": "cumulative_ytd_ratio",
+              "value_basis": "unknown"
+            },
+            "debt_to_asset": {
+              "period_scope": "point_in_time_period_end",
+              "value_basis": "reported_period_end_ratio"
+            }
+          }
+        },
+        {
+          "reporting_period": "2025Q4",
+          "source_report_period": "2025FY",
+          "report_date": "2025-12-31",
+          "release_date": null,
+          "revenue": 13235134789.349998,
+          "net_profit": 3665321863.750001,
+          "operating_cashflow": 5441304932.6,
+          "gross_margin": 42.0356317148,
+          "debt_to_asset": 30.1790303958,
+          "flow_basis": "single_quarter_derived_from_cumulative",
+          "gross_margin_basis": "cumulative_ytd",
+          "revenue_basis": "derived_single_quarter_from_cumulative",
+          "net_profit_basis": "derived_single_quarter_from_cumulative",
+          "operating_cashflow_basis": "derived_single_quarter_from_cumulative",
+          "metric_semantics": {
+            "revenue": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "net_profit": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "operating_cashflow": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "gross_margin": {
+              "period_scope": "cumulative_ytd_ratio",
+              "value_basis": "cumulative_ytd"
+            },
+            "debt_to_asset": {
+              "period_scope": "point_in_time_period_end",
+              "value_basis": "reported_period_end_ratio"
+            }
+          }
+        },
+        {
+          "reporting_period": "2025Q3",
+          "source_report_period": "2025Q3",
+          "report_date": "2025-09-30",
+          "release_date": null,
+          "revenue": 10215726013.52,
+          "net_profit": 3136817052.0,
+          "operating_cashflow": 2236357940.13,
+          "gross_margin": 40.7411487935,
+          "debt_to_asset": 29.473424731,
+          "flow_basis": "single_quarter_derived_from_cumulative",
+          "gross_margin_basis": "cumulative_ytd",
+          "revenue_basis": "derived_single_quarter_from_cumulative",
+          "net_profit_basis": "derived_single_quarter_from_cumulative",
+          "operating_cashflow_basis": "derived_single_quarter_from_cumulative",
+          "metric_semantics": {
+            "revenue": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "net_profit": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "operating_cashflow": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "gross_margin": {
+              "period_scope": "cumulative_ytd_ratio",
+              "value_basis": "cumulative_ytd"
+            },
+            "debt_to_asset": {
+              "period_scope": "point_in_time_period_end",
+              "value_basis": "reported_period_end_ratio"
+            }
+          }
+        },
+        {
+          "reporting_period": "2025Q2",
+          "source_report_period": "2025Q2",
+          "report_date": "2025-06-30",
+          "release_date": null,
+          "revenue": 8114898350.57,
+          "net_profit": 2412239256.0299997,
+          "operating_cashflow": 1054003717.1400003,
+          "gross_margin": 39.3270577222,
+          "debt_to_asset": 30.3072835406,
+          "flow_basis": "single_quarter_derived_from_cumulative",
+          "gross_margin_basis": "cumulative_ytd",
+          "revenue_basis": "derived_single_quarter_from_cumulative",
+          "net_profit_basis": "derived_single_quarter_from_cumulative",
+          "operating_cashflow_basis": "derived_single_quarter_from_cumulative",
+          "metric_semantics": {
+            "revenue": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "net_profit": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "operating_cashflow": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "gross_margin": {
+              "period_scope": "cumulative_ytd_ratio",
+              "value_basis": "cumulative_ytd"
+            },
+            "debt_to_asset": {
+              "period_scope": "point_in_time_period_end",
+              "value_basis": "reported_period_end_ratio"
+            }
+          }
+        },
+        {
+          "reporting_period": "2025Q1",
+          "source_report_period": "2025Q1",
+          "report_date": "2025-03-31",
+          "release_date": null,
+          "revenue": 6674176487.23,
+          "net_profit": 1582876128.67,
+          "operating_cashflow": 2164459570.16,
+          "gross_margin": 36.7009988471,
+          "debt_to_asset": 30.3935075221,
+          "flow_basis": "single_quarter_from_cumulative_q1",
+          "gross_margin_basis": "cumulative_ytd",
+          "revenue_basis": "derived_single_quarter_from_q1_cumulative",
+          "net_profit_basis": "derived_single_quarter_from_q1_cumulative",
+          "operating_cashflow_basis": "derived_single_quarter_from_q1_cumulative",
+          "metric_semantics": {
+            "revenue": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_q1_cumulative"
+            },
+            "net_profit": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_q1_cumulative"
+            },
+            "operating_cashflow": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_q1_cumulative"
+            },
+            "gross_margin": {
+              "period_scope": "cumulative_ytd_ratio",
+              "value_basis": "cumulative_ytd"
+            },
+            "debt_to_asset": {
+              "period_scope": "point_in_time_period_end",
+              "value_basis": "reported_period_end_ratio"
+            }
+          }
+        },
+        {
+          "reporting_period": "2024Q4",
+          "source_report_period": "2024FY",
+          "report_date": "2024-12-31",
+          "release_date": null,
+          "revenue": 6549557918.219997,
+          "net_profit": 1418826797.7000003,
+          "operating_cashflow": 1848716664.1999998,
+          "gross_margin": 33.8049582366,
+          "debt_to_asset": 29.7005239301,
+          "flow_basis": "single_quarter_derived_from_cumulative",
+          "gross_margin_basis": "cumulative_ytd",
+          "revenue_basis": "derived_single_quarter_from_cumulative",
+          "net_profit_basis": "derived_single_quarter_from_cumulative",
+          "operating_cashflow_basis": "derived_single_quarter_from_cumulative",
+          "metric_semantics": {
+            "revenue": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "net_profit": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "operating_cashflow": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "gross_margin": {
+              "period_scope": "cumulative_ytd_ratio",
+              "value_basis": "cumulative_ytd"
+            },
+            "debt_to_asset": {
+              "period_scope": "point_in_time_period_end",
+              "value_basis": "reported_period_end_ratio"
+            }
+          }
+        },
+        {
+          "reporting_period": "2024Q3",
+          "source_report_period": "2024Q3",
+          "report_date": "2024-09-30",
+          "release_date": null,
+          "revenue": 6514007634.400002,
+          "net_profit": 1394238118.73,
+          "operating_cashflow": 347764773.70000005,
+          "gross_margin": 33.3214470022,
+          "debt_to_asset": 31.1071440624,
+          "flow_basis": "single_quarter_derived_from_cumulative",
+          "gross_margin_basis": "cumulative_ytd",
+          "revenue_basis": "derived_single_quarter_from_cumulative",
+          "net_profit_basis": "derived_single_quarter_from_cumulative",
+          "operating_cashflow_basis": "derived_single_quarter_from_cumulative",
+          "metric_semantics": {
+            "revenue": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "net_profit": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "operating_cashflow": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "gross_margin": {
+              "period_scope": "cumulative_ytd_ratio",
+              "value_basis": "cumulative_ytd"
+            },
+            "debt_to_asset": {
+              "period_scope": "point_in_time_period_end",
+              "value_basis": "reported_period_end_ratio"
+            }
+          }
+        },
+        {
+          "reporting_period": "2024Q2",
+          "source_report_period": "2024Q2",
+          "report_date": "2024-06-30",
+          "release_date": null,
+          "revenue": 5956047261.52,
+          "net_profit": 1349154753.68,
+          "operating_cashflow": 317597872.72,
+          "gross_margin": 33.1322785221,
+          "debt_to_asset": 29.8203261612,
+          "flow_basis": "single_quarter_derived_from_cumulative",
+          "gross_margin_basis": "cumulative_ytd",
+          "revenue_basis": "derived_single_quarter_from_cumulative",
+          "net_profit_basis": "derived_single_quarter_from_cumulative",
+          "operating_cashflow_basis": "derived_single_quarter_from_cumulative",
+          "metric_semantics": {
+            "revenue": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "net_profit": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "operating_cashflow": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "gross_margin": {
+              "period_scope": "cumulative_ytd_ratio",
+              "value_basis": "cumulative_ytd"
+            },
+            "debt_to_asset": {
+              "period_scope": "point_in_time_period_end",
+              "value_basis": "reported_period_end_ratio"
+            }
+          }
+        },
+        {
+          "reporting_period": "2024Q1",
+          "source_report_period": "2024Q1",
+          "report_date": "2024-03-31",
+          "release_date": null,
+          "revenue": 4842546924.23,
+          "net_profit": 1009266297.74,
+          "operating_cashflow": 650503647.23,
+          "gross_margin": 32.7590848845,
+          "debt_to_asset": 25.4453602387,
+          "flow_basis": "single_quarter_from_cumulative_q1",
+          "gross_margin_basis": "cumulative_ytd",
+          "revenue_basis": "derived_single_quarter_from_q1_cumulative",
+          "net_profit_basis": "derived_single_quarter_from_q1_cumulative",
+          "operating_cashflow_basis": "derived_single_quarter_from_q1_cumulative",
+          "metric_semantics": {
+            "revenue": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_q1_cumulative"
+            },
+            "net_profit": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_q1_cumulative"
+            },
+            "operating_cashflow": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_q1_cumulative"
+            },
+            "gross_margin": {
+              "period_scope": "cumulative_ytd_ratio",
+              "value_basis": "cumulative_ytd"
+            },
+            "debt_to_asset": {
+              "period_scope": "point_in_time_period_end",
+              "value_basis": "reported_period_end_ratio"
+            }
+          }
+        },
+        {
+          "reporting_period": "2023Q4",
+          "source_report_period": "2023FY",
+          "report_date": "2023-12-31",
+          "release_date": null,
+          "revenue": 3687694099.4300003,
+          "net_profit": 877659868.1399999,
+          "operating_cashflow": 454406344.48,
+          "gross_margin": 32.9922768888,
+          "debt_to_asset": 26.1524187657,
+          "flow_basis": "single_quarter_derived_from_cumulative",
+          "gross_margin_basis": "cumulative_ytd",
+          "revenue_basis": "derived_single_quarter_from_cumulative",
+          "net_profit_basis": "derived_single_quarter_from_cumulative",
+          "operating_cashflow_basis": "derived_single_quarter_from_cumulative",
+          "metric_semantics": {
+            "revenue": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "net_profit": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "operating_cashflow": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "gross_margin": {
+              "period_scope": "cumulative_ytd_ratio",
+              "value_basis": "cumulative_ytd"
+            },
+            "debt_to_asset": {
+              "period_scope": "point_in_time_period_end",
+              "value_basis": "reported_period_end_ratio"
+            }
+          }
+        },
+        {
+          "reporting_period": "2023Q3",
+          "source_report_period": "2023Q3",
+          "report_date": "2023-09-30",
+          "release_date": null,
+          "revenue": 3026309127.2900004,
+          "net_profit": 682115099.5700002,
+          "operating_cashflow": 287094488.53999996,
+          "gross_margin": 31.7465213637,
+          "debt_to_asset": 25.9106455963,
+          "flow_basis": "single_quarter_derived_from_cumulative",
+          "gross_margin_basis": "cumulative_ytd",
+          "revenue_basis": "derived_single_quarter_from_cumulative",
+          "net_profit_basis": "derived_single_quarter_from_cumulative",
+          "operating_cashflow_basis": "derived_single_quarter_from_cumulative",
+          "metric_semantics": {
+            "revenue": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "net_profit": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "operating_cashflow": {
+              "period_scope": "single_quarter",
+              "value_basis": "derived_single_quarter_from_cumulative"
+            },
+            "gross_margin": {
+              "period_scope": "cumulative_ytd_ratio",
+              "value_basis": "cumulative_ytd"
+            },
+            "debt_to_asset": {
+              "period_scope": "point_in_time_period_end",
+              "value_basis": "reported_period_end_ratio"
+            }
+          }
+        }
+      ],
+      "market_context": [
+        {
+          "title": "中际旭创(300308.SZ)的合同负债、购建固定资产、无形资产和其他长期资产支付的现金",
+          "entity_name": "中际旭创(300308.SZ)",
+          "points": [
+            "合同负债: 4559万元",
+            "购建固定资产、无形资产和其他长期资产支付的现金: 19.29亿元"
+          ],
+          "source": "mx_searchData"
+        }
+      ],
+      "data_gaps": [
+        "总资产收益率ROA缺失"
+      ]
+    },
+    "analysis": {
+      "cards": [
+        {
+          "card_id": "profitability_overview",
+          "title": "盈利能力分析",
+          "conclusion": "中际旭创在2026年第一季度实现了爆发式增长，单季营业收入与净利润均创历史新高，体现了AI算力需求下高端光模块市场的强劲动能。",
+          "evidence": "根据2026一季报，公司实现营业总收入19,496,398,083.95元，归属于母公司股东的净利润为5,734,501,526.83元。对比2025年报披露的2025Q4单季收入（约132.35亿元）和净利润（约36.65亿元），环比增长显著。",
+          "cross_checks": "2026一季报中扣除非经常性损益后归属于母公司股东的净利润为5,717,748,340.78元，与归母净利润高度接近，显示盈利质量极高。",
+          "counterpoints": "虽然利润总额巨大，但2026Q1单季的销售毛利率数据在原始DTO中缺失，需结合历史趋势（2025年报为42.04%）观察高毛利产品占比是否持续提升。",
+          "investor_implication": "公司已进入业绩兑现的高速期，需关注未来季度毛利率是否受行业竞争或降价压力影响而出现波动。"
+        },
+        {
+          "card_id": "revenue_structure",
+          "title": "业务结构与市场分布",
+          "conclusion": "公司高度依赖光通信收发模块业务，且海外市场是其核心收入来源，具有极强的全球竞争力。",
+          "evidence": "2025年报主营构成分析显示，光通信收发模块收入达37,456,518,745.90元，占比97.95%，毛利率42.61%。国外地区收入占比达90.58%，毛利率44.64%，显著高于中国大陆的17.04%。",
+          "cross_checks": "2025年报显示光通信收发模块销量为2109万只，生产量为2376万只，产销率维持在较高水平。",
+          "counterpoints": "极高的海外收入占比（超90%）使公司面临潜在的贸易政策风险及汇率波动风险。",
+          "investor_implication": "中际旭创是典型的AI算力出海龙头，其估值逻辑与全球云厂商资本开支高度绑定。"
+        },
+        {
+          "card_id": "cash_flow_quality",
+          "title": "现金流与营运质量",
+          "conclusion": "2026年一季度经营活动现金流表现稳健，但由于大规模资本开支，整体现金净增加额受限。",
+          "evidence": "2026一季报显示，经营活动产生的现金流量净额为3,367,573,676.62元。同期购建固定资产、无形资产和其他长期资产支付的现金高达1,929,199,282.88元。",
+          "cross_checks": "2026一季报期末现金及现金等价物余额为12,176,254,035.58元，现金储备充足。",
+          "counterpoints": "2026Q1经营现金流净额（33.68亿元）低于同期归母净利润（57.35亿元），需关注应收账款回款周期或存货备货占用的影响。",
+          "investor_implication": "大规模的资本开支预示着公司仍在积极扩产以应对旺盛订单，短期现金流压力可控，长期产能释放将支撑业绩。"
+        },
+        {
+          "card_id": "rd_innovation",
+          "title": "研发投入与技术壁垒",
+          "conclusion": "公司维持高强度的研发投入，研发人员占比近两成，为高端产品迭代提供技术支撑。",
+          "evidence": "2025年报显示，研发支出合计1,675,931,098.18元，研发人员数量2169人，占比18.66%。研发投入占营业收入比例为4.38%。",
+          "cross_checks": "资本化研发支出占研发投入比例仅为3.62%，显示研发会计处理非常稳健，利润含金量高。",
+          "counterpoints": "随着光模块向1.6T及更高速率演进，研发投入的绝对值可能进一步攀升，对利润率构成一定压力。",
+          "investor_implication": "低资本化率意味着未来的折旧摊销压力较小，技术领先优势是维持高毛利的关键。"
+        },
+        {
+          "card_id": "liability_solvency",
+          "title": "负债结构与偿债能力",
+          "conclusion": "公司财务结构稳健，资产负债率长期维持在较低水平，财务风险较小。",
+          "evidence": "根据历史12季度数据，资产负债率从2023Q3的25.91%小幅波动至2025年报的30.18%。2026一季报显示负债合计为18,465,774,898.96元，资产总计为56,580,677,310.74元。",
+          "cross_checks": "2026一季报中流动负债合计16,302,769,791.49元，占总负债比例较高，主要为经营性负债。",
+          "counterpoints": "2026Q1合同负债仅为45,593,201.52元，相对于近200亿的单季营收规模，预收款项占比极低，显示行业普遍采用信用账期模式。",
+          "investor_implication": "低杠杆经营为公司未来的融资扩产留下了充足空间，财务安全性极高。"
+        },
+        {
+          "card_id": "growth_trend",
+          "title": "历史增长趋势分析",
+          "conclusion": "公司经历了从2023年开始的阶梯式增长，2025年起进入斜率更陡峭的爆发期。",
+          "evidence": "营业总收入从2023Q1的18.37亿元增长至2025Q1的66.74亿元，再到2026Q1的194.96亿元，呈现指数级增长态势。",
+          "cross_checks": "归母净利润同步从2023Q1的2.50亿元飙升至2026Q1的57.35亿元。",
+          "counterpoints": "历史高基数下，未来维持翻倍增长的难度加大，需关注行业需求见顶风险。",
+          "investor_implication": "业绩增长斜率已达历史高位，市场预期可能已充分计入，需警惕增速放缓带来的估值修正。"
+        },
+        {
+          "card_id": "asset_composition",
+          "title": "资产构成分析",
+          "conclusion": "公司资产结构以流动资产为主，体现了轻资产组装与高周转的经营特点。",
+          "evidence": "2026一季报显示，流动资产合计40,125,459,627.71元，占资产总计（565.81亿元）的70.9%。固定资产为7,907,322,983.19元。",
+          "cross_checks": "2025年报显示光通信模块库存量为521万只，相对于2109万只的年销量，库存水平处于合理区间。",
+          "counterpoints": "随着自建产能增加，固定资产规模正在快速扩张（2026Q1单季资本开支近20亿），资产结构正逐渐变重。",
+          "investor_implication": "关注产能利用率指标，若需求不及预期，高额的固定资产折旧将对利润产生较大反噬。"
+        }
+      ]
+    },
+    "audit": {
+      "final_status": "PASS",
+      "summary": "中际旭创在2026年一季度展现了极强的业绩爆发力，作为全球光模块龙头，充分享受了AI算力基础设施建设的红利。 公司正处于高端产品放量带来的业绩红利期，技术领先与规模效应构筑了深厚护城河，建议关注1.6T等下一代产品的迭代进度及行业需求持续性。",
+      "challenge_points": [
+        {
+          "target_card_id": "历史增长趋势分析",
+          "issue": "原结论：营业总收入从2023Q1的18.37亿元增长至2025Q1的66.74亿元... 修正为：营业总收入从2024Q1的48.43亿元增长至2025Q1的66.74亿元，再到2026Q1的194.96亿元。。原因：根据近12季度历史序列，2024Q1收入为48.43亿元，原结论中引用的18.37亿元可能为更早年份数据，需修正以匹配当前数据窗口。",
+          "severity": "LOW"
+        }
+      ],
+      "resolved_points": [
+        {
+          "target_card_id": "盈利能力分析",
+          "rationale": "2026年一季度营业收入（194.96亿元）与归母净利润（57.35亿元）数据准确，环比2025年第四季度增长趋势符合财务序列事实。"
+        },
+        {
+          "target_card_id": "业务结构与市场分布",
+          "rationale": "业务结构数据与2025年报主营构成分析一致，光通信收发模块占比及海外收入占比（90.58%）均有原始数据支撑。"
+        },
+        {
+          "target_card_id": "研发投入与技术壁垒",
+          "rationale": "研发投入金额、人员占比及极低的资本化率（3.62%）均与原始数据表述一致，体现了稳健的会计处理。"
+        },
+        {
+          "target_card_id": "负债结构与偿债能力",
+          "rationale": "2026年一季度末的总资产与总负债数据准确，合同负债（4559万元）极低的观察符合行业信用账期特征。"
+        }
+      ],
+      "groups": [
+        "结论修订",
+        "已确认结论"
+      ],
+      "source_refs": [
+        {
+          "field": "2026年一季度公司购建固定资产、无形资产和其他长期资产支付的现金高达19.29亿元。",
+          "source": "现金流量表"
+        },
+        {
+          "field": "2025年国外地区业务毛利率为44.64%，显著高于中国大陆地区的17.04%。",
+          "source": "主营构成分析表"
+        }
+      ],
+      "meta": {
+        "auditor_model": "c_plus_retriever_compat",
+        "audit_scope": "结论确认与修订"
+      }
+    }
+  }
+}

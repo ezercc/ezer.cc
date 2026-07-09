@@ -1,0 +1,459 @@
+---
+import Layout from "../layouts/Layout.astro";
+import HeroHome from "../components/HeroHome.astro";
+import TextMarquee from "../components/TextMarquee.astro";
+import GalleryText from "../components/GalleryText.astro";
+import ImageMarquee from "../components/ImageMarquee.astro";
+import Faqs from "../components/Faqs.astro";
+import StepsTimeline from "../components/StepsTimeline.astro";
+import Plans from "../components/Plans.astro";
+import Introducing from "../components/Introducing.astro";
+import GL from "../components/GL.astro";
+import GLPlaces from "../components/GlPlaces.astro";
+
+import logo1 from "../assets/astro_transparent.png";
+import logo2 from "../assets/azure_transparent.png";
+import logo3 from "../assets/bailian_transparent.png";
+import logo4 from "../assets/cloudflare_transparent.png";
+import logo5 from "../assets/eastmoney_transparent.png";
+import logo6 from "../assets/github_transparent.png";
+import logo7 from "../assets/huggingface_transparent.png";
+import logo8 from "../assets/hugo_transparent.png";
+import logo9 from "../assets/openclaw_transparent.png";
+import logo10 from "../assets/spaceship_transparent.png";
+import logo11 from "../assets/supabase_transparent.png";
+import logo12 from "../assets/vercel_transparent.png";
+
+---
+
+<Layout 
+  title="弈泽财报分析 - 洞见财务本质，定义真实价值"
+  description="弈泽 (Ezer) 是审计级财报分析系统，面向财报研究与风险识别场景，将数据标准化、专业指标拆解、行业信息补充和审计式复核串成完整链路。"
+  keywords="弈泽, Ezer, 弈泽财报分析, Ezer Audit, 财报分析, 财务审计, 股票投资, 高价值模型, 自研财报模型, 证据复核"
+>
+  <script is:inline>
+    (function() {
+      var cookies = document.cookie || '';
+      var isLoggedIn = cookies.indexOf('sb-msufgvqofnihylcnxyac-auth-token') !== -1;
+      if (isLoggedIn) {
+        var referer = document.referrer;
+        var isInternal = false;
+        if (referer) {
+          try {
+            var url = new URL(referer);
+            isInternal = url.hostname.indexOf('ezer.cc') !== -1 || url.hostname === 'localhost' || url.hostname === '127.0.0.1';
+          } catch (e) {}
+        }
+        if (!isInternal) {
+          window.location.href = '/search/';
+        }
+      }
+    })();
+  </script>
+  <HeroHome
+    title="洞见财务本质<br/>定义真实价值"
+    subtitle="将机构级的研报能力下放给每一个普通投资者。弈泽，让财务真相，不再难以触及。"
+    cta={{
+      title: "立即体验",
+      url: "/check/?preview=true",
+    }}
+  />
+
+  <Introducing
+    title="Ezer 是审计级财报分析系统"
+    text="弈泽（Ezer）面向财报研究与风险识别场景，将数据标准化、专业指标拆解、行业信息补充和审计式复核串成完整链路。它不是把财报改写成摘要，而是把财报转化为可追溯、可复核、可继续深挖的分析结果。"
+    cta={{
+      title: "开始分析",
+      url: "/search/",
+    }}
+  />
+
+  <section class="model-proof">
+    <div class="u-container">
+      <div class="model-proof__grid">
+        <div class="model-proof__copy" data-sy-reveal="slideUp">
+          <p class="model-proof__eyebrow">高效的输入密度</p>
+          <h2 class="u-heading model-proof__title">同样是 AI，差距在有效输入密度</h2>
+          <p class="u-text model-proof__text">
+            用户自己把 PDF 喂给网页端 AI，通常会把大量上下文消耗在目录、页眉页脚、表格错位、重复文本和格式噪声上。即使网页端标称有 30k-60k token 上下文，换算成同等密度的结构化财报信息，往往只剩约 8k-10k token 的有效分析输入。
+          </p>
+          <p class="u-text model-proof__text">
+            Ezer 会先完成解析、清洗、标准化和压缩，再把平均约 80k token 的高密度结构化数据投入模型链路。更专业的编排流程、更贴近实际投资暗雷的深度审计，再加上更大量的有效数据输入，才是用户选择 Ezer 的原因。
+          </p>
+        </div>
+        <div class="input-density-card" data-sy-reveal="blurIn">
+          <div class="density-path is-diy">
+            <div class="density-head">
+              <strong>自己上传 PDF 给网页端 AI</strong>
+              <em>30k-60k token 原始上下文</em>
+            </div>
+            <div class="density-funnel">
+              <span>目录</span>
+              <span>页眉页脚</span>
+              <span>表格错位</span>
+              <span>重复文本</span>
+              <span>格式噪声</span>
+            </div>
+            <div class="density-meter" aria-label="约 8k-10k token 结构化有效输入">
+              <span style="--w: 12%;"></span>
+            </div>
+            <p>≈ 8k-10k token 结构化有效输入</p>
+          </div>
+
+          <div class="density-path is-ezer">
+            <div class="density-head">
+              <strong>Ezer 审计链路</strong>
+              <em>平均约 80k token 高密度结构化数据</em>
+            </div>
+            <div class="density-flow">
+              <span>解析</span>
+              <span>清洗</span>
+              <span>标准化</span>
+              <span>压缩</span>
+              <span>审计编排</span>
+            </div>
+            <div class="density-meter" aria-label="平均约 80k token 高密度结构化数据">
+              <span style="--w: 100%;"></span>
+            </div>
+            <p>更多有效信息用于财报判断、反证和复核</p>
+          </div>
+
+          <p class="density-note">
+            注：这里比较的是同等信息密度下的有效结构化输入，而不是模型厂商标称的原始上下文长度。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <StepsTimeline
+    title="核心优势"
+    items={[
+      {
+        title: "白盒分析",
+        text: "我们深知分析依据不可追溯是财报分析中最大的风险。Ezer 不能接受没有根据的结论被模型幻觉产出，因此关键判断必须尽量绑定指标、口径、来源和复核理由。",
+      },
+      {
+        title: "全链路使用最优质模型",
+        text: "金融分析这样的场景绝不能追求性价比。Ezer 不把任何关键环节交给廉价摘要链路，而是坚持用最优质的模型匹配对财报判断质量有要求的客户。",
+      },
+      {
+        title: "自研编排 + 小模型 + 专业数据库",
+        text: "自研编排负责拆解任务和组织复核，小模型承担链路中的专用任务，专业数据库补充财务、行业与外部数据，让财报审计覆盖更全面的证据面。",
+      },
+    ]}
+  />
+
+  <GalleryText
+    title="高价值模型 + 自研组件， 不是单模型套壳"
+    text="Ezer 使用自研财报标准化组件和发布在 Hugging Face 的自研组件模型处理链路中的专用任务；复杂财务推理和审计复核交给高价值基础大模型完成。小模型不是噱头，它证明 Ezer 在财报任务上有自己的组件化工程。"
+    cta={{
+      title: "查看演示",
+      url: "/check/?preview=true",
+    }}
+    video="/ezer.mp4"
+    marqueeTexts={[
+      "全链路高价值模型",
+      "审计式深度复核",
+      "Hugging Face 自研组件模型",
+      "拒绝廉价模型路由",
+    ]}
+  />
+
+
+  <TextMarquee
+    class="marquee"
+    texts={[
+      "结论绑定证据来源",
+      "拒绝廉价模型优先",
+      "通用 AI 只做摘要",
+      "Ezer 执行审计",
+    ]}
+  />
+
+  <Plans
+    title="服务计划"
+    subtitle="免费体验一部分分析能力；专业版面向需要更高额度和更完整输出的用户。"
+    items={[
+      {
+        title: "免费版",
+        price: {
+          amount: "￥0",
+          duration: "月",
+        },
+        link: {
+          title: "开始使用",
+          url: "/check/?preview=true",
+        },
+        features: [
+          { title: "每月3次财报分析" },
+          { title: "基础审计链路体验" },
+          { title: "核心结论与证据提示" },
+          { title: "社区支持", disabled: true },
+          { title: "导出专业 PDF 报告", disabled: true },
+        ],
+      },
+      {
+        title: "专业版",
+        price: {
+          amount: "￥29.99",
+          oldAmount: "￥49.99",
+          duration: "月",
+        },
+        badge: "限时优惠",
+        link: {
+          title: "立即购买",
+          url: "/premium/?from=home",
+        },
+        features: [
+          { title: "更高额度财报分析" },
+          { title: "高价值模型链路" },
+          { title: "审计式复核与证据绑定" },
+          { title: "历史分析记录", disabled: true },
+          { title: "导出专业 PDF 报告", disabled: true },
+        ],
+      },
+    ]}
+  />
+
+  <Faqs
+    title="常见问题"
+    mobileTitle="FAQs"
+    subtitle="快速了解 Ezer 如何重新定义财报研究链路。"
+    items={[
+      {
+        question: "Ezer 是不是只是调用一个大模型？",
+        answer:
+          "不是。Ezer 的核心是“审计式分析链路”。\n\n普通 AI 往往是将 PDF 转化为文本摘要，而 Ezer 则是通过解析、标准化、专业指标拆解、行业补充、审计复核等一整套工程化链路输出结论。模型只是其中的计算单元，真正决定分析质量的是数据结构化能力与编排逻辑。",
+      },
+      {
+        question: "Ezer 和 ChatGPT / Claude 有什么本质区别？",
+        answer:
+          "本质区别在于：通用 AI 在“生成内容”，而 Ezer 在进行“分析与复核”。\n\n普通 AI 处理 PDF 后输出的是不可追溯的文本；Ezer 则通过结构化财报数据和多阶段链路，确保每一个关键结论都能绑定原始数据支撑，实现结果的可验证性。",
+      },
+      {
+        question: "为什么 Ezer 的分析结果更值得信任？",
+        answer:
+          "因为 Ezer 的输出不是黑盒生成的“模型幻觉”。\n\n我们在底层设计上强制要求：关键结论必须绑定数据来源，重要判断必须附带审计依据。分析结果不仅是“模型说了什么”，更是“可以被检查、被复议、被深度回溯”的证据链条。",
+      },
+      {
+        question: "为什么 Ezer 在分析链路中追求最优模型？",
+        answer:
+          "在金融审计场景中，没有“次优模型”的容错空间。\n\n一次错误的中间判断可能会污染整个分析链路。与其使用低成本模型生成结果再进行人工修补，Ezer 选择在全链路匹配当前行业的最优解，不对分析质量做任何成本层面的折中。",
+      },
+      {
+        question: "如果分析结果出现错误怎么办？",
+        answer:
+          "Ezer 的核心价值在于“可回溯性”。\n\n我们不承诺绝不出错，但确保错误是可以被发现、被纠错的。你可以精准定位每一条结论对应的数据来源，检查推理路径，并在发现问题后进行二次验证。",
+      },
+    ]}
+  />
+
+  <ImageMarquee
+    images={[
+      {
+        src: logo1.src,
+        alt: "Logo 1",
+      },
+      {
+        src: logo2.src,
+        alt: "Logo 2",
+      },
+      {
+        src: logo3.src,
+        alt: "Logo 3",
+      },
+      {
+        src: logo4.src,
+        alt: "Logo 4",
+      },
+      {
+        src: logo5.src,
+        alt: "Logo 5",
+      },
+      {
+        src: logo6.src,
+        alt: "Logo 6",
+      },
+      {
+        src: logo7.src,
+        alt: "Logo 7",
+      },
+      {
+        src: logo8.src,
+        alt: "Logo 8",
+      },
+      {
+        src: logo9.src,
+        alt: "Logo 9",
+      },
+      {
+        src: logo10.src,
+        alt: "Logo 10",
+      },
+      {
+        src: logo11.src,
+        alt: "Logo 11",
+      },
+      {
+        src: logo12.src,
+        alt: "Logo 12",
+      },
+    ]}
+  />
+
+  <GL />
+  <GLPlaces />
+</Layout>
+
+<style>
+  .marquee {
+    padding: 2rem 0;
+    z-index: 9;
+  }
+
+  .model-proof {
+    padding: 6rem 0 4rem;
+  }
+
+  .model-proof__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(320px, 1fr);
+    gap: 3rem;
+    align-items: center;
+
+    @media (--mq-tablet) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .model-proof__eyebrow {
+    margin: 0 0 1rem;
+    font-size: 0.8rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    color: var(--color-brand-1);
+  }
+
+  .model-proof__title {
+    --fs: clamp(2.4rem, 5vw, 4.8rem);
+    --lh: 1.05;
+    margin-bottom: 1.5rem;
+  }
+
+  .model-proof__text {
+    max-width: 36rem;
+    opacity: 0.78;
+  }
+
+  .input-density-card {
+    display: grid;
+    gap: 1rem;
+    padding: clamp(1.4rem, 4vw, 3rem);
+    border: 1px solid rgba(var(--rgb-text), 0.1);
+    border-radius: 2rem;
+    position: relative;
+    z-index: 9;
+    background: rgba(var(--rgb-white), 0.3);
+    backdrop-filter: blur(2px);
+    box-shadow: 0 28px 80px rgba(0, 0, 0, 0.05);
+
+    :global([data-theme="dark"]) & {
+      background: rgba(24, 24, 30, 0.3);
+    }
+  }
+
+  .density-path {
+    padding: 1.2rem;
+    border: 1px solid rgba(var(--rgb-text), 0.1);
+    border-radius: 1.25rem;
+    background: rgba(var(--rgb-text), 0.035);
+  }
+
+  .density-path.is-ezer {
+    border-color: rgba(var(--rgb-brand-1), 0.4);
+    background: linear-gradient(135deg, rgba(var(--rgb-brand-1), 0.12), rgba(var(--rgb-brand-2), 0.08));
+  }
+
+  .density-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: baseline;
+
+    @media (--mq-phone) {
+      display: block;
+    }
+  }
+
+  .density-head strong,
+  .density-head em {
+    display: block;
+  }
+
+  .density-head strong {
+    font-size: 1.05rem;
+  }
+
+  .density-head em,
+  .density-path p,
+  .density-note {
+    font-size: 0.85rem;
+    color: var(--color-text-alt);
+  }
+
+  .density-funnel,
+  .density-flow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin: 1rem 0;
+  }
+
+  .density-funnel span,
+  .density-flow span {
+    padding: 0.4rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    line-height: 1;
+  }
+
+  .density-funnel span {
+    background: rgba(var(--rgb-text), 0.08);
+    color: var(--color-text-alt);
+  }
+
+  .density-flow span {
+    background: rgba(var(--rgb-brand-1), 0.16);
+    color: var(--color-brand-1);
+    font-weight: 700;
+  }
+
+  .density-meter {
+    height: 0.85rem;
+    border-radius: 999px;
+    background: rgba(var(--rgb-text), 0.08);
+    overflow: hidden;
+  }
+
+  .density-meter span {
+    display: block;
+    width: var(--w);
+    height: 100%;
+    border-radius: inherit;
+    transition: width 900ms ease;
+  }
+
+  .is-diy .density-meter span {
+    background: rgba(var(--rgb-text), 0.32);
+  }
+
+  .is-ezer .density-meter span {
+    background: linear-gradient(90deg, var(--color-brand-1), var(--color-brand-2));
+  }
+
+  .density-path p,
+  .density-note {
+    margin: 0.75rem 0 0;
+  }
+</style>
