@@ -6,6 +6,37 @@ import { brotliDecompressSync } from 'zlib';
 import nvdaData from '../../data/nvda_oq_2026fy_en_result_latest.json';
 import zhongjiData from '../../data/innolight_300308_sz_2026q1_stream_with_i.frontend.json';
 
+import { createSign } from 'crypto';
+
+function signTaskUrl(urlStr: string, taskId: string): string {
+  const privateKey = getEnv('RSA_PRIVATE_KEY');
+  if (!privateKey) {
+    console.warn('[BFF] RSA_PRIVATE_KEY not set in env. Skipping signature.');
+    return urlStr;
+  }
+  try {
+    const exp = Math.floor(Date.now() / 1000) + 600; // 10 minutes
+    const payload = JSON.stringify({ task_id: taskId, exp });
+    
+    const sign = createSign('SHA256');
+    sign.update(payload);
+    sign.end();
+    
+    const signature = sign.sign(privateKey, 'base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
+
+    const url = new URL(urlStr);
+    url.searchParams.set('sig', signature);
+    url.searchParams.set('exp', exp.toString());
+    return url.toString();
+  } catch (e) {
+    console.error('[BFF] Failed to sign URL:', e);
+    return urlStr;
+  }
+}
+
 const getEnv = (key: string) => {
   return import.meta.env[key] || (typeof process !== 'undefined' ? process.env[key] : undefined);
 };
@@ -378,17 +409,22 @@ export const GET: APIRoute = async ({ url, request }) => {
   const user = await getSupabaseUser(cookies);
   let isRewardQuota = false;
 
-  if (user) {
-    const quota = await checkAndUpdateQuota(user);
-    if (!quota.allowed) {
-      return new Response(JSON.stringify({
-        error: 'Quota exceeded',
-        code: 'QUOTA_EXCEEDED'
-      }), { status: 403 });
-    }
-    if ((quota as any).is_reward_quota) {
-      isRewardQuota = true;
-    }
+  if (!user) {
+    return new Response(JSON.stringify({
+      error: 'Unauthorized',
+      code: 'UNAUTHORIZED'
+    }), { status: 401 });
+  }
+
+  const quota = await checkAndUpdateQuota(user);
+  if (!quota.allowed) {
+    return new Response(JSON.stringify({
+      error: 'Quota exceeded',
+      code: 'QUOTA_EXCEEDED'
+    }), { status: 403 });
+  }
+  if ((quota as any).is_reward_quota) {
+    isRewardQuota = true;
   }
 
   // 2. Cache Key
@@ -432,7 +468,7 @@ export const GET: APIRoute = async ({ url, request }) => {
               streamEvents = Array.isArray(decompressed) ? decompressed : (decompressed.stream || decompressed);
             }
           }
-        } else if (cachedData && Array.isArray(cachedData.stream)) {
+} else if (cachedData && Array.isArray(cachedData.stream)) {
           streamEvents = cachedData.stream;
         }
 
@@ -444,32 +480,68 @@ export const GET: APIRoute = async ({ url, request }) => {
       }
     }
 
-    // 4. Cache Miss - In our new logic, we return the info for DIRECT browser fetch
-    // to bypass Vercel serverless function 10s timeout.
-    console.log(`[Cache Miss] ${cacheKey}. Redirecting frontend to direct fetch...`);
-
+    // 4. Cache Miss - Init task on backend server-side to hide long-term Token,
+    // then return task_id and stream URLs for direct browser streaming.
+    console.log(`[Cache Miss] ${cacheKey}. Initializing backend task from BFF...`);
     const formattedCode = formatSymbol(code);
     const apiPeriod = period === 'full' ? 'FY' : (period || 'FY');
 
-    return new Response(JSON.stringify({
-      action: 'direct_fetch',
-      config: {
-        api: BACKEND_API,
-        token: BACKEND_TOKEN,
-        params: {
+    try {
+      const taskResp = await fetch(BACKEND_API, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${BACKEND_TOKEN}`
+        },
+        body: JSON.stringify({
           code: formattedCode,
           year: parseInt(year || '2024'),
           period: apiPeriod,
-          lang: lang === 'en' ? 'en' : 'zh-CN' // Keep backend happy if it NEEDS zh-CN, but our cacheKey is already normalized
+          lang: lang === 'en' ? 'en' : 'zh-CN'
+        })
+      });
+
+      if (!taskResp.ok) {
+        const errText = await taskResp.text();
+        console.error(`[BFF] Backend task creation failed: ${taskResp.status} - ${errText}`);
+        return new Response(JSON.stringify({ error: `Backend task creation failed: ${taskResp.status}` }), { status: 502 });
+      }
+
+      const taskData = await taskResp.json();
+      const backendOrigin = new URL(BACKEND_API).origin;
+      const toAbsolute = (urlStr: string | null | undefined) => {
+        if (!urlStr) return null;
+        if (urlStr.startsWith('http')) return urlStr;
+        return `${backendOrigin}${urlStr}`;
+      };
+
+      console.log(`[BFF] Task created successfully. Task ID: ${taskData.task_id}`);
+
+      const rawStream = toAbsolute(taskData.stream_url);
+      const rawResult = toAbsolute(taskData.result_url);
+      const rawResultBr = toAbsolute(taskData.result_br_url);
+      const rawResultBrRaw = toAbsolute(taskData.result_br_raw_url);
+
+      return new Response(JSON.stringify({
+        action: 'direct_stream',
+        task_id: taskData.task_id,
+        stream_url: rawStream ? signTaskUrl(rawStream, taskData.task_id) : null,
+        result_url: rawResult ? signTaskUrl(rawResult, taskData.task_id) : null,
+        result_br_url: rawResultBr ? signTaskUrl(rawResultBr, taskData.task_id) : null,
+        result_br_raw_url: rawResultBrRaw ? signTaskUrl(rawResultBrRaw, taskData.task_id) : null,
+        token: taskData.token || null
+      }), {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          ...(isRewardQuota ? { 'X-Using-Reward-Quota': 'true' } : {})
         }
-      }
-    }), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(isRewardQuota ? { 'X-Using-Reward-Quota': 'true' } : {})
-      }
-    });
+      });
+
+    } catch (taskErr: any) {
+      console.error('[BFF] Exception during backend task initialization:', taskErr);
+      return new Response(JSON.stringify({ error: `Failed to initialize task: ${taskErr.message}` }), { status: 500 });
+    }
 
   } catch (err: any) {
     console.error('[API Error in GET]', err);
@@ -487,13 +559,57 @@ export const POST: APIRoute = async ({ request }) => {
 
   try {
     const body = await request.json();
-    const { cacheKey, data } = body;
+    const { action, cacheKey, resultBrRawUrl, token } = body;
 
-    if (!cacheKey || !data) {
-      return new Response(JSON.stringify({ error: 'Missing cacheKey or data' }), { status: 400 });
+    // 1. Authenticate user
+    const cookies = (request as any).headers.get('cookie') || '';
+    const user = await getSupabaseUser(cookies);
+    if (!user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized', code: 'UNAUTHORIZED' }), { status: 401 });
     }
 
-    await kv.set(cacheKey, data, { ex: CACHE_EXPIRY });
+    // 2. Validate payload and action
+    if (action !== 'backfill' || !cacheKey || !resultBrRawUrl) {
+      return new Response(JSON.stringify({ error: 'Invalid payload or missing action' }), { status: 400 });
+    }
+
+    // 3. Server-side fetch and validation
+    const backendOrigin = new URL(BACKEND_API).origin;
+    let absoluteFetchUrl = resultBrRawUrl;
+    if (!absoluteFetchUrl.startsWith('http')) {
+      absoluteFetchUrl = `${backendOrigin}${absoluteFetchUrl}`;
+    }
+
+    // SSRF Mitigation: Ensure URL domain matches backend
+    const fetchUrlObj = new URL(absoluteFetchUrl);
+    const expectedUrlObj = new URL(BACKEND_API);
+    if (fetchUrlObj.host !== expectedUrlObj.host) {
+      return new Response(JSON.stringify({ error: 'Forbidden target URL host' }), { status: 400 });
+    }
+
+    console.log(`[BFF Cache Backfill] Pulling result from backend: ${absoluteFetchUrl}`);
+    const resultResp = await fetch(absoluteFetchUrl, {
+      headers: { 'Authorization': `Bearer ${token || BACKEND_TOKEN}` }
+    });
+
+    if (!resultResp.ok) {
+      console.error(`[BFF Cache Backfill] Failed to pull results: ${resultResp.status}`);
+      return new Response(JSON.stringify({ error: `Pull results failed: ${resultResp.status}` }), { status: 502 });
+    }
+
+    const arrayBuffer = await resultResp.arrayBuffer();
+    const uint8Array = new Uint8Array(arrayBuffer);
+
+    // Keep base64 formatting compatible with preexisting frontend cache format
+    let binary = '';
+    const len = uint8Array.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(uint8Array[i]);
+    }
+    const base64Data = btoa(binary);
+
+    // 4. Write to KV Cache
+    await kv.set(cacheKey, base64Data, { ex: CACHE_EXPIRY });
 
     // Track in ZSET for Sitemap (uses timestamp as score)
     try {
@@ -506,7 +622,7 @@ export const POST: APIRoute = async ({ request }) => {
       console.warn('[ZSET Error]', zerr);
     }
 
-    console.log(`[Cache Stored via POST] ${cacheKey}`);
+    console.log(`[Cache Stored via BFF Backfill] ${cacheKey}`);
 
     return new Response(JSON.stringify({ success: true }), { status: 200 });
   } catch (err: any) {
