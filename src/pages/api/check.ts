@@ -6,30 +6,56 @@ import { brotliDecompressSync } from 'zlib';
 import nvdaData from '../../data/nvda_oq_2026fy_en_result_latest.json';
 import zhongjiData from '../../data/innolight_300308_sz_2026q1_stream_with_i.frontend.json';
 
-import { createSign } from 'crypto';
+import { createSign, randomUUID } from 'crypto';
 
-function signTaskUrl(urlStr: string, taskId: string): string {
+function base64UrlEncode(strOrBuffer: string | Buffer): string {
+  const buf = Buffer.isBuffer(strOrBuffer) ? strOrBuffer : Buffer.from(strOrBuffer);
+  return buf.toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
+}
+
+function signTaskUrl(urlStr: string, taskId: string, scope: string): string {
   const privateKey = getEnv('RSA_PRIVATE_KEY');
   if (!privateKey) {
     console.warn('[BFF] RSA_PRIVATE_KEY not set in env. Skipping signature.');
     return urlStr;
   }
   try {
-    const exp = Math.floor(Date.now() / 1000) + 600; // 10 minutes
-    const payload = JSON.stringify({ task_id: taskId, exp });
+    const iat = Math.floor(Date.now() / 1000);
+    const exp = iat + 600; // 10 minutes
+    const jti = randomUUID ? randomUUID() : Math.random().toString(36).substring(2, 15);
+    
+    const header = {
+      alg: "RS256",
+      typ: "JWT"
+    };
+    
+    const payload = {
+      task_id: taskId,
+      scope,
+      aud: "ezer-backend",
+      iat,
+      exp,
+      jti
+    };
+    
+    const encodedHeader = base64UrlEncode(JSON.stringify(header));
+    const encodedPayload = base64UrlEncode(JSON.stringify(payload));
+    const signingInput = `${encodedHeader}.${encodedPayload}`;
     
     const sign = createSign('SHA256');
-    sign.update(payload);
+    sign.update(signingInput);
     sign.end();
     
-    const signature = sign.sign(privateKey, 'base64')
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=/g, '');
+    const signature = sign.sign(privateKey);
+    const encodedSignature = base64UrlEncode(signature);
+    
+    const jwsToken = `${signingInput}.${encodedSignature}`;
 
     const url = new URL(urlStr);
-    url.searchParams.set('sig', signature);
-    url.searchParams.set('exp', exp.toString());
+    url.searchParams.set('sig', jwsToken);
     return url.toString();
   } catch (e) {
     console.error('[BFF] Failed to sign URL:', e);
@@ -525,10 +551,10 @@ export const GET: APIRoute = async ({ url, request }) => {
       return new Response(JSON.stringify({
         action: 'direct_stream',
         task_id: taskData.task_id,
-        stream_url: rawStream ? signTaskUrl(rawStream, taskData.task_id) : null,
-        result_url: rawResult ? signTaskUrl(rawResult, taskData.task_id) : null,
-        result_br_url: rawResultBr ? signTaskUrl(rawResultBr, taskData.task_id) : null,
-        result_br_raw_url: rawResultBrRaw ? signTaskUrl(rawResultBrRaw, taskData.task_id) : null,
+        stream_url: rawStream ? signTaskUrl(rawStream, taskData.task_id, 'stream') : null,
+        result_url: rawResult ? signTaskUrl(rawResult, taskData.task_id, 'result') : null,
+        result_br_url: rawResultBr ? signTaskUrl(rawResultBr, taskData.task_id, 'result_br') : null,
+        result_br_raw_url: rawResultBrRaw ? signTaskUrl(rawResultBrRaw, taskData.task_id, 'result_br_raw') : null,
         token: taskData.token || null
       }), {
         status: 200,
