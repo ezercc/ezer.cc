@@ -1,0 +1,52 @@
+---
+import Layout from "./Layout.astro";
+import "../styles/article.css";
+
+const { frontmatter } = Astro.props;
+const { title, description, keywords, ogImage, date, author } = frontmatter || {};
+---
+
+<Layout title={title} description={description} keywords={keywords} ogImage={ogImage}>
+  <div class="article-layout">
+    <!-- Scroll indicator -->
+    <div class="scroll-progress-bar" id="scroll-progress"></div>
+
+    <div class="article-container u-container">
+      <header class="article-header">
+        <div class="article-meta">
+          {date && <time datetime={date} class="article-date">{date}</time>}
+          {author && <span class="article-author">{author}</span>}
+        </div>
+        <h1 class="article-title">{title}</h1>
+        {description && <p class="article-description">{description}</p>}
+        <div class="article-divider"></div>
+      </header>
+
+      <article class="article-body">
+        <slot />
+      </article>
+
+
+    </div>
+  </div>
+</Layout>e>
+
+<script>
+  function initScrollProgress() {
+    const bar = document.getElementById('scroll-progress');
+    if (!bar) return;
+    
+    const handleScroll = () => {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      bar.style.width = scrolled + '%';
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+  }
+  
+  document.addEventListener('astro:page-load', initScrollProgress);
+  initScrollProgress();
+</script>

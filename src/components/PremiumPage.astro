@@ -1,0 +1,542 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { premiumPlan } from "../data/pricing";
+
+interface Props {
+  lang: "zh" | "en";
+}
+
+const { lang } = Astro.props;
+const isEnglish = lang === "en";
+const prefix = isEnglish ? "/en" : "";
+
+const copy = isEnglish
+  ? {
+      title: "Ezer Premium",
+      description:
+        "Early access for a higher-quota version of Ezer's evidence-linked financial-statement research software.",
+      eyebrow: "Paid subscription · early access",
+      intro:
+        "Premium is being prepared for launch. You can request early access now; the waitlist does not collect payment or create a subscription.",
+      priceSuffix: "per month",
+      priceNote:
+        "Planned launch price. Final price, tax, and renewal status will appear before payment.",
+      statusTitle: "No payment is collected today",
+      statusText:
+        "We will contact your account email when live checkout and paid delivery are available.",
+      featuresTitle: "Planned Premium access",
+      features: [
+        "Higher monthly financial-statement research quota",
+        "Multi-stage review with evidence and source references",
+        "Structured digital reports in your Ezer account",
+        "Customer support for billing and delivery",
+      ],
+      deliveryTitle: "Digital delivery",
+      deliveryText:
+        "After paid launch, access will normally activate immediately after a successful payment.",
+      cancelTitle: "Cancel any time",
+      cancelText:
+        "Monthly subscriptions may be cancelled at any time and remain available through the current paid period.",
+      refundTitle: "7-day first-charge window",
+      refundText:
+        "Eligible first subscription charges may be refunded when requested within seven calendar days.",
+      request: "Request Early Access",
+      loading: "Submitting…",
+      signIn: "Sign in to request access",
+      success: "Your early-access request has been recorded.",
+      duplicate: "You are already on the early-access list.",
+      error:
+        "We could not save the request. Please try again or email support.",
+      signedInAs: "Signed in as",
+      demo: "Try the free demo",
+      legalPrefix: "By requesting access, you acknowledge the",
+      terms: "Terms",
+      privacy: "Privacy Policy",
+      refunds: "Refund and Cancellation Policy",
+      delivery: "Digital Delivery Policy",
+      support: "Questions? Email joe@ezerlab.org",
+    }
+  : {
+      title: "弈泽专业版",
+      description: "申请弈泽证据可追溯财报研究软件高额度版本的早期体验。",
+      eyebrow: "付费订阅 · 早期体验",
+      intro:
+        "专业版正在准备上线。你现在可以申请早期体验；加入名单不会扣款，也不会建立付费订阅。",
+      priceSuffix: "每月",
+      priceNote: "计划上线价格；最终价格、税费和续订状态将在付款前显示。",
+      statusTitle: "当前不会收取任何费用",
+      statusText: "当真实结账和付费交付开放后，我们会通过你的账户邮箱通知你。",
+      featuresTitle: "计划开放的专业版能力",
+      features: [
+        "更高的每月财报研究额度",
+        "带证据和来源线索的多阶段复核",
+        "在弈泽账户中交付结构化数字报告",
+        "账单与数字交付客户支持",
+      ],
+      deliveryTitle: "数字交付",
+      deliveryText: "付费订阅上线后，支付成功通常会立即激活对应账户权限。",
+      cancelTitle: "可随时取消",
+      cancelText: "月度订阅可随时取消，并可使用至当前已付费周期结束。",
+      refundTitle: "首次扣款 7 天窗口",
+      refundText: "符合条件的首次订阅扣款可在七个自然日内申请退款。",
+      request: "申请早期体验",
+      loading: "正在提交…",
+      signIn: "登录后申请体验",
+      success: "已记录你的早期体验申请。",
+      duplicate: "你已经在早期体验名单中。",
+      error: "暂时无法保存申请，请重试或通过邮件联系支持。",
+      signedInAs: "当前账户",
+      demo: "体验免费演示",
+      legalPrefix: "申请体验即表示你已知悉",
+      terms: "服务条款",
+      privacy: "隐私政策",
+      refunds: "退款与取消政策",
+      delivery: "数字交付政策",
+      support: "如有疑问，请发送邮件至 joe@ezerlab.org",
+    };
+
+const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
+---
+
+<Layout
+  title={copy.title}
+  description={copy.description}
+  keywords={isEnglish
+    ? "Ezer Premium, financial statement research software, digital subscription"
+    : "弈泽专业版, 财报研究软件, 数字订阅"}
+>
+  <section class="premium">
+    <div class="u-container premium__inner">
+      <div class="premium__intro">
+        <p class="eyebrow">{copy.eyebrow}</p>
+        <h1>{copy.title}</h1>
+        <p class="lead">{copy.intro}</p>
+
+        <div
+          class="price"
+          aria-label={`${premiumPlan.displayPrice} ${copy.priceSuffix}`}
+        >
+          <strong>{premiumPlan.displayPrice}</strong>
+          <span>/ {copy.priceSuffix}</span>
+        </div>
+        <p class="price-note">{copy.priceNote}</p>
+
+        <div class="status-note">
+          <span aria-hidden="true">✓</span>
+          <div>
+            <strong>{copy.statusTitle}</strong>
+            <p>{copy.statusText}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="premium__card">
+        <h2>{copy.featuresTitle}</h2>
+        <ul class="features">
+          {copy.features.map((feature) => <li>{feature}</li>)}
+        </ul>
+
+        <div class="policy-grid">
+          <a href={`${prefix}/delivery-policy/`}>
+            <strong>{copy.deliveryTitle}</strong>
+            <span>{copy.deliveryText}</span>
+          </a>
+          <a href={`${prefix}/refund-and-cancellation/`}>
+            <strong>{copy.cancelTitle}</strong>
+            <span>{copy.cancelText}</span>
+          </a>
+          <a href={`${prefix}/refund-and-cancellation/`}>
+            <strong>{copy.refundTitle}</strong>
+            <span>{copy.refundText}</span>
+          </a>
+        </div>
+
+        <button type="button" id="join-waitlist-btn" class="primary-btn">
+          <span class="btn-text">{copy.request}</span>
+          <span class="loader" aria-hidden="true" hidden></span>
+        </button>
+        <p id="user-display-email" class="user-email" hidden></p>
+        <p id="waitlist-message" class="waitlist-message" role="status" hidden>
+        </p>
+
+        <p class="legal-copy">
+          {copy.legalPrefix}
+          <a href={`${prefix}/terms/`}>{copy.terms}</a>
+          {isEnglish ? ", " : "、"}
+          <a href={`${prefix}/privacy/`}>{copy.privacy}</a>
+          {isEnglish ? ", " : "、"}
+          <a href={`${prefix}/refund-and-cancellation/`}>{copy.refunds}</a>
+          {isEnglish ? ", and " : "及"}
+          <a href={`${prefix}/delivery-policy/`}>{copy.delivery}</a>
+          {isEnglish ? "." : "。"}
+        </p>
+
+        <div class="secondary-actions">
+          <a href={`${prefix}/check/?preview=true`}>{copy.demo}</a>
+          <a href="mailto:joe@ezerlab.org">{copy.support}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .premium {
+    min-height: 100vh;
+    padding: 10rem 0 7rem;
+    background:
+      radial-gradient(
+        circle at 15% 5%,
+        rgba(var(--rgb-brand-1), 0.3),
+        transparent 30rem
+      ),
+      radial-gradient(
+        circle at 90% 80%,
+        rgba(130, 99, 255, 0.18),
+        transparent 30rem
+      ),
+      #090a0f;
+    color: #fff;
+  }
+
+  .premium__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(22rem, 1.15fr);
+    gap: clamp(3rem, 7vw, 7rem);
+    align-items: center;
+  }
+
+  .eyebrow {
+    margin: 0 0 1.2rem;
+    color: #a999ff;
+    font-size: 0.76rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0 0 1.5rem;
+    font-size: clamp(2.8rem, 6vw, 4.8rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    word-break: keep-all;
+  }
+
+  .lead {
+    max-width: 37rem;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 1.08rem;
+    line-height: 1.7;
+  }
+
+  .price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.65rem;
+    margin-top: 2rem;
+  }
+
+  .price strong {
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    letter-spacing: -0.04em;
+  }
+
+  .price span,
+  .price-note {
+    color: rgba(255, 255, 255, 0.56);
+  }
+
+  .price-note {
+    max-width: 34rem;
+    margin: 0.4rem 0 0;
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .status-note {
+    display: flex;
+    gap: 0.85rem;
+    max-width: 38rem;
+    margin-top: 2rem;
+    padding: 1rem;
+    border: 1px solid rgba(117, 255, 193, 0.24);
+    border-radius: 1rem;
+    background: rgba(70, 170, 126, 0.1);
+  }
+
+  .status-note > span {
+    color: #75ffc1;
+    font-weight: 900;
+  }
+
+  .status-note p {
+    margin: 0.3rem 0 0;
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  .premium__card {
+    padding: clamp(1rem, 3vw, 2rem);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 1.5rem;
+    background: rgba(255, 255, 255, 0.075);
+    box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(24px);
+  }
+
+  .premium__card h2 {
+    margin: 0 0 1.5rem;
+    font-size: 1.55rem;
+  }
+
+  .features {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .features li {
+    display: flex;
+    gap: 0.75rem;
+    color: rgba(255, 255, 255, 0.76);
+    line-height: 1.5;
+  }
+
+  .features li::before {
+    content: "✓";
+    color: #a999ff;
+    font-weight: 900;
+  }
+
+  .policy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 1.2rem 0 2rem;
+  }
+
+  .policy-grid a {
+    padding: 0.8rem 0.6rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 0.9rem;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .policy-grid a:hover,
+  .policy-grid a:focus-visible {
+    border-color: #a999ff;
+    background: rgba(169, 153, 255, 0.08);
+  }
+
+  .policy-grid strong,
+  .policy-grid span {
+    display: block;
+  }
+
+  .policy-grid strong {
+    margin-bottom: 0.55rem;
+    font-size: 0.85rem;
+    word-break: keep-all;
+  }
+
+  .policy-grid span {
+    color: rgba(255, 255, 255, 0.56);
+    font-size: 0.72rem;
+    line-height: 1.55;
+  }
+
+  .primary-btn {
+    width: 100%;
+    min-height: 3.6rem;
+    border: 0;
+    border-radius: 0.9rem;
+    background: linear-gradient(135deg, #8b73ff, #6f52ff);
+    color: #fff;
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 1rem 2.5rem rgba(111, 82, 255, 0.28);
+  }
+
+  .primary-btn:disabled {
+    cursor: wait;
+    opacity: 0.7;
+  }
+
+  .loader {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .loader[hidden] {
+    display: none;
+  }
+
+  .user-email,
+  .waitlist-message,
+  .legal-copy {
+    color: rgba(255, 255, 255, 0.58);
+    font-size: 0.76rem;
+    line-height: 1.55;
+    text-align: center;
+  }
+
+  .waitlist-message {
+    color: #9dffd0;
+  }
+
+  .legal-copy a,
+  .secondary-actions a {
+    color: #c1b5ff;
+    text-underline-offset: 0.2em;
+  }
+
+  .secondary-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.25rem;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (max-width: 1200px) {
+    .policy-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .policy-grid a {
+      min-height: 0;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .premium {
+      padding-top: 8rem;
+    }
+
+    .premium__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .premium {
+      padding: 7rem 0 5rem;
+    }
+  }
+
+  /* Force dark mode variables for the header and body when viewing premium page */
+  :global(body:has(.premium)) {
+    --rgb-text: 255, 255, 255;
+    --rgb-text-alt: 153, 161, 179;
+    --rgb-brand-1: 162, 142, 247;
+    --rgb-brand-2: 43, 49, 29;
+    --rgb-brand-3: 31, 26, 61;
+    --rgb-brand-4: 46, 54, 34;
+    --rgb-brand-5: 172, 214, 60;
+    --color-bg: #0d1117;
+    --color-surface: #1e1e24;
+    --color-surface-translucent: rgba(30, 30, 36, 0.95);
+    
+    --color-text: rgb(var(--rgb-text));
+    --color-text-alt: rgb(var(--rgb-text-alt));
+    --color-brand-1: rgb(var(--rgb-brand-1));
+    --color-brand-2: rgb(var(--rgb-brand-2));
+    --color-brand-3: rgb(var(--rgb-brand-3));
+    --color-brand-4: rgb(var(--rgb-brand-4));
+    --color-brand-5: rgb(var(--rgb-brand-5));
+  }
+
+  :global(body:has(.premium) .logo svg) {
+    filter: invert(1) brightness(2) !important;
+  }
+</style>
+
+<script
+  is:inline
+  define:vars={{
+    requestLabel: copy.request,
+    loadingLabel: copy.loading,
+    signInLabel: copy.signIn,
+    successMessage: copy.success,
+    duplicateMessage: copy.duplicate,
+    errorMessage: copy.error,
+    signedInAs: copy.signedInAs,
+    signInUrl,
+  }}
+>
+  async function initPremiumEarlyAccess() {
+    const button = document.getElementById("join-waitlist-btn");
+    const buttonText = button?.querySelector(".btn-text");
+    const loader = button?.querySelector(".loader");
+    const emailHint = document.getElementById("user-display-email");
+    const message = document.getElementById("waitlist-message");
+
+    if (!button || !buttonText || !loader || !message) return;
+
+    const session = await window.auth?.getSession();
+    if (session && emailHint) {
+      emailHint.textContent = `${signedInAs}: ${session.user.email}`;
+      emailHint.hidden = false;
+    } else {
+      buttonText.textContent = signInLabel;
+    }
+
+    button.addEventListener("click", async () => {
+      const activeSession = await window.auth?.getSession();
+      if (!activeSession) {
+        window.location.href = signInUrl;
+        return;
+      }
+
+      button.disabled = true;
+      buttonText.textContent = loadingLabel;
+      loader.hidden = false;
+      message.hidden = true;
+
+      try {
+        const { error } = await window.auth.client.from("waitlist").insert({
+          uid: activeSession.user.id,
+          email: activeSession.user.email,
+        });
+
+        if (error && error.code !== "23505") throw error;
+        message.textContent =
+          error?.code === "23505" ? duplicateMessage : successMessage;
+        message.hidden = false;
+      } catch (error) {
+        message.textContent = errorMessage;
+        message.hidden = false;
+      } finally {
+        button.disabled = false;
+        buttonText.textContent = requestLabel;
+        loader.hidden = true;
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initPremiumEarlyAccess, {
+      once: true,
+    });
+  } else {
+    initPremiumEarlyAccess();
+  }
+</script>

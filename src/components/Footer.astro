@@ -12,33 +12,121 @@ interface Props {
   logoAlt: string;
   copyright: string;
   links: Link[];
+  legalLinks: Link[];
+  entityDisclosure: string;
+  disclaimer: string;
+  supportLabel: string;
+  cookieSettingsLabel: string;
+  supportEmail: string;
 }
 
-const { logoUrl, logoAlt, copyright, links } = Astro.props;
+const {
+  logoUrl,
+  logoAlt,
+  copyright,
+  links,
+  legalLinks,
+  entityDisclosure,
+  disclaimer,
+  supportLabel,
+  cookieSettingsLabel,
+  supportEmail,
+} = Astro.props;
+
+const cookieSettingsUrl = new URL(Astro.url);
+cookieSettingsUrl.searchParams.set("cookie-settings", "1");
+const cookieSettingsHref = `${cookieSettingsUrl.pathname}${cookieSettingsUrl.search}`;
+
+const legalGroup1 = legalLinks.slice(0, 4);
+const legalGroup2 = [
+  ...legalLinks.slice(4),
+  { title: cookieSettingsLabel, url: cookieSettingsHref, isCookieSettings: true }
+];
 ---
 
 <sy-footer>
   <footer>
     <div class="inner u-container">
-      <div class="wrapper">
-        <a class="logo" href={logoUrl}>
-          <SelectedLogo />
-          <span class="u-sr-only">{logoAlt}</span>
-        </a>
-
-        <div class="menu">
-          <ul>
-            {
-              links.map((l) => (
-                <li>
-                  <a href={l.url}>{l.title}</a>
-                </li>
-              ))
-            }
-          </ul>
+      <div class="footer-top">
+        <div class="brand">
+          <a class="logo" href={logoUrl}>
+            <SelectedLogo />
+            <span class="u-sr-only">{logoAlt}</span>
+          </a>
+          <p class="cp">© {new Date().getFullYear()} {copyright}</p>
+          <p>{disclaimer}</p>
         </div>
-        <p class="cp">© {new Date().getFullYear()} {copyright}</p>
+
+        <div class="menu-groups">
+          <nav class="menu" aria-label={lang === "en" ? "Product" : "产品"}>
+            <button class="menu-title" aria-expanded="false" aria-controls="footer-menu-product">
+              <span>{lang === "en" ? "Product" : "产品"}</span>
+              <svg class="chevron" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="menu-content" id="footer-menu-product">
+              <ul>
+                {
+                  links.map((l) => (
+                    <li>
+                      <a href={l.url}>{l.title}</a>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+          </nav>
+
+          <nav class="menu" aria-label={lang === "en" ? "Legal" : "法律"}>
+            <button class="menu-title" aria-expanded="false" aria-controls="footer-menu-legal">
+              <span>{lang === "en" ? "Legal" : "法律"}</span>
+              <svg class="chevron" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="menu-content" id="footer-menu-legal">
+              <ul>
+                {
+                  legalGroup1.map((l) => (
+                    <li>
+                      <a href={l.url}>{l.title}</a>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+          </nav>
+
+          <nav class="menu" aria-label={lang === "en" ? "Support" : "支持"}>
+            <button class="menu-title" aria-expanded="false" aria-controls="footer-menu-support">
+              <span>{lang === "en" ? "Support" : "支持"}</span>
+              <svg class="chevron" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="menu-content" id="footer-menu-support">
+              <ul>
+                {
+                  legalGroup2.map((l) => (
+                    <li>
+                      {l.isCookieSettings ? (
+                        <a class="cookie-settings" href={l.url}>
+                          {l.title}
+                        </a>
+                      ) : (
+                        <a href={l.url}>{l.title}</a>
+                      )}
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+          </nav>
+        </div>
       </div>
+
+
     </div>
   </footer>
 </sy-footer>
@@ -75,24 +163,76 @@ const { logoUrl, logoAlt, copyright, links } = Astro.props;
     svg {
       width: auto;
       height: 2.5rem;
-      filter: invert(1); /* Logo is black, footer is dark, must invert to white */
+      filter: invert(
+        1
+      ); /* Logo is black, footer is dark, must invert to white */
+    }
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: minmax(15rem, 1fr) minmax(0, 2fr);
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .brand {
+    max-width: 30rem;
+  }
+
+  .brand p {
+    margin: 1rem 0 0;
+    color: rgba(255, 255, 255, 0.64);
+    line-height: 1.55;
+  }
+
+  .menu-groups {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+  }
+
+  .menu-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0 0 0.8rem;
+    color: rgba(255, 255, 255, 0.48);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: left;
+    font-family: inherit;
+    pointer-events: none;
+
+    .chevron {
+      display: none;
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      color: rgba(255, 255, 255, 0.48);
     }
   }
 
   .menu {
     ul {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr;
       padding: 0;
-      gap: 1rem;
+      gap: 0.55rem 1rem;
       margin: 0;
       list-style: none;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
 
-      a {
+      a,
+      button {
         text-decoration: none;
         position: relative;
+        color: rgba(255, 255, 255, 0.82);
+        font: inherit;
+        font-size: 0.82rem;
 
         &::after {
           content: "";
@@ -119,14 +259,122 @@ const { logoUrl, logoAlt, copyright, links } = Astro.props;
     }
   }
 
-  .wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
 
-    @media (--mq-tablet) {
+
+  .cookie-settings {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .footer-bottom {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 3rem;
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .support,
+  .disclaimer,
+  .cp {
+    margin: 0;
+  }
+
+  .support {
+    margin-bottom: 0.45rem;
+
+    a {
+      color: #fff;
+      text-underline-offset: 0.2em;
+    }
+  }
+
+  .disclaimer {
+    max-width: 60rem;
+    color: rgba(255, 255, 255, 0.52);
+    font-size: 0.72rem;
+    line-height: 1.55;
+  }
+
+  .cp {
+    flex: 0 0 auto;
+    color: rgba(255, 255, 255, 0.6);
+    white-space: nowrap;
+  }
+
+  @media (--mq-tablet) {
+    .footer-top {
+      grid-template-columns: 1fr;
+    }
+
+    .footer-bottom {
+      align-items: start;
       flex-direction: column;
+    }
+  }
+
+  @media (--mq-phone) {
+    .footer-top {
+      row-gap: 1.5rem;
+    }
+
+    .menu-groups {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .menu {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .menu-title {
+      pointer-events: auto;
+      cursor: pointer;
+      padding: 0.5rem 0;
+      margin: 0;
+
+      .chevron {
+        display: block;
+      }
+    }
+
+    .menu-content {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      overflow: hidden;
+
+      ul {
+        min-height: 0;
+        grid-template-columns: 1fr;
+        padding-bottom: 0;
+        opacity: 0;
+        transition: opacity 0.25s ease, padding-bottom 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      }
+    }
+
+    .menu.is-open {
+      .menu-title {
+        color: #fff;
+        
+        .chevron {
+          transform: rotate(180deg);
+          color: #fff;
+        }
+      }
+
+      .menu-content {
+        grid-template-rows: 1fr;
+
+        ul {
+          padding-bottom: 0.5rem;
+          opacity: 1;
+        }
+      }
     }
   }
 </style>
@@ -139,6 +387,7 @@ const { logoUrl, logoAlt, copyright, links } = Astro.props;
       addResizeObserver(this);
 
       this.onResize();
+      this.initAccordion();
     }
 
     onResize() {
@@ -153,7 +402,41 @@ const { logoUrl, logoAlt, copyright, links } = Astro.props;
         this.classList.remove("has-no-anim");
       }
     }
+
+    initAccordion() {
+      const menus = this.querySelectorAll(".menu");
+      const mediaQuery = window.matchMedia(
+        "(max-width: 767px) and (orientation: landscape), (max-width: 576px)"
+      );
+
+      menus.forEach((menu) => {
+        const titleBtn = menu.querySelector(".menu-title");
+        if (!titleBtn) return;
+
+        titleBtn.addEventListener("click", () => {
+          if (!mediaQuery.matches) return;
+
+          const isOpen = menu.classList.toggle("is-open");
+          titleBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+          this.onResize();
+        });
+      });
+
+      mediaQuery.addEventListener("change", (e) => {
+        if (!e.matches) {
+          menus.forEach((menu) => {
+            menu.classList.remove("is-open");
+            const titleBtn = menu.querySelector(".menu-title");
+            if (titleBtn) {
+              titleBtn.setAttribute("aria-expanded", "false");
+            }
+          });
+        }
+      });
+    }
   }
 
-  customElements.define("sy-footer", Footer);
+  if (!customElements.get("sy-footer")) {
+    customElements.define("sy-footer", Footer);
+  }
 </script>

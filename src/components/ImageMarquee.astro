@@ -161,10 +161,12 @@ const { images, direction } = Astro.props;
 
     tick() {
       const dir = this.direction;
+      const velocity = typeof window !== "undefined" && typeof window.scrollVelocity === "number" && !isNaN(window.scrollVelocity) ? window.scrollVelocity : 0;
+      const scrollDir = typeof window !== "undefined" && typeof window.scrollDirection === "number" && !isNaN(window.scrollDirection) ? window.scrollDirection : 1;
 
       this.x -=
-        (Math.min(Math.abs(window.scrollVelocity) * 0.4, 10) + 0.5) *
-        (window.scrollDirection || 1) *
+        (Math.min(Math.abs(velocity) * 0.4, 10) + 0.5) *
+        scrollDir *
         dir;
 
       const images = this.images;

@@ -33,3 +33,6 @@ frontend_business_outlook_wordsea_security_handoff.md
 temp_keys.json
 *keys.txt
 
+# local supabase testing folder (managed in private repo)
+supabase/
+
