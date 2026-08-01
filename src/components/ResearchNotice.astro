@@ -1,0 +1,64 @@
+---
+interface Props {
+  lang: "zh" | "en";
+}
+
+const { lang } = Astro.props;
+const isEnglish = lang === "en";
+---
+
+<aside
+  class="research-notice"
+  aria-label={isEnglish ? "Research disclaimer" : "财报研究声明"}
+>
+  <strong
+    >{
+      isEnglish
+        ? "Research software, not investment advice."
+        : "财报研究软件，不构成投资建议。"
+    }</strong
+  >
+  <span>
+    {
+      isEnglish
+        ? "Outputs may contain errors or omissions. Verify material information against original filings."
+        : "输出可能存在错误或遗漏，重要信息请对照原始披露独立核验。"
+    }
+  </span>
+  <a
+    href={isEnglish
+      ? "/en/financial-research-disclaimer/"
+      : "/financial-research-disclaimer/"}
+  >
+    {isEnglish ? "Read the full disclaimer" : "查看完整声明"}
+  </a>
+</aside>
+
+<style>
+  .research-notice {
+    display: flex;
+    justify-content: center;
+    gap: 0.45rem 0.8rem;
+    flex-wrap: wrap;
+    max-width: 58rem;
+    margin: 1rem auto 0;
+    padding: 0.8rem 1rem;
+    border: 1px solid rgba(var(--rgb-brand-1), 0.18);
+    border-radius: 0.8rem;
+    background: rgba(var(--rgb-brand-1), 0.07);
+    color: var(--color-text-alt);
+    font-size: 0.78rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .research-notice strong {
+    color: var(--color-text);
+  }
+
+  .research-notice a {
+    color: var(--color-brand-1);
+    font-weight: 700;
+    text-underline-offset: 0.2em;
+  }
+</style>

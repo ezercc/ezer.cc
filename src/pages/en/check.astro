@@ -1751,6 +1751,10 @@ const translations = ui[lang];
       errorTextEl.innerHTML = i18n['quota.limit_reached'];
       if (backLink) backLink.classList.add('hidden');
       if (upgradeLink) upgradeLink.classList.remove('hidden');
+    } else if (msg && (msg.toLowerCase().includes('unauthorized') || msg.toLowerCase().includes('401'))) {
+      errorTextEl.innerHTML = i18n['auth.unauthorized'];
+      if (backLink) backLink.classList.remove('hidden');
+      if (upgradeLink) upgradeLink.classList.add('hidden');
     } else {
       // Normal error
       if (backLink) backLink.classList.remove('hidden');
@@ -1882,21 +1886,51 @@ const translations = ui[lang];
       }
 
       if (event === 'b_card' || event === 'analysis') {
-        const card = document.createElement('div');
-        card.className = 'analysis-card';
+        const cardId = d.card_id || 'unknown';
         
-        if (d.title) {
-          const h3 = document.createElement('h3');
-          h3.textContent = d.title;
-          card.appendChild(h3);
+        // Find if this card is already rendered (self-healing / merge logic)
+        let card = writers.b.element.querySelector(`.analysis-card[data-card-id="${cardId}"]`) as HTMLElement;
+        const isNewCard = !card;
+        
+        if (isNewCard) {
+          card = document.createElement('div');
+          card.className = 'analysis-card';
+          card.dataset.cardId = cardId;
+          writers.b.element.appendChild(card);
+        } else {
+          // Reset card content for reload
+          card.innerHTML = '';
         }
+
+        // Title fallback logic
+        const CARD_TITLES: Record<string, Record<string, string>> = {
+          business_outlook: {
+            zh: "经营展望",
+            en: "Business Outlook",
+          },
+        };
+        const titleText = (d.title && d.title.trim())
+          || CARD_TITLES[cardId]?.[lang]
+          || cardId;
+        
+        const h3 = document.createElement('h3');
+        h3.textContent = titleText;
+        card.appendChild(h3);
+        
+        // Skip typewriter animation for business_outlook or long text paragraphs
+        const skipAnimation = cardId === 'business_outlook' || (d.conclusion && d.conclusion.length > 150);
         
         const conclusion = document.createElement('p');
         conclusion.className = 'conclusion';
         card.appendChild(conclusion);
         
-        writers.b.element.appendChild(card);
-        if (d.conclusion) await typeText(conclusion, d.conclusion, 15);
+        if (d.conclusion) {
+          if (skipAnimation) {
+            conclusion.textContent = d.conclusion;
+          } else {
+            await typeText(conclusion, d.conclusion, 15);
+          }
+        }
 
         const detailsList = document.createElement('ul');
         detailsList.className = 'details-list';
@@ -1917,7 +1951,11 @@ const translations = ui[lang];
             li.appendChild(textSpan);
             detailsList.appendChild(li);
             const text = Array.isArray(val) ? val.join(', ') : val;
-            await typeText(textSpan, text, 10);
+            if (skipAnimation) {
+              textSpan.textContent = text;
+            } else {
+              await typeText(textSpan, text, 10);
+            }
           }
         }
 
@@ -1929,7 +1967,69 @@ const translations = ui[lang];
           const textSpan = document.createElement('span');
           implication.appendChild(textSpan);
           card.appendChild(implication);
-          await typeText(textSpan, d.investor_implication, 15);
+          if (skipAnimation) {
+            textSpan.textContent = d.investor_implication;
+          } else {
+            await typeText(textSpan, d.investor_implication, 15);
+          }
+        }
+
+        // Render sources (source_refs) with deduplication
+        if (d.source_refs && Array.isArray(d.source_refs) && d.source_refs.length > 0) {
+          const sourceContainer = document.createElement('div');
+          sourceContainer.className = 'source-refs-container';
+          sourceContainer.style.marginTop = '14px';
+          sourceContainer.style.paddingTop = '10px';
+          sourceContainer.style.borderTop = '1px dashed rgba(255,255,255,0.08)';
+          sourceContainer.style.fontSize = '0.85em';
+          sourceContainer.style.opacity = '0.8';
+          
+          const labelSources = lang === 'zh' ? '数据来源: ' : 'Sources: ';
+          sourceContainer.innerHTML = `<span class="label" style="font-weight:600;color:var(--color-brand-1);margin-right:6px;">${labelSources}</span>`;
+          
+          const sourceListSpan = document.createElement('span');
+          
+          // Deduplicate refs by source_url + section_id
+          const seen = new Set();
+          const uniqueRefs = d.source_refs.filter((ref: any) => {
+            if (!ref) return false;
+            const key = `${ref.source_url || ''}_${ref.section_id || ''}`;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          });
+          
+          uniqueRefs.forEach((ref: any, idx: number) => {
+            const periodText = ref.report_period ? `[${ref.report_period}] ` : '';
+            const nameText = ref.source_name || '';
+            const locatorText = ref.source_locator ? ` (${ref.source_locator})` : '';
+            const displayText = `${periodText}${nameText}${locatorText}`;
+            
+            const refSpan = document.createElement('span');
+            refSpan.style.display = 'inline-block';
+            refSpan.style.marginRight = '10px';
+            
+            if (ref.source_url && ref.source_url.trim()) {
+              const a = document.createElement('a');
+              a.href = ref.source_url.trim();
+              a.target = '_blank';
+              a.rel = 'noreferrer';
+              a.textContent = displayText;
+              a.style.color = 'var(--color-brand-1)';
+              a.style.textDecoration = 'underline';
+              refSpan.appendChild(a);
+            } else {
+              refSpan.textContent = displayText;
+            }
+            
+            if (idx > 0) {
+              sourceListSpan.appendChild(document.createTextNode(', '));
+            }
+            sourceListSpan.appendChild(refSpan);
+          });
+          
+          sourceContainer.appendChild(sourceListSpan);
+          card.appendChild(sourceContainer);
         }
       }
     }
@@ -1946,8 +2046,19 @@ const translations = ui[lang];
       }
 
       if (event === 'c_challenge') {
-        const div = document.createElement('div');
-        div.className = 'audit-item challenge';
+        const challengeKey = d.target_card_id || d.issue || '';
+        let div = writers.c.element.querySelector(`.audit-item.challenge[data-challenge-key="${challengeKey}"]`) as HTMLElement;
+        const isNew = !div;
+        
+        if (isNew) {
+          div = document.createElement('div');
+          div.className = 'audit-item challenge';
+          div.dataset.challengeKey = challengeKey;
+          writers.c.element.appendChild(div);
+        } else {
+          div.innerHTML = '';
+        }
+
         const labelChallenge = lang === 'zh' ? '审计挑战' : 'Audit Challenge';
         div.innerHTML = `<div class="audit-icon-text"><i class="fa-solid fa-triangle-exclamation"></i> ${labelChallenge} (${d.severity || 'MEDIUM'})</div>`;
         const content = document.createElement('div');
@@ -1960,13 +2071,23 @@ const translations = ui[lang];
           meta.textContent = `${labelTarget}: ${d.target_card_id}`;
           div.appendChild(meta);
         }
-        writers.c.element.appendChild(div);
         if (d.issue) await typeText(content, d.issue, 15);
       }
 
       if (event === 'c_resolved' || event === 'audit') {
-        const div = document.createElement('div');
-        div.className = 'audit-item resolved';
+        const resolvedKey = d.target_card_id || d.rationale || d.content || d.text || '';
+        let div = writers.c.element.querySelector(`.audit-item.resolved[data-resolved-key="${resolvedKey}"]`) as HTMLElement;
+        const isNew = !div;
+        
+        if (isNew) {
+          div = document.createElement('div');
+          div.className = 'audit-item resolved';
+          div.dataset.resolvedKey = resolvedKey;
+          writers.c.element.appendChild(div);
+        } else {
+          div.innerHTML = '';
+        }
+
         const labelResolved = lang === 'zh' ? '审计通过' : 'Audit Resolved';
         div.innerHTML = `<div class="audit-icon-text"><i class="fa-solid fa-circle-check"></i> ${labelResolved}</div>`;
         const content = document.createElement('div');
@@ -1979,7 +2100,6 @@ const translations = ui[lang];
           meta.textContent = `${labelFix}: ${d.target_card_id}`;
           div.appendChild(meta);
         }
-        writers.c.element.appendChild(div);
         const textToType = d.rationale || d.content || d.text || '';
         if (textToType) await typeText(content, textToType, 15);
       }
@@ -2067,6 +2187,12 @@ const translations = ui[lang];
 
       try {
         const localResp = await fetch(`/api/check?${apiParams.toString()}`);
+        if (localResp.status === 401) {
+          cleanup();
+          showError('unauthorized');
+          return;
+        }
+
         const contentType = localResp.headers.get('content-type');
 
       // (A) Cache Hit Case: Process as a stream as before
@@ -2084,36 +2210,15 @@ const translations = ui[lang];
         throw new Error(serverResult.error);
       }
 
-      // (C) Direct Fetch Case: Bypassing Vercel timeouts
-      if (serverResult.action === 'direct_fetch') {
-        const { api, token, params } = serverResult.config;
-        console.log('Cache Miss: Initiating DIRECT fetch to backend to avoid 10s limits...');
+      // (C) Direct Stream Case: Bypassing Vercel timeouts using pre-initialized task from server
+      if (serverResult.action === 'direct_stream') {
+        const taskId = serverResult.task_id;
+        const tempToken = serverResult.token;
 
-        // Step 1: Initialize Task (POST /api/tasks)
-        const taskResp = await fetch(api, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify(params)
-        });
-        if (!taskResp.ok) {
-            const errTxt = await taskResp.text();
-            throw new Error(`Task init failed: ${taskResp.status} ${errTxt}`);
-        }
-        
-        const taskData = await taskResp.json();
-        const taskId = taskData.task_id;
-        
-        const apiBase = new URL(api).origin;
-        function toBackendUrl(rawUrl?: string | null) {
-          if (!rawUrl) return null;
-          if (rawUrl.startsWith('http')) return rawUrl;
-          return `${apiBase}${rawUrl}`;
-        }
-
-        const streamUrl = toBackendUrl(taskData.stream_url);
-        const resultUrl = toBackendUrl(taskData.result_url);
-        const resultBrUrl = toBackendUrl(taskData.result_br_url);
-        const resultBrRawUrl = toBackendUrl(taskData.result_br_raw_url);
+        const streamUrl = serverResult.stream_url;
+        const resultUrl = serverResult.result_url;
+        const resultBrUrl = serverResult.result_br_url;
+        const resultBrRawUrl = serverResult.result_br_raw_url;
 
         if (!streamUrl) throw new Error('No stream_url from backend');
 
@@ -2127,7 +2232,7 @@ const translations = ui[lang];
 
         console.log('Connecting to direct stream:', streamUrl);
         const streamResp = await fetch(streamUrl, {
-            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'text/event-stream' },
+            headers: tempToken ? { 'Authorization': `Bearer ${tempToken}`, 'Accept': 'text/event-stream' } : { 'Accept': 'text/event-stream' },
             signal: controller.signal
         });
 
@@ -2167,14 +2272,19 @@ const translations = ui[lang];
             console.log('Fetching final result for data verification from:', finalFetchUrl);
             try {
                 const finalResp = await fetch(finalFetchUrl, {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                    headers: tempToken ? { 'Authorization': `Bearer ${tempToken}` } : {}
                 });
                 if (finalResp.ok) {
                     const finalData = await finalResp.json();
                     console.log('Final Result Data:', finalData);
-                    const payload = finalData.final_payload;
-                    if (payload) {
-                        // Optionally merge or sync with collectedData
+                    
+                    // Self-healing merge logic: Re-run all event processors from full backend stream
+                    const finalStream = finalData.stream || finalData;
+                    if (Array.isArray(finalStream)) {
+                        console.log(`[Self-healing] Merging final stream. Total items: ${finalStream.length}`);
+                        for (const item of finalStream) {
+                            await processEvent(item);
+                        }
                     }
                 }
             } catch (e) {
@@ -2182,71 +2292,25 @@ const translations = ui[lang];
             }
         }
 
-        // Step 4: Backfill Cache only if successfully completed
+        // Step 4: Request BFF to verify and store cache securely
         if (isSuccessfullyCompleted && collectedData.length > 0) {
-            console.log('Analysis complete and verified. Backfilling cache...');
+            console.log('Analysis complete and verified. Requesting BFF cache backfill...');
             
             const backfillCache = async () => {
-              if (resultBrRawUrl) {
-                try {
-                  console.log('Fetching raw Brotli file for cache backfill:', resultBrRawUrl);
-                  const brResp = await fetch(resultBrRawUrl, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                  });
-                  if (brResp.ok) {
-                    const arrayBuffer = await brResp.arrayBuffer();
-                    const uint8Array = new Uint8Array(arrayBuffer);
-                    let binary = '';
-                    const len = uint8Array.byteLength;
-                    for (let i = 0; i < len; i++) {
-                      binary += String.fromCharCode(uint8Array[i]);
-                    }
-                    const base64Data = btoa(binary);
-                    
-                    console.log('Storing raw Brotli Base64 in Redis cache...');
-                    const postResp = await fetch('/api/check', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ cacheKey, data: base64Data })
-                    });
-                    console.log('Brotli cache backfill response code:', postResp.status);
-                    return;
-                  }
-                } catch (brErr) {
-                  console.warn('Failed to fetch raw Brotli file, falling back to resultUrl or collectedData:', brErr);
-                }
-              }
-              
-              // Fallback 1: Plain result JSON
-              if (resultUrl) {
-                try {
-                  console.log('Falling back: Fetching plain result JSON for cache backfill...');
-                  const resResp = await fetch(resultUrl, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                  });
-                  if (resResp.ok) {
-                    const resData = await resResp.json();
-                    await fetch('/api/check', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ cacheKey, data: resData })
-                    });
-                    console.log('Plain JSON cache backfill successful');
-                    return;
-                  }
-                } catch (resErr) {
-                  console.warn('Failed to fetch plain result JSON for cache backfill:', resErr);
-                }
-              }
-              
-              // Fallback 2: Stream events array
-              console.log('Falling back: Storing collectedData in cache...');
-              await fetch('/api/check', {
+              const backfillPayload = {
+                action: 'backfill',
+                cacheKey: cacheKey,
+                resultBrRawUrl: resultBrRawUrl || resultUrl,
+                token: tempToken || null
+              };
+
+              console.log('Sending backfill request to BFF:', backfillPayload);
+              const postResp = await fetch('/api/check', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ cacheKey, data: collectedData })
+                body: JSON.stringify(backfillPayload)
               });
-              console.log('collectedData cache backfill successful');
+              console.log('BFF cache backfill response code:', postResp.status);
             };
             
             backfillCache().catch(err => console.error('Cache backfill failed:', err));
@@ -2379,15 +2443,16 @@ const translations = ui[lang];
       // Format date: 2024-05-01 12:00 -> 24/05/01
       const formattedDate = String(rawDate).substring(2, 10).replace(/-/g, '/');
       
-      const sourceDisplay = source === 'UNKNOWN' ? 'Choice金融数据库' : (source || 'Choice金融数据库');
+      const isUrlValid = url && url.trim();
+      const sourceDisplay = (!source || source === 'UNKNOWN') ? (lang === 'zh' ? '行业资讯' : 'Industry News') : source;
       
       const item = document.createElement('div');
       item.className = 'news-item';
       item.style.animationDelay = `${index * 0.05}s`;
 
-      const linkHtml = url 
-        ? `<a href="${url}" target="_blank" rel="noreferrer" class="meta-pill source">${sourceDisplay}</a>`
-        : `<span class="meta-pill source">${sourceDisplay}</span>`;
+      const linkHtml = isUrlValid
+        ? `<a href="${url.trim()}" target="_blank" rel="noreferrer" class="meta-pill source">${sourceDisplay}</a>`
+        : `<span class="meta-pill source" style="cursor: not-allowed; opacity: 0.6;">${lang === 'zh' ? '行业资讯' : 'Industry News'}</span>`;
 
       item.innerHTML = `
         <span class="news-bullet">•</span>

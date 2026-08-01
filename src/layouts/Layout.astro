@@ -6,6 +6,7 @@ import Footer from "../components/Footer.astro";
 import LanguageSwitcher from "../components/LanguageSwitcher.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import SmoothScroll from "../components/SmoothScroll.astro";
+import CookieConsent from "../components/CookieConsent.astro";
 import { pwaInfo } from "virtual:pwa-info";
 
 const { title, description, keywords, ogImage } = Astro.props;
@@ -16,34 +17,85 @@ const metaDescription = description || t("seo.default_description");
 const metaKeywords = keywords || t("seo.default_keywords");
 
 const links = [
-  { title: t("nav.home"), url: lang === 'zh' ? '/' : '/en/' },
-  { title: t("nav.about"), url: lang === 'zh' ? '/about/' : '/en/about/' },
-  { title: t("nav.changelog"), url: lang === 'zh' ? '/changelog/' : '/en/changelog/' },
-  { title: t("nav.search"), url: lang === 'zh' ? '/search/' : '/en/search/' },
+  { title: t("nav.home"), url: lang === "zh" ? "/" : "/en/" },
+  { title: t("nav.about"), url: lang === "zh" ? "/about/" : "/en/about/" },
+  {
+    title: t("nav.changelog"),
+    url: lang === "zh" ? "/changelog/" : "/en/changelog/",
+  },
+  { title: t("nav.search"), url: lang === "zh" ? "/search/" : "/en/search/" },
 ];
 
-const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '/en' || Astro.url.pathname === '/en/';
+const legalLinks = [
+  { title: t("nav.terms"), url: lang === "zh" ? "/terms/" : "/en/terms/" },
+  {
+    title: t("nav.privacy"),
+    url: lang === "zh" ? "/privacy/" : "/en/privacy/",
+  },
+  {
+    title: t("nav.refunds"),
+    url:
+      lang === "zh"
+        ? "/refund-and-cancellation/"
+        : "/en/refund-and-cancellation/",
+  },
+  {
+    title: t("nav.delivery"),
+    url: lang === "zh" ? "/delivery-policy/" : "/en/delivery-policy/",
+  },
+  {
+    title: t("nav.disclaimer"),
+    url:
+      lang === "zh"
+        ? "/financial-research-disclaimer/"
+        : "/en/financial-research-disclaimer/",
+  },
+  {
+    title: t("nav.cookies"),
+    url: lang === "zh" ? "/cookie-policy/" : "/en/cookie-policy/",
+  },
+  {
+    title: t("nav.contact"),
+    url: lang === "zh" ? "/contact/" : "/en/contact/",
+  },
+];
+
+const isHome =
+  Astro.url.pathname === "/" ||
+  Astro.url.pathname === "/en" ||
+  Astro.url.pathname === "/en/";
 
 // Generate canonical and alternate lang URLs for SEO
-const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://www.ezer.cc');
+const canonicalURL = new URL(
+  Astro.url.pathname,
+  Astro.site || "https://www.ezer.cc",
+);
 
 const pathname = Astro.url.pathname;
-const isEn = lang === 'en';
-let alternatePath = '';
+const isEn = lang === "en";
+let alternatePath = "";
 if (isEn) {
-  alternatePath = pathname.replace(/^\/en/, '') || '/';
+  alternatePath = pathname.replace(/^\/en/, "") || "/";
 } else {
-  alternatePath = pathname === '/' ? '/en/' : `/en${pathname}`;
+  alternatePath = pathname === "/" ? "/en/" : `/en${pathname}`;
 }
 // Normalize duplicate slashes
-alternatePath = alternatePath.replace(/\/+/g, '/');
-const alternateURL = new URL(alternatePath, Astro.site || 'https://www.ezer.cc');
+alternatePath = alternatePath.replace(/\/+/g, "/");
+const alternateURL = new URL(
+  alternatePath,
+  Astro.site || "https://www.ezer.cc",
+);
 
-const ogImageURL = new URL(ogImage || '/pwa-512x512.png', Astro.site || 'https://www.ezer.cc').toString();
+const ogImageURL = new URL(
+  ogImage || "/pwa-512x512.png",
+  Astro.site || "https://www.ezer.cc",
+).toString();
 
-const displayTitle = isHome 
-  ? (title || t("site.name")) 
-  : (title ? `${title} - ${t("site.name")}` : t("site.name"));
+const displayTitle = isHome
+  ? title || t("site.name")
+  : title
+    ? `${title} - ${t("site.name")}`
+    : t("site.name");
 ---
 
 <html lang={lang}>
@@ -52,11 +104,15 @@ const displayTitle = isHome
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={metaDescription} />
     <meta name="keywords" content={metaKeywords} />
-    
+
     <link rel="canonical" href={canonicalURL} />
     <link rel="alternate" hreflang={lang} href={canonicalURL} />
-    <link rel="alternate" hreflang={isEn ? 'zh' : 'en'} href={alternateURL} />
-    <link rel="alternate" hreflang="x-default" href={isEn ? alternateURL : canonicalURL} />
+    <link rel="alternate" hreflang={isEn ? "zh" : "en"} href={alternateURL} />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={isEn ? alternateURL : canonicalURL}
+    />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -72,87 +128,86 @@ const displayTitle = isHome
     <meta property="twitter:description" content={metaDescription} />
     <meta property="twitter:image" content={ogImageURL} />
 
-    <link href="https://fonts.cat.net/css2?family=Noto+Sans+SC:wght@100..900&family=Noto+Serif+SC:wght@200..900&family=Roboto+Slab:wght@100..900&family=Roboto:wght@100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link
+      href="https://fonts.cat.net/css2?family=Noto+Sans+SC:wght@100..900&family=Noto+Serif+SC:wght@200..900&family=Roboto+Slab:wght@100..900&family=Roboto:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/pwa-192x192.png" />
     <meta name="theme-color" content="#000000" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    { lang === 'en' ? <link rel="manifest" href="/manifest-en.webmanifest" /> : (pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />) }
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    {
+      lang === "en" ? (
+        <link rel="manifest" href="/manifest-en.webmanifest" />
+      ) : (
+        pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />
+      )
+    }
     <title>{displayTitle}</title>
     <script is:inline>
       const theme = (() => {
-        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-          return localStorage.getItem('theme');
+        if (
+          typeof localStorage !== "undefined" &&
+          localStorage.getItem("theme")
+        ) {
+          return localStorage.getItem("theme");
         }
-        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-          return 'dark';
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          return "dark";
         }
-        return 'light';
+        return "light";
       })();
-      if (theme === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
+      if (theme === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
       } else {
-        document.documentElement.setAttribute('data-theme', 'light');
+        document.documentElement.setAttribute("data-theme", "light");
       }
-      window.localStorage.setItem('theme', theme);
+      window.localStorage.setItem("theme", theme);
     </script>
     <script is:inline>
-      (function() {
-        if (typeof window === 'undefined') return;
+      (function () {
+        if (typeof window === "undefined") return;
         try {
           // If already logged in, do not track affiliate code
-          const cookies = document.cookie || '';
-          const hasSession = cookies.includes('sb-msufgvqofnihylcnxyac-auth-token');
+          const cookies = document.cookie || "";
+          const hasSession = cookies.includes(
+            "sb-msufgvqofnihylcnxyac-auth-token",
+          );
           if (hasSession) {
-            localStorage.removeItem('ezer_aff');
+            localStorage.removeItem("ezer_aff");
             return;
           }
 
           const params = new URLSearchParams(window.location.search);
-          const affCode = params.get('aff');
+          const affCode = params.get("aff");
           if (affCode) {
-            localStorage.setItem('ezer_aff', affCode);
+            localStorage.setItem("ezer_aff", affCode);
           }
         } catch (e) {}
-      })();
-    </script>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6365WW8WFY"></script>
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-6365WW8WFY');
-    </script>
-    <script is:inline type="text/javascript">
-      (function(c,l,a,r,i,t,y){
-          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-      })(window, document, "clarity", "script", "w9d1vhn46l");
-    </script>
-    <script is:inline>
-      var _hmt = _hmt || [];
-      (function() {
-        var hm = document.createElement("script");
-        hm.src = "https://hm.baidu.com/hm.js?9c6bb5a42f15083a6fcd3595c20a1870";
-        var s = document.getElementsByTagName("script")[0]; 
-        s.parentNode.insertBefore(hm, s);
       })();
     </script>
   </head>
   <body>
     <a href="#main" class="skip-link">{t("accessibility.skip-to-content")}</a>
     <Header
-      logoUrl={lang === 'zh' ? '/' : '/en/'}
+      logoUrl={lang === "zh" ? "/" : "/en/"}
       logoAlt={t("site.name")}
       links={links}
       link2={{ title: t("nav.signin"), url: "#" }}
     >
-      <div slot="after-nav" style="display: flex; align-items: center; gap: 0.8rem;">
+      <div
+        slot="after-nav"
+        style="display: flex; align-items: center; gap: 0.8rem;"
+      >
         <LanguageSwitcher />
         <ThemeToggle />
       </div>
@@ -160,7 +215,19 @@ const displayTitle = isHome
     <main id="main">
       <slot />
     </main>
-    <Footer logoUrl={lang === 'zh' ? '/' : '/en/'} logoAlt={t("footer.logoAlt")} copyright={t("footer.copyright")} links={links} />
+    <Footer
+      logoUrl={lang === "zh" ? "/" : "/en/"}
+      logoAlt={t("footer.logoAlt")}
+      copyright={t("footer.copyright")}
+      links={links}
+      legalLinks={legalLinks}
+      entityDisclosure={t("footer.entity")}
+      disclaimer={t("footer.disclaimer")}
+      supportLabel={t("footer.support")}
+      cookieSettingsLabel={t("footer.cookie_settings")}
+      supportEmail="joe@ezerlab.org"
+    />
+    <CookieConsent />
     <SmoothScroll />
   </body>
 </html>
@@ -189,25 +256,6 @@ const displayTitle = isHome
   import "../utils/reveals";
   import "../scripts/auth.js";
 
-  // PWA registration
-  import { registerSW } from 'virtual:pwa-register';
-
-  // Only register Service Worker on the main production domain to avoid 404s and caching issues on dev/preview environments
-  const isProdDomain = window.location.hostname === 'www.ezer.cc' || 
-    (import.meta.env.PROD && !window.location.hostname.includes('audev.ezer.cc') && !window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1'));
-
-  if (isProdDomain) {
-    registerSW({ 
-      immediate: true,
-      onRegistered(r) {
-        console.log('SW Registered:', r);
-      },
-      onRegisterError(error) {
-        console.error('SW Registration Error:', error);
-      }
-    });
-  }
-
   // Persist affiliate state across client-side page views/transitions
   async function handleAffiliateState() {
     try {
@@ -216,21 +264,21 @@ const displayTitle = isHome
         // @ts-ignore
         const session = await window.auth.getSession();
         if (session) {
-          localStorage.removeItem('ezer_aff');
+          localStorage.removeItem("ezer_aff");
           return;
         }
       }
       const params = new URLSearchParams(window.location.search);
-      const affCode = params.get('aff');
+      const affCode = params.get("aff");
       if (affCode) {
-        localStorage.setItem('ezer_aff', affCode);
+        localStorage.setItem("ezer_aff", affCode);
       }
     } catch (e) {
-      console.warn('Failed to handle affiliate state:', e);
+      console.warn("Failed to handle affiliate state:", e);
     }
   }
 
   handleAffiliateState();
-  document.addEventListener('astro:after-swap', handleAffiliateState);
-  document.addEventListener('astro:page-load', handleAffiliateState);
+  document.addEventListener("astro:after-swap", handleAffiliateState);
+  document.addEventListener("astro:page-load", handleAffiliateState);
 </script>

@@ -1,0 +1,201 @@
+---
+import Layout from "./Layout.astro";
+import { getLangFromUrl } from "../i18n/utils";
+import "../styles/article.css";
+
+interface Frontmatter {
+  title: string;
+  description: string;
+  eyebrow: string;
+  effectiveDate: string;
+  keywords?: string;
+}
+
+interface Props {
+  frontmatter: Frontmatter;
+}
+
+const { frontmatter } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const isEnglish = lang === "en";
+
+const policyLinks = isEnglish
+  ? [
+      { title: "Terms of Service", url: "/en/terms/" },
+      { title: "Privacy Policy", url: "/en/privacy/" },
+      { title: "Refunds & Cancellation", url: "/en/refund-and-cancellation/" },
+      { title: "Digital Delivery", url: "/en/delivery-policy/" },
+      { title: "Research Disclaimer", url: "/en/financial-research-disclaimer/" },
+      { title: "Cookie Policy", url: "/en/cookie-policy/" },
+      { title: "Contact", url: "/en/contact/" },
+    ]
+  : [
+      { title: "服务条款", url: "/terms/" },
+      { title: "隐私政策", url: "/privacy/" },
+      { title: "退款与取消", url: "/refund-and-cancellation/" },
+      { title: "数字交付", url: "/delivery-policy/" },
+      { title: "财报研究声明", url: "/financial-research-disclaimer/" },
+      { title: "Cookie 政策", url: "/cookie-policy/" },
+      { title: "联系我们", url: "/contact/" },
+    ];
+---
+
+<Layout
+  title={frontmatter.title}
+  description={frontmatter.description}
+  keywords={frontmatter.keywords}
+>
+  <div class="article-layout legal-page">
+    <!-- Scroll indicator -->
+    <div class="scroll-progress-bar" id="scroll-progress"></div>
+
+    <header class="legal-hero u-container">
+      <div class="article-header">
+        <div class="article-meta">
+          {
+            frontmatter.effectiveDate && (
+              <span class="article-date">
+                {isEnglish ? "Effective" : "生效日期"}: {frontmatter.effectiveDate}
+              </span>
+            )
+          }
+          {frontmatter.eyebrow && <span class="article-author">{frontmatter.eyebrow}</span>}
+        </div>
+        <h1 class="article-title">{frontmatter.title}</h1>
+        {frontmatter.description && <p class="article-description">{frontmatter.description}</p>}
+        <div class="article-divider"></div>
+      </div>
+    </header>
+
+    <div class="u-container legal-grid">
+      <nav
+        class="policy-nav"
+        aria-label={isEnglish ? "Legal documents" : "法律文件"}
+      >
+        <p>{isEnglish ? "Legal & support" : "法律与支持"}</p>
+        <ul>
+          {
+            policyLinks.map((link) => (
+              <li>
+                <a
+                  href={link.url}
+                  aria-current={
+                    Astro.url.pathname === link.url ? "page" : undefined
+                  }
+                >
+                  {link.title}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <article class="article-body">
+        <slot />
+      </article>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .legal-grid {
+    display: grid;
+    grid-template-columns: minmax(13rem, 17rem) minmax(0, 48rem);
+    gap: clamp(2rem, 7vw, 7rem);
+    align-items: start;
+    padding-top: 4rem;
+    padding-bottom: 7rem;
+  }
+
+  .policy-nav {
+    position: sticky;
+    top: 6rem;
+    padding: 1.4rem;
+    border: 1px solid rgba(var(--rgb-brand-1), 0.14);
+    border-radius: 1rem;
+    background: rgba(var(--rgb-white), 0.5);
+    backdrop-filter: blur(14px);
+  }
+
+  :global([data-theme="dark"]) .policy-nav {
+    background: rgba(30, 30, 36, 0.72);
+  }
+
+  .policy-nav p {
+    margin: 0 0 0.8rem;
+    color: var(--color-text-alt);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .policy-nav ul {
+    display: grid;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .policy-nav a {
+    display: block;
+    padding: 0.55rem 0.7rem;
+    border-radius: 0.6rem;
+    color: inherit;
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+
+  .policy-nav a:hover,
+  .policy-nav a:focus-visible,
+  .policy-nav a[aria-current="page"] {
+    background: rgba(var(--rgb-brand-1), 0.12);
+    color: var(--color-brand-1);
+  }
+
+
+
+  @media (max-width: 800px) {
+    .legal-grid {
+      grid-template-columns: 1fr;
+      padding-top: 2.5rem;
+      padding-bottom: 5rem;
+    }
+
+    .policy-nav {
+      position: static;
+    }
+
+    .policy-nav ul {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 480px) {
+    .policy-nav ul {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  function initScrollProgress() {
+    const bar = document.getElementById('scroll-progress');
+    if (!bar) return;
+    
+    const handleScroll = () => {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      bar.style.width = scrolled + '%';
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+  }
+  
+  document.addEventListener('astro:page-load', initScrollProgress);
+  initScrollProgress();
+</script>

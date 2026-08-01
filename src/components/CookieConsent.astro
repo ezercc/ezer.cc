@@ -1,0 +1,311 @@
+---
+import { getLangFromUrl } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const isEnglish = lang === "en";
+
+const copy = isEnglish
+  ? {
+      title: "Your privacy choices",
+      text: "We use necessary storage for sign-in, security, language and theme. With your permission, we also use analytics to understand site performance. You can change this choice at any time.",
+      accept: "Accept analytics",
+      reject: "Reject optional analytics",
+      policy: "Cookie policy",
+      policyUrl: "/en/cookie-policy/",
+    }
+  : {
+      title: "你的隐私选择",
+      text: "我们使用登录、安全、语言和主题所需的必要存储。经你同意后，我们还会使用分析工具了解网站表现。你可以随时更改选择。",
+      accept: "同意分析",
+      reject: "拒绝可选分析",
+      policy: "Cookie 政策",
+      policyUrl: "/cookie-policy/",
+    };
+---
+
+<div
+  class="cookie-consent"
+  id="cookie-consent"
+  role="dialog"
+  aria-live="polite"
+  aria-labelledby="cookie-consent-title"
+  hidden
+>
+  <div class="cookie-consent__header">
+    <div class="cookie-consent__icon" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cookie-svg">
+        <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5Z"/>
+        <path d="M8.5 8.5v.01"/>
+        <path d="M16 15.5v.01"/>
+        <path d="M12 12v.01"/>
+        <path d="M11 17v.01"/>
+        <path d="M7 14v.01"/>
+      </svg>
+    </div>
+    <strong id="cookie-consent-title" class="cookie-consent__title">{copy.title}</strong>
+  </div>
+  <div class="cookie-consent__body">
+    <p>
+      {copy.text}
+      <a href={copy.policyUrl} class="cookie-consent__link">{copy.policy}</a>
+    </p>
+  </div>
+  <div class="cookie-consent__actions">
+    <button type="button" class="btn-secondary" data-cookie-choice="denied">{copy.reject}</button>
+    <button type="button" class="btn-primary" data-cookie-choice="granted"
+      >{copy.accept}</button
+    >
+  </div>
+</div>
+
+<style>
+  .cookie-consent {
+    position: fixed;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    width: 23rem;
+    max-width: calc(100vw - 3rem);
+    padding: 1.25rem;
+    border: 1px solid rgba(var(--rgb-text), 0.08);
+    border-radius: 1rem;
+    background: var(--color-surface-translucent);
+    box-shadow: 
+      0 4px 6px -1px rgba(0, 0, 0, 0.03), 
+      0 10px 24px -3px rgba(0, 0, 0, 0.08),
+      0 0 0 1px rgba(var(--rgb-text), 0.02);
+    backdrop-filter: blur(16px);
+    opacity: 0;
+    transform: translateY(1.5rem) scale(0.98);
+  }
+
+  .cookie-consent[hidden] {
+    display: none;
+  }
+
+  @keyframes slide-in {
+    from {
+      opacity: 0;
+      transform: translateY(1.5rem) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .cookie-consent:not([hidden]) {
+    animation: slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  :global([data-theme="dark"]) .cookie-consent {
+    box-shadow: 
+      0 4px 6px -1px rgba(0, 0, 0, 0.2), 
+      0 10px 24px -3px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.02);
+  }
+
+  .cookie-consent__header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .cookie-consent__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--color-brand-1);
+  }
+
+  .cookie-svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .cookie-consent__title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .cookie-consent__body p {
+    margin: 0;
+    color: var(--color-text-alt);
+    font-size: 0.78rem;
+    line-height: 1.55;
+  }
+
+  .cookie-consent__link {
+    color: var(--color-brand-1);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: color 0.2s ease;
+  }
+
+  .cookie-consent__link:hover {
+    color: var(--color-text);
+  }
+
+  .cookie-consent__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  .cookie-consent button {
+    height: 2.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .cookie-consent button.btn-secondary {
+    background: rgba(var(--rgb-text), 0.05);
+    color: var(--color-text);
+  }
+
+  .cookie-consent button.btn-secondary:hover {
+    background: rgba(var(--rgb-text), 0.08);
+  }
+
+  .cookie-consent button.btn-secondary:active {
+    background: rgba(var(--rgb-text), 0.12);
+  }
+
+  .cookie-consent button.btn-primary {
+    background: var(--color-brand-1);
+    color: #fff;
+  }
+
+  .cookie-consent button.btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-0.5px);
+    box-shadow: 0 4px 12px rgba(var(--rgb-brand-1), 0.2);
+  }
+
+  .cookie-consent button.btn-primary:active {
+    transform: translateY(0);
+    opacity: 0.95;
+  }
+
+  .cookie-consent button:focus-visible {
+    outline: 2px solid var(--color-brand-1);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 760px) {
+    .cookie-consent {
+      bottom: 1rem;
+      left: 1rem;
+      right: 1rem;
+      width: auto;
+      max-width: none;
+    }
+  }
+</style>
+
+<script>
+  const consentKey = "ezer_cookie_consent_v1";
+  const consentBanner = document.getElementById("cookie-consent");
+  let analyticsLoaded = false;
+
+  function loadAnalytics() {
+    if (analyticsLoaded) return;
+    analyticsLoaded = true;
+
+    const googleScript = document.createElement("script");
+    googleScript.async = true;
+    googleScript.src =
+      "https://www.googletagmanager.com/gtag/js?id=G-6365WW8WFY";
+    document.head.appendChild(googleScript);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag(...args) {
+      window.dataLayer.push(args);
+    }
+    gtag("js", new Date());
+    gtag("config", "G-6365WW8WFY", { anonymize_ip: true });
+
+    window.clarity =
+      window.clarity ||
+      function (...args) {
+        (window.clarity.q = window.clarity.q || []).push(args);
+      };
+    const clarityScript = document.createElement("script");
+    clarityScript.async = true;
+    clarityScript.src = "https://www.clarity.ms/tag/w9d1vhn46l";
+    document.head.appendChild(clarityScript);
+
+    window._hmt = window._hmt || [];
+    const baiduScript = document.createElement("script");
+    baiduScript.async = true;
+    baiduScript.src =
+      "https://hm.baidu.com/hm.js?9c6bb5a42f15083a6fcd3595c20a1870";
+    document.head.appendChild(baiduScript);
+  }
+
+  function showConsent() {
+    if (consentBanner) consentBanner.hidden = false;
+  }
+
+  function hideConsent() {
+    if (consentBanner) consentBanner.hidden = true;
+  }
+
+  function applyConsent(choice) {
+    try {
+      localStorage.setItem(consentKey, choice);
+    } catch {
+      // The preference remains effective for the current page even when
+      // browser storage is unavailable.
+    }
+    hideConsent();
+    if (choice === "granted") loadAnalytics();
+
+    const cleanUrl = new URL(window.location.href);
+    if (cleanUrl.searchParams.has("cookie-settings")) {
+      cleanUrl.searchParams.delete("cookie-settings");
+      window.history.replaceState({}, "", cleanUrl);
+    }
+  }
+
+  const forceOpen = new URLSearchParams(window.location.search).has(
+    "cookie-settings",
+  );
+  let savedConsent = null;
+  try {
+    savedConsent = localStorage.getItem(consentKey);
+  } catch {
+    // Storage can be unavailable in strict privacy contexts.
+  }
+  if (forceOpen) {
+    showConsent();
+  } else if (savedConsent === "granted") {
+    loadAnalytics();
+  } else if (savedConsent !== "denied") {
+    showConsent();
+  }
+
+  consentBanner?.querySelectorAll("[data-cookie-choice]").forEach((button) => {
+    button.addEventListener("click", () => {
+      applyConsent(button.getAttribute("data-cookie-choice"));
+    });
+  });
+</script>

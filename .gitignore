@@ -26,3 +26,13 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# backend handoff specifications and generated keys
+backend_handoff.md
+frontend_business_outlook_wordsea_security_handoff.md
+temp_keys.json
+*keys.txt
+
+# local supabase testing folder (managed in private repo)
+supabase/
+
