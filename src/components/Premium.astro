@@ -9,6 +9,11 @@ interface Props {
 const { lang } = Astro.props;
 const isEnglish = lang === "en";
 const prefix = isEnglish ? "/en" : "";
+const alipaySupportedPlans = premiumPlan.paymentMethods.alipay.supportedPlans;
+const isAlipaySupported = (cycleId: string) =>
+  alipaySupportedPlans.includes(
+    (cycleId === "yearly" ? "annual" : cycleId) as (typeof alipaySupportedPlans)[number],
+  );
 
 const copy = isEnglish
   ? {
@@ -49,7 +54,14 @@ const copy = isEnglish
       refunds: "Refund and Cancellation Policy",
       delivery: "Digital Delivery Policy",
       support: "Questions? Email joe@ezerlab.org",
-      
+      paymentMethodLabel: "Payment method",
+      card: "Card",
+      alipay: "Alipay",
+      alipayUnavailable:
+        "Alipay is available for quarterly and yearly plans only.",
+      unsupportedPaymentMethod:
+        "This payment method is not available for the selected plan.",
+
       // Billing cycles data
       cycles: [
         {
@@ -66,7 +78,8 @@ const copy = isEnglish
           title: "Quarterly",
           price: "$3.66",
           oldPrice: "$6.66",
-          detail: "Billed quarterly ($10.99)\nsave approx. $4 compared to Monthly",
+          detail:
+            "Billed quarterly ($10.99)\nsave approx. $4 compared to Monthly",
           badge: "Most Popular",
           classSuffix: "pro",
         },
@@ -78,8 +91,8 @@ const copy = isEnglish
           detail: "Billed yearly ($39)\nsave approx. $20 compared to Monthly",
           badge: "Best Value",
           classSuffix: "max",
-        }
-      ]
+        },
+      ],
     }
   : {
       title: "弈泽专业版",
@@ -114,6 +127,11 @@ const copy = isEnglish
       refunds: "退款与取消政策",
       delivery: "数字交付政策",
       support: "如有疑问，请发送邮件至 joe@ezerlab.org",
+      paymentMethodLabel: "支付方式",
+      card: "银行卡",
+      alipay: "支付宝",
+      alipayUnavailable: "支付宝仅支持季度计划及以上。",
+      unsupportedPaymentMethod: "所选计划暂不支持此支付方式。",
 
       // Billing cycles data
       cycles: [
@@ -143,8 +161,8 @@ const copy = isEnglish
           detail: "每 12 个月结算 ￥249\n较月付计划共省约 ￥110",
           badge: "最划算",
           classSuffix: "max",
-        }
-      ]
+        },
+      ],
     };
 
 const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
@@ -160,10 +178,19 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
   <section class="premium">
     <canvas id="tubes-cursor-canvas" class="tubes-cursor-canvas"></canvas>
     <!-- Cancel Banner -->
-    <div id="payment-cancel-banner" class="payment-banner payment-banner--error" hidden>
+    <div
+      id="payment-cancel-banner"
+      class="payment-banner payment-banner--error"
+      hidden
+    >
       <div class="payment-banner__content">
         <span class="payment-banner__text"></span>
-        <button id="close-cancel-banner-btn" class="payment-banner__close" type="button" aria-label="Close">
+        <button
+          id="close-cancel-banner-btn"
+          class="payment-banner__close"
+          type="button"
+          aria-label="Close"
+        >
           &times;
         </button>
       </div>
@@ -200,58 +227,139 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
         </div>
       </div>
 
-      <!-- Success CTA for active subscribers -->
-      <div id="payment-success-cta" class="success-cta" hidden>
-        <a href={`${prefix}/search/`} class="success-btn">
-          {isEnglish ? "You have activated Premium! Click to experience →" : "您已开通专业版，点击体验 →"}
-        </a>
+      <!-- Active Premium User Container -->
+      <div id="active-premium-container" class="active-premium-container" hidden>
+        <div class="active-card">
+          <div class="active-card__icon"><i class="fa-solid fa-crown"></i></div>
+          <p class="active-card__message">
+            {
+              isEnglish ? (
+                <>
+                  You currently have active Premium,{" "}
+                  <a href={`${prefix}/search/`} class="active-card__link">
+                    experience it now
+                  </a>
+                </>
+              ) : (
+                <>
+                  您当前已开通专业版，{" "}
+                  <a href={`${prefix}/search/`} class="active-card__link">
+                    立即体验
+                  </a>
+                </>
+              )
+            }
+          </p>
+          <a href={`https://account.ezer.cc/${isEnglish ? "en/" : ""}`} class="active-card__btn">
+            {isEnglish ? "Manage Subscription / Search" : "管理订阅/去搜索"}
+          </a>
+        </div>
       </div>
 
       <!-- Redesigned Three-Billing-Cycle Cards -->
       <div id="premium-pricing-grid" class="pricing-grid">
-        {copy.cycles.map((cycle) => (
-          <div class={`pricing-card pricing-card--${cycle.classSuffix}`}>
-            {cycle.badge && <span class="card-badge">{cycle.badge}</span>}
-            <div class="card-header">
-              <h3 class="card-title">{cycle.title}</h3>
-            </div>
-
-            <div class="price-wrapper">
-              <div class="price-row">
-                <span class="price-current">
-                  {cycle.id !== "monthly" && <span class="price-approx">~</span>}
-                  {cycle.price}
-                </span>
-                <span class="price-slash">/ {isEnglish ? "mo" : "月"}</span>
-                {cycle.oldPrice && (
-                  <span class="price-original">
-                    {cycle.id !== "monthly" && <span class="price-approx-small">~</span>}
-                    {cycle.oldPrice}/{isEnglish ? "mo" : "月"}
-                  </span>
-                )}
+        {
+          copy.cycles.map((cycle) => (
+            <div class={`pricing-card pricing-card--${cycle.classSuffix}`}>
+              {cycle.badge && <span class="card-badge">{cycle.badge}</span>}
+              <div class="card-header">
+                <h3 class="card-title">{cycle.title}</h3>
               </div>
-              <p class="price-billing-detail">
-                {cycle.detail.split('\n').map((line, idx) => (
-                  <>
-                    {idx > 0 && <br />}
-                    {line}
-                  </>
-                ))}
-              </p>
-            </div>
 
-            <button
-              type="button"
-              class="subscribe-btn"
-              data-cycle={cycle.title}
-              data-plan-key={`${isEnglish ? "en" : "zh"}_${cycle.id === "yearly" ? "annual" : cycle.id}`}
-              data-default-text={copy.request}
-            >
-              <span class="btn-text">{copy.request}</span>
-              <span class="loader" aria-hidden="true" hidden></span>
-            </button>
-          </div>
-        ))}
+              <div class="price-wrapper">
+                <div class="price-row">
+                  <span class="price-current">
+                    {cycle.id !== "monthly" && (
+                      <span class="price-approx">~</span>
+                    )}
+                    {cycle.price}
+                  </span>
+                  <span class="price-slash">/ {isEnglish ? "mo" : "月"}</span>
+                  {cycle.oldPrice && (
+                    <span class="price-original">
+                      {cycle.id !== "monthly" && (
+                        <span class="price-approx-small">~</span>
+                      )}
+                      {cycle.oldPrice}/{isEnglish ? "mo" : "月"}
+                    </span>
+                  )}
+                </div>
+                <p class="price-billing-detail">
+                  {cycle.detail.split("\n").map((line, idx) => (
+                    <>
+                      {idx > 0 && <br />}
+                      {line}
+                    </>
+                  ))}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                class="subscribe-btn"
+                data-cycle={cycle.title}
+                data-plan-key={`${isEnglish ? "en" : "zh"}_${cycle.id === "yearly" ? "annual" : cycle.id}`}
+                data-default-text={copy.request}
+              >
+                <span class="btn-text">{copy.request}</span>
+                <span class="loader" aria-hidden="true" hidden />
+              </button>
+              {!isEnglish && (
+                <fieldset class="payment-methods">
+                  <legend>{copy.paymentMethodLabel}</legend>
+                  <label class="payment-method">
+                    <input
+                      type="radio"
+                      name={`payment-method-${cycle.id}`}
+                      value="card"
+                      data-payment-method="card"
+                      checked
+                    />
+                    <span class="payment-method__label">
+                      <span>{copy.card}</span>
+                      <span
+                        class="payment-method__icons payment-method__icons--cards"
+                        aria-label="Visa and Mastercard"
+                      >
+                        <img src="/payment-icons/visa.svg" alt="Visa" />
+                        <img
+                          src="/payment-icons/mastercard.svg"
+                          alt="Mastercard"
+                        />
+                      </span>
+                    </span>
+                  </label>
+                  <label
+                    class:list={[
+                      "payment-method",
+                      !isAlipaySupported(cycle.id) &&
+                        "payment-method--disabled",
+                    ]}
+                  >
+                    <input
+                      type="radio"
+                      name={`payment-method-${cycle.id}`}
+                      value="alipay"
+                      data-payment-method="alipay"
+                      disabled={!isAlipaySupported(cycle.id)}
+                    />
+                    <span class="payment-method__label">
+                      <span>{copy.alipay}</span>
+                      <span class="payment-method__icons">
+                        <img src="/payment-icons/alipay.svg" alt="支付宝" />
+                      </span>
+                    </span>
+                  </label>
+                  {!isAlipaySupported(cycle.id) && (
+                    <small class="payment-methods__hint">
+                      {copy.alipayUnavailable}
+                    </small>
+                  )}
+                </fieldset>
+              )}
+            </div>
+          ))
+        }
       </div>
 
       <!-- Feedback / Messages -->
@@ -277,7 +385,6 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
           <a href="mailto:joe@ezerlab.org">{copy.support}</a>
         </div>
       </div>
-
     </div>
   </section>
 </Layout>
@@ -356,7 +463,7 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1.5rem;
-    margin: 2.5rem 0;
+    margin: 2.5rem 0 1.25rem;
   }
 
   .pricing-card {
@@ -368,7 +475,7 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
     background: rgba(17, 18, 22, 0.45);
     backdrop-filter: blur(8px) saturate(120%);
     -webkit-backdrop-filter: blur(8px) saturate(120%);
-    box-shadow: 
+    box-shadow:
       inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
       0 8px 32px 0 rgba(0, 0, 0, 0.35);
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -382,8 +489,14 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
     inset: 0;
     border-radius: 1.25rem;
     padding: 1px; /* border thickness */
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.02));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.35),
+      rgba(255, 255, 255, 0.02)
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     pointer-events: none;
@@ -399,63 +512,102 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
     left: 20%;
     right: 20%;
     height: 1.5px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7) 50%, transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.7) 50%,
+      transparent
+    );
     filter: blur(0.5px);
     z-index: 2;
   }
 
   /* Card 2: Pro Card Glow & Highlight */
   .pricing-card--pro {
-    background: 
-      linear-gradient(to bottom, rgba(139, 115, 245, 0.15), transparent 38%) padding-box, 
+    background:
+      linear-gradient(to bottom, rgba(139, 115, 245, 0.15), transparent 38%)
+        padding-box,
       rgba(20, 21, 26, 0.5);
   }
   .pricing-card--pro::after {
-    background: linear-gradient(to bottom, rgba(139, 115, 245, 0.4), rgba(139, 115, 245, 0.02));
+    background: linear-gradient(
+      to bottom,
+      rgba(139, 115, 245, 0.4),
+      rgba(139, 115, 245, 0.02)
+    );
   }
   .pricing-card--pro::before {
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8) 50%, transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.8) 50%,
+      transparent
+    );
   }
 
   /* Card 3: Max Card Glow & Highlight */
   .pricing-card--max {
-    background: 
-      linear-gradient(to bottom, rgba(241, 196, 15, 0.15), transparent 40%) padding-box, 
+    background:
+      linear-gradient(to bottom, rgba(241, 196, 15, 0.15), transparent 40%)
+        padding-box,
       rgba(22, 23, 28, 0.5);
   }
   .pricing-card--max::after {
-    background: linear-gradient(to bottom, rgba(241, 196, 15, 0.4), rgba(241, 196, 15, 0.02));
+    background: linear-gradient(
+      to bottom,
+      rgba(241, 196, 15, 0.4),
+      rgba(241, 196, 15, 0.02)
+    );
   }
   .pricing-card--max::before {
-    background: linear-gradient(90deg, transparent, rgba(241, 196, 15, 0.8) 50%, transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(241, 196, 15, 0.8) 50%,
+      transparent
+    );
   }
 
   /* Card hovers */
   .pricing-card:hover {
     transform: translateY(-0.25rem);
     background: rgba(17, 18, 22, 0.6);
-    box-shadow: 
+    box-shadow:
       inset 0 1px 0 0 rgba(255, 255, 255, 0.25),
       0 16px 48px 0 rgba(0, 0, 0, 0.5);
   }
   .pricing-card:hover::after {
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.04));
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.45),
+      rgba(255, 255, 255, 0.04)
+    );
   }
   .pricing-card--pro:hover {
-    background: 
-      linear-gradient(to bottom, rgba(139, 115, 245, 0.3), transparent 38%) padding-box, 
+    background:
+      linear-gradient(to bottom, rgba(139, 115, 245, 0.3), transparent 38%)
+        padding-box,
       rgba(20, 21, 26, 0.65);
   }
   .pricing-card--pro:hover::after {
-    background: linear-gradient(to bottom, rgba(139, 115, 245, 0.55), rgba(139, 115, 245, 0.04));
+    background: linear-gradient(
+      to bottom,
+      rgba(139, 115, 245, 0.55),
+      rgba(139, 115, 245, 0.04)
+    );
   }
   .pricing-card--max:hover {
-    background: 
-      linear-gradient(to bottom, rgba(241, 196, 15, 0.3), transparent 40%) padding-box, 
+    background:
+      linear-gradient(to bottom, rgba(241, 196, 15, 0.3), transparent 40%)
+        padding-box,
       rgba(22, 23, 28, 0.65);
   }
   .pricing-card--max:hover::after {
-    background: linear-gradient(to bottom, rgba(241, 196, 15, 0.55), rgba(241, 196, 15, 0.04));
+    background: linear-gradient(
+      to bottom,
+      rgba(241, 196, 15, 0.55),
+      rgba(241, 196, 15, 0.04)
+    );
   }
 
   .card-header {
@@ -587,6 +739,101 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
     opacity: 0.6;
   }
 
+  .payment-methods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.9rem;
+    margin: 0.9rem 0 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .payment-methods legend {
+    width: 100%;
+    margin-bottom: 0.15rem;
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.72rem;
+  }
+
+  .payment-method {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+
+  .payment-method__label,
+  .payment-method__icons {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .payment-method__label {
+    gap: 0.35rem;
+  }
+
+  .payment-method__icons {
+    gap: 0.2rem;
+  }
+
+  .payment-method__icons img {
+    box-sizing: border-box;
+    width: 1.7rem;
+    height: 1.1rem;
+    padding: 0.1rem 0.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 0.2rem;
+    background: #fff;
+    object-fit: contain;
+  }
+
+  .payment-method__icons--cards {
+    gap: 0;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 0.2rem;
+    background: #fff;
+  }
+
+  .payment-method__icons--cards img {
+    width: 1.15rem;
+    height: 0.85rem;
+    padding: 0.1rem;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .payment-method__icons--cards img + img {
+    border-left: 1px solid rgba(26, 31, 113, 0.18);
+  }
+
+  .payment-method__icons img[src$="alipay.svg"] {
+    width: 1.1rem;
+    padding: 0.15rem;
+  }
+
+  .payment-method--disabled .payment-method__icons {
+    opacity: 0.48;
+  }
+
+  .payment-method input {
+    accent-color: #a999ff;
+  }
+
+  .payment-method--disabled {
+    color: rgba(255, 255, 255, 0.38);
+    cursor: not-allowed;
+  }
+
+  .payment-methods__hint {
+    width: 100%;
+    color: rgba(255, 255, 255, 0.46);
+    font-size: 0.7rem;
+    line-height: 1.4;
+  }
+
   /* Lite Card Button: Dark grey background, white text */
   .pricing-card--lite .subscribe-btn {
     background: #25262b;
@@ -639,13 +886,12 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
   }
 
   .feedback-section {
-    min-height: 3rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 0.35rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   .feedback-section[hidden] {
@@ -716,38 +962,112 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
     background-color: rgba(240, 246, 252, 0.1);
   }
 
-  /* Success CTA styling (Clean centered green text link) */
-  .success-cta {
+  /* Active Premium Card styling */
+  .active-premium-container {
     display: flex;
     justify-content: center;
     margin: 3rem 0 2rem;
     animation: fadeIn 0.4s ease;
   }
 
-  .success-cta[hidden] {
+  .active-premium-container[hidden] {
     display: none;
   }
 
-  .success-btn {
+  .active-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 3rem 2rem;
+    border-radius: 1.25rem;
+    background: rgba(17, 18, 22, 0.45);
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
+      0 8px 32px 0 rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 32rem;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Sleek top highlight line like pricing cards */
+  .active-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 20%;
+    right: 20%;
+    height: 1.5px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.7) 50%,
+      transparent
+    );
+    filter: blur(0.5px);
+    z-index: 2;
+  }
+
+  .active-card__icon {
+    font-size: 2.5rem;
+    margin-bottom: 1.25rem;
+    color: #f1c40f;
+    animation: pulse 2s infinite ease-in-out;
+  }
+
+  .active-card__message {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.15rem;
+    line-height: 1.6;
+    margin: 0 0 2rem 0;
+  }
+
+  .active-card__link {
+    color: #a999ff;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    font-weight: 600;
+    transition: color 0.2s ease;
+  }
+
+  .active-card__link:hover {
+    color: #c1b5ff;
+  }
+
+  .active-card__btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: none;
-    border: none;
-    padding: 0.5rem 1rem;
-    color: #10b981;
+    background: #ffffff;
+    color: #111216;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.8rem 2rem;
+    border-radius: 0.75rem;
     text-decoration: none;
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: color 0.2s ease;
-    letter-spacing: 0.02em;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
   }
 
-  .success-btn:hover {
-    color: #34d399;
-    text-decoration: underline;
-    text-underline-offset: 6px;
+  .active-card__btn:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.9;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 1;
+    }
   }
 
   @keyframes fadeIn {
@@ -844,6 +1164,7 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
   }
 
   .legal-copy {
+    margin-top: 0;
     color: rgba(255, 255, 255, 0.5);
     font-size: 0.72rem;
     line-height: 1.55;
@@ -872,8 +1193,6 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
   }
 
   @media (max-width: 900px) {
-
-
     .details-content-grid {
       grid-template-columns: 1fr;
       gap: 2rem;
@@ -884,7 +1203,7 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
       max-width: 24rem;
       margin: 2rem auto;
     }
-    
+
     .policy-grid {
       grid-template-columns: 1fr;
     }
@@ -902,7 +1221,7 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
     --color-bg: #0d1117;
     --color-surface: #1e1e24;
     --color-surface-translucent: rgba(30, 30, 36, 0.95);
-    
+
     --color-text: rgb(var(--rgb-text));
     --color-text-alt: rgb(var(--rgb-text-alt));
     --color-brand-1: rgb(var(--rgb-brand-1));
@@ -924,9 +1243,9 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
     loadingLabel: copy.loading,
     signInLabel: copy.signIn,
     successMessage: premiumPlan.checkoutLive
-      ? (isEnglish
+      ? isEnglish
         ? "Redirecting to Stripe Checkout. Your Premium access will activate after payment is confirmed."
-        : "正在跳转至 Stripe 结账页。付款确认后将开通专业版权限。")
+        : "正在跳转至 Stripe 结账页。付款确认后将开通专业版权限。"
       : copy.success,
     duplicateMessage: copy.duplicate,
     errorMessage: copy.error,
@@ -935,6 +1254,8 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
     checkoutLive: premiumPlan.checkoutLive,
     checkoutFunctionUrl: premiumPlan.checkoutFunctionUrl,
     locale: lang,
+    supportedAlipayPlans: premiumPlan.paymentMethods.alipay.supportedPlans,
+    paymentMethodUnsupportedMessage: copy.unsupportedPaymentMethod,
     paymentSuccessMessage: isEnglish
       ? "Payment successful! Your Premium access has been activated."
       : "支付成功！您的专业版权限已开通。",
@@ -979,33 +1300,14 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
     // Check payment status from URL query parameters
     const urlParams = new URLSearchParams(window.location.search);
     const status = urlParams.get("status");
-    if (status === "success") {
-      // Hide the pricing grid
-      const pricingGrid = document.getElementById("premium-pricing-grid");
-      if (pricingGrid) {
-        pricingGrid.hidden = true;
-        pricingGrid.style.display = "none";
-      }
+    const isSuccessRedirect = status === "success";
 
-      // Show success CTA
-      const successCta = document.getElementById("payment-success-cta");
-      if (successCta) {
-        successCta.hidden = false;
-      }
-
-      // Hide waitlist feedback section
-      const feedbackSection = document.querySelector(".feedback-section");
-      if (feedbackSection) {
-        feedbackSection.hidden = true;
-        feedbackSection.style.display = "none";
-      }
-
-      const cleanUrl = window.location.pathname;
-      window.history.replaceState({}, document.title, cleanUrl);
-    } else if (status === "cancel") {
+    if (status === "cancel") {
       // Show top cancel banner
       const cancelBanner = document.getElementById("payment-cancel-banner");
-      const cancelBannerText = cancelBanner?.querySelector(".payment-banner__text");
+      const cancelBannerText = cancelBanner?.querySelector(
+        ".payment-banner__text",
+      );
       if (cancelBanner && cancelBannerText) {
         cancelBannerText.textContent = paymentCancelMessage;
         cancelBanner.hidden = false;
@@ -1016,19 +1318,70 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
     }
 
     const session = await window.auth?.getSession();
-    if (session && emailHint) {
-      emailHint.textContent = `${signedInAs}: ${session.user.email}`;
-      emailHint.hidden = false;
-      updateFeedbackVisibility();
+    let hasActivePremium = false;
+
+    if (session) {
+      if (emailHint) {
+        emailHint.textContent = `${signedInAs}: ${session.user.email}`;
+        emailHint.hidden = false;
+        updateFeedbackVisibility();
+      }
+
+      try {
+        const { data: plan, error } = await window.auth.client
+          .from("user_plans")
+          .select("plan_type, paid_through, premium_end_date")
+          .eq("uid", session.user.id)
+          .single();
+
+        if (!error && plan) {
+          const entitlementEnd = plan.paid_through || plan.premium_end_date;
+          const endDate = entitlementEnd ? new Date(entitlementEnd) : null;
+          hasActivePremium =
+            plan.plan_type === "premium" &&
+            endDate &&
+            !Number.isNaN(endDate.getTime()) &&
+            endDate > new Date();
+        }
+      } catch (err) {
+        console.error("[Premium] Failed to check user plans:", err);
+      }
     } else {
-      buttons.forEach(btn => {
+      buttons.forEach((btn) => {
         const btnText = btn.querySelector(".btn-text");
         if (btnText) btnText.textContent = signInLabel;
       });
       updateFeedbackVisibility();
     }
 
-    buttons.forEach(button => {
+    const isPremium = hasActivePremium || isSuccessRedirect;
+    if (isPremium) {
+      // Hide the pricing grid
+      const pricingGrid = document.getElementById("premium-pricing-grid");
+      if (pricingGrid) {
+        pricingGrid.hidden = true;
+        pricingGrid.style.display = "none";
+      }
+
+      // Show active premium container
+      const activePremiumContainer = document.getElementById("active-premium-container");
+      if (activePremiumContainer) {
+        activePremiumContainer.hidden = false;
+      }
+
+      // Hide waitlist feedback section
+      if (feedbackSection) {
+        feedbackSection.hidden = true;
+        feedbackSection.style.display = "none";
+      }
+
+      if (isSuccessRedirect) {
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+      }
+    }
+
+    buttons.forEach((button) => {
       button.addEventListener("click", async () => {
         const activeSession = await window.auth?.getSession();
         if (!activeSession) {
@@ -1039,9 +1392,26 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
         const currentBtnText = button.querySelector(".btn-text");
         const currentLoader = button.querySelector(".loader");
         const selectedCycleName = button.getAttribute("data-cycle");
+        const planKey = button.getAttribute("data-plan-key");
+        const planId = planKey?.replace(/^\w+_/, "");
+        const card = button.closest(".pricing-card");
+        const selectedPaymentMethod =
+          card
+            ?.querySelector("input[data-payment-method]:checked")
+            ?.getAttribute("data-payment-method") || "card";
+
+        if (
+          selectedPaymentMethod === "alipay" &&
+          (!planId || !supportedAlipayPlans.includes(planId))
+        ) {
+          message.textContent = paymentMethodUnsupportedMessage;
+          message.hidden = false;
+          updateFeedbackVisibility();
+          return;
+        }
 
         // Disable all buttons during submission
-        buttons.forEach(btn => btn.disabled = true);
+        buttons.forEach((btn) => (btn.disabled = true));
         if (currentBtnText) currentBtnText.textContent = loadingLabel;
         if (currentLoader) currentLoader.hidden = false;
         message.hidden = true;
@@ -1055,12 +1425,17 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${activeSession.access_token}`,
+                Authorization: `Bearer ${activeSession.access_token}`,
               },
-              body: JSON.stringify({ plan_key: planKey, locale }),
+              body: JSON.stringify({
+                plan_key: planKey,
+                payment_method: selectedPaymentMethod,
+                locale,
+              }),
             });
             const checkout = await response.json().catch(() => null);
-            if (!response.ok || !checkout?.url) throw new Error("Could not start checkout");
+            if (!response.ok || !checkout?.url)
+              throw new Error("Could not start checkout");
             window.location.assign(checkout.url);
             return;
           }
@@ -1086,10 +1461,13 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
           message.hidden = false;
           updateFeedbackVisibility();
         } finally {
-          buttons.forEach(btn => {
+          buttons.forEach((btn) => {
             btn.disabled = false;
             const btnText = btn.querySelector(".btn-text");
-            if (btnText) btnText.textContent = activeSession ? btn.getAttribute("data-default-text") : signInLabel;
+            if (btnText)
+              btnText.textContent = activeSession
+                ? btn.getAttribute("data-default-text")
+                : signInLabel;
             const loader = btn.querySelector(".loader");
             if (loader) loader.hidden = true;
           });
@@ -1108,41 +1486,45 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
 </script>
 
 <script is:inline type="module">
-  import TubesCursor from "https://cdn.jsdelivr.net/npm/threejs-components@0.0.19/build/cursors/tubes1.min.js"
+  import TubesCursor from "https://cdn.jsdelivr.net/npm/threejs-components@0.0.19/build/cursors/tubes1.min.js";
 
   function initTubes() {
-    const el = document.getElementById('tubes-cursor-canvas')
-    if (!el) return
+    const el = document.getElementById("tubes-cursor-canvas");
+    if (!el) return;
 
     const app = TubesCursor(el, {
       tubes: {
         colors: ["#f967fb", "#53bc28", "#6958d5"],
         lights: {
           intensity: 200,
-          colors: ["#83f36e", "#fe8a2e", "#ff008a", "#60aed5"]
-        }
-      }
-    })
+          colors: ["#83f36e", "#fe8a2e", "#ff008a", "#60aed5"],
+        },
+      },
+    });
 
-    el.addEventListener('click', () => {
-      const colors = randomColors(3)
-      const lightsColors = randomColors(4)
-      app.tubes.setColors(colors)
-      app.tubes.setLightsColors(lightsColors)
-    })
+    el.addEventListener("click", () => {
+      const colors = randomColors(3);
+      const lightsColors = randomColors(4);
+      app.tubes.setColors(colors);
+      app.tubes.setLightsColors(lightsColors);
+    });
   }
 
   function randomColors(count) {
-    return new Array(count)
-      .fill(0)
-      .map(() => "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0'))
+    return new Array(count).fill(0).map(
+      () =>
+        "#" +
+        Math.floor(Math.random() * 16777215)
+          .toString(16)
+          .padStart(6, "0"),
+    );
   }
 
-  if (document.readyState === 'complete') {
-    initTubes()
+  if (document.readyState === "complete") {
+    initTubes();
   } else {
-    window.addEventListener('load', initTubes)
+    window.addEventListener("load", initTubes);
   }
 
-  document.addEventListener('astro:after-swap', initTubes)
+  document.addEventListener("astro:after-swap", initTubes);
 </script>

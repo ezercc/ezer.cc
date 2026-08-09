@@ -617,10 +617,7 @@ export const GET: APIRoute = async ({ url, request }) => {
 
     // 4. Cache Miss - Init task on backend server-side to hide long-term Token,
     // then return task_id and stream URLs for direct browser streaming.
-    if (!kv) {
-      return new Response(JSON.stringify({ error: 'KV Cache not configured' }), { status: 500 });
-    }
-    console.log(`[Cache Miss] ${cacheKey}. Initializing backend task from BFF...`);
+    console.log(`[Cache Miss] ${kv ? cacheKey : 'Redis not configured'}. Initializing backend task from BFF...`);
     const formattedCode = formatSymbol(code);
     const apiPeriod = period === 'full' ? 'FY' : (period || 'FY');
 
@@ -683,12 +680,16 @@ export const GET: APIRoute = async ({ url, request }) => {
         resultUrl,
         resultKind
       };
-      const pendingKey = `pending:check:${taskData.task_id}`;
-      try {
-        await kv?.set(pendingKey, JSON.stringify(pendingBinding), { ex: PENDING_TASK_EXPIRY });
-      } catch (pendingErr) {
-        console.error('[BFF] Failed to persist pending task binding:', pendingErr);
-        return new Response(JSON.stringify({ error: 'Failed to prepare cache backfill' }), { status: 500 });
+      if (kv) {
+        const pendingKey = `pending:check:${taskData.task_id}`;
+        try {
+          await kv.set(pendingKey, JSON.stringify(pendingBinding), { ex: PENDING_TASK_EXPIRY });
+        } catch (pendingErr) {
+          console.error('[BFF] Failed to persist pending task binding:', pendingErr);
+          return new Response(JSON.stringify({ error: 'Failed to prepare cache backfill' }), { status: 500 });
+        }
+      } else {
+        console.log(`[BFF] Redis is not configured, skipping pending task binding for task ${taskData.task_id}`);
       }
 
       return new Response(JSON.stringify({
@@ -723,7 +724,8 @@ export const GET: APIRoute = async ({ url, request }) => {
  */
 export const POST: APIRoute = async ({ request }) => {
   if (!kv) {
-    return new Response(JSON.stringify({ error: 'KV Cache not configured' }), { status: 500 });
+    console.log('[BFF] Redis is not configured, skipping cache write on POST request.');
+    return new Response(JSON.stringify({ message: 'Redis not configured, skipping cache write' }), { status: 200 });
   }
 
   try {

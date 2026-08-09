@@ -7,4 +7,8 @@ export const premiumPlan = {
   checkoutLive: true,
   checkoutFunctionUrl:
     "https://msufgvqofnihylcnxyac.supabase.co/functions/v1/create-stripe-checkout",
+  paymentMethods: {
+    card: { supportedPlans: ["monthly", "quarterly", "annual"] },
+    alipay: { supportedPlans: ["quarterly", "annual"] },
+  },
 } as const;
