@@ -1,0 +1,1148 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { premiumPlan } from "../data/pricing";
+
+interface Props {
+  lang: "zh" | "en";
+}
+
+const { lang } = Astro.props;
+const isEnglish = lang === "en";
+const prefix = isEnglish ? "/en" : "";
+
+const copy = isEnglish
+  ? {
+      title: "Ezer Premium",
+      description:
+        "Early access for a higher-quota version of Ezer's evidence-linked financial-statement research software.",
+      eyebrow: "Paid subscription · early access",
+      intro:
+        "Premium is being prepared for launch. You can request early access now; the waitlist does not collect payment or create a subscription.",
+      featuresTitle: "Premium access",
+      features: [
+        "Higher monthly financial-statement research quota",
+        "Multi-stage review with evidence and source references",
+        "Structured digital reports in your Ezer account",
+        "Customer support for billing and delivery",
+      ],
+      deliveryTitle: "Digital delivery",
+      deliveryText:
+        "After paid launch, access will normally activate immediately after a successful payment.",
+      cancelTitle: "Cancel any time",
+      cancelText:
+        "Monthly subscriptions may be cancelled at any time and remain available through the current paid period.",
+      refundTitle: "7-day first-charge window",
+      refundText:
+        "Eligible first subscription charges may be refunded when requested within seven calendar days.",
+      request: "Subscribe",
+      loading: "Submitting…",
+      signIn: "Sign in to subscribe",
+      success: "Your early-access request has been recorded.",
+      duplicate: "You are already on the early-access list.",
+      error:
+        "We could not save the request. Please try again or email support.",
+      signedInAs: "Signed in as",
+      demo: "Try the free demo",
+      legalPrefix: "By requesting access, you acknowledge the",
+      terms: "Terms",
+      privacy: "Privacy Policy",
+      refunds: "Refund and Cancellation Policy",
+      delivery: "Digital Delivery Policy",
+      support: "Questions? Email joe@ezerlab.org",
+      
+      // Billing cycles data
+      cycles: [
+        {
+          id: "monthly",
+          title: "Monthly",
+          price: "$4.99",
+          oldPrice: "$7.99",
+          detail: "Billed monthly",
+          badge: "",
+          classSuffix: "lite",
+        },
+        {
+          id: "quarterly",
+          title: "Quarterly",
+          price: "$3.66",
+          oldPrice: "$6.66",
+          detail: "Billed quarterly ($10.99)\nsave approx. $4 compared to Monthly",
+          badge: "Most Popular",
+          classSuffix: "pro",
+        },
+        {
+          id: "yearly",
+          title: "Yearly",
+          price: "$3.25",
+          oldPrice: "$4.99",
+          detail: "Billed yearly ($39)\nsave approx. $20 compared to Monthly",
+          badge: "Best Value",
+          classSuffix: "max",
+        }
+      ]
+    }
+  : {
+      title: "弈泽专业版",
+      description: "申请弈泽证据可追溯财报研究软件高额度版本的早期体验。",
+      eyebrow: "付费订阅 · 早期体验",
+      intro:
+        "专业版正在准备上线。你现在可以申请早期体验；加入名单不会扣款，也不会建立付费订阅。",
+      featuresTitle: "专业版能力",
+      features: [
+        "更高的每月财报研究额度",
+        "带证据和来源线索的多阶段复核",
+        "在弈泽账户中交付结构化数字报告",
+        "账单与数字交付客户支持",
+      ],
+      deliveryTitle: "数字交付",
+      deliveryText: "付费订阅上线后，支付成功通常会立即激活对应账户权限。",
+      cancelTitle: "可随时取消",
+      cancelText: "月度订阅可随时取消，并可使用至当前已付费周期结束。",
+      refundTitle: "首次扣款 7 天窗口",
+      refundText: "符合条件的首次订阅扣款可在七个自然日内申请退款。",
+      request: "立即订阅",
+      loading: "正在提交…",
+      signIn: "登录后订阅",
+      success: "已记录你的早期体验申请。",
+      duplicate: "你已经在早期体验名单中。",
+      error: "暂时无法保存申请，请重试或通过邮件联系支持。",
+      signedInAs: "当前账户",
+      demo: "体验免费演示",
+      legalPrefix: "订阅专业版计划即表示你已知悉",
+      terms: "服务条款",
+      privacy: "隐私政策",
+      refunds: "退款与取消政策",
+      delivery: "数字交付政策",
+      support: "如有疑问，请发送邮件至 joe@ezerlab.org",
+
+      // Billing cycles data
+      cycles: [
+        {
+          id: "monthly",
+          title: "月付计划",
+          price: "￥29.99",
+          oldPrice: "￥49.99",
+          detail: "按月结算",
+          badge: "",
+          classSuffix: "lite",
+        },
+        {
+          id: "quarterly",
+          title: "季付计划",
+          price: "￥23.33",
+          oldPrice: "￥39.66",
+          detail: "每 3 个月结算 ￥69.99\n较月付计划共省约 ￥20",
+          badge: "最受欢迎",
+          classSuffix: "pro",
+        },
+        {
+          id: "yearly",
+          title: "年付计划",
+          price: "￥20.75",
+          oldPrice: "￥33.16",
+          detail: "每 12 个月结算 ￥249\n较月付计划共省约 ￥110",
+          badge: "最划算",
+          classSuffix: "max",
+        }
+      ]
+    };
+
+const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
+---
+
+<Layout
+  title={copy.title}
+  description={copy.description}
+  keywords={isEnglish
+    ? "Ezer Premium, financial statement research software, digital subscription"
+    : "弈泽专业版, 财报研究软件, 数字订阅"}
+>
+  <section class="premium">
+    <canvas id="tubes-cursor-canvas" class="tubes-cursor-canvas"></canvas>
+    <!-- Cancel Banner -->
+    <div id="payment-cancel-banner" class="payment-banner payment-banner--error" hidden>
+      <div class="payment-banner__content">
+        <span class="payment-banner__text"></span>
+        <button id="close-cancel-banner-btn" class="payment-banner__close" type="button" aria-label="Close">
+          &times;
+        </button>
+      </div>
+    </div>
+
+    <div class="u-container premium__inner">
+      <div class="premium__intro">
+        <p class="eyebrow">{copy.eyebrow}</p>
+        <h1>{copy.title}</h1>
+      </div>
+
+      <!-- Subscription Details Section -->
+      <div class="premium__details">
+        <h2>{copy.featuresTitle}</h2>
+        <div class="details-content-grid">
+          <ul class="features">
+            {copy.features.map((feature) => <li>{feature}</li>)}
+          </ul>
+
+          <div class="policy-grid">
+            <a href={`${prefix}/delivery-policy/`}>
+              <strong>{copy.deliveryTitle}</strong>
+              <span>{copy.deliveryText}</span>
+            </a>
+            <a href={`${prefix}/refund-and-cancellation/`}>
+              <strong>{copy.cancelTitle}</strong>
+              <span>{copy.cancelText}</span>
+            </a>
+            <a href={`${prefix}/refund-and-cancellation/`}>
+              <strong>{copy.refundTitle}</strong>
+              <span>{copy.refundText}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Success CTA for active subscribers -->
+      <div id="payment-success-cta" class="success-cta" hidden>
+        <a href={`${prefix}/search/`} class="success-btn">
+          {isEnglish ? "You have activated Premium! Click to experience →" : "您已开通专业版，点击体验 →"}
+        </a>
+      </div>
+
+      <!-- Redesigned Three-Billing-Cycle Cards -->
+      <div id="premium-pricing-grid" class="pricing-grid">
+        {copy.cycles.map((cycle) => (
+          <div class={`pricing-card pricing-card--${cycle.classSuffix}`}>
+            {cycle.badge && <span class="card-badge">{cycle.badge}</span>}
+            <div class="card-header">
+              <h3 class="card-title">{cycle.title}</h3>
+            </div>
+
+            <div class="price-wrapper">
+              <div class="price-row">
+                <span class="price-current">
+                  {cycle.id !== "monthly" && <span class="price-approx">~</span>}
+                  {cycle.price}
+                </span>
+                <span class="price-slash">/ {isEnglish ? "mo" : "月"}</span>
+                {cycle.oldPrice && (
+                  <span class="price-original">
+                    {cycle.id !== "monthly" && <span class="price-approx-small">~</span>}
+                    {cycle.oldPrice}/{isEnglish ? "mo" : "月"}
+                  </span>
+                )}
+              </div>
+              <p class="price-billing-detail">
+                {cycle.detail.split('\n').map((line, idx) => (
+                  <>
+                    {idx > 0 && <br />}
+                    {line}
+                  </>
+                ))}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              class="subscribe-btn"
+              data-cycle={cycle.title}
+              data-plan-key={`${isEnglish ? "en" : "zh"}_${cycle.id === "yearly" ? "annual" : cycle.id}`}
+              data-default-text={copy.request}
+            >
+              <span class="btn-text">{copy.request}</span>
+              <span class="loader" aria-hidden="true" hidden></span>
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <!-- Feedback / Messages -->
+      <div class="feedback-section" hidden>
+        <p id="user-display-email" class="user-email" hidden></p>
+        <p id="waitlist-message" class="waitlist-message" hidden></p>
+      </div>
+
+      <div>
+        <p class="legal-copy">
+          {copy.legalPrefix}
+          <a href={`${prefix}/terms/`}>{copy.terms}</a>
+          {isEnglish ? ", " : "、"}
+          <a href={`${prefix}/privacy/`}>{copy.privacy}</a>
+          {isEnglish ? ", " : "、"}
+          <a href={`${prefix}/refund-and-cancellation/`}>{copy.refunds}</a>
+          {isEnglish ? ", and " : "及"}
+          <a href={`${prefix}/delivery-policy/`}>{copy.delivery}</a>
+          {isEnglish ? "." : "。"}
+        </p>
+        <div class="secondary-actions">
+          <a href={`${prefix}/check/?preview=true`}>{copy.demo}</a>
+          <a href="mailto:joe@ezerlab.org">{copy.support}</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .premium {
+    min-height: 100vh;
+    padding: 8rem 0 6rem;
+    background:
+      radial-gradient(
+        circle at 15% 5%,
+        rgba(var(--rgb-brand-1), 0.18),
+        transparent 35rem
+      ),
+      radial-gradient(
+        circle at 90% 80%,
+        rgba(130, 99, 255, 0.12),
+        transparent 35rem
+      ),
+      #090a0f;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tubes-cursor-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .premium__inner {
+    max-width: 60rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .premium__intro {
+    text-align: center;
+    max-width: 42rem;
+    margin: 0 auto;
+  }
+
+  .eyebrow {
+    margin: 0 0 1rem;
+    color: #a999ff;
+    font-size: 0.76rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    word-break: keep-all;
+  }
+
+  .lead {
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 1.05rem;
+    line-height: 1.65;
+  }
+
+  /* Redesigned Pricing Grid */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin: 2.5rem 0;
+  }
+
+  .pricing-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 2.25rem 2rem;
+    border-radius: 1.25rem;
+    background: rgba(17, 18, 22, 0.45);
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    box-shadow: 
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
+      0 8px 32px 0 rgba(0, 0, 0, 0.35);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+  }
+
+  /* Gradient border strictly drawn only at the edge using mask composite */
+  .pricing-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 1.25rem;
+    padding: 1px; /* border thickness */
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.02));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 3;
+    transition: background 0.3s ease;
+  }
+
+  /* Sleek top highlight line (internal glow) */
+  .pricing-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 20%;
+    right: 20%;
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7) 50%, transparent);
+    filter: blur(0.5px);
+    z-index: 2;
+  }
+
+  /* Card 2: Pro Card Glow & Highlight */
+  .pricing-card--pro {
+    background: 
+      linear-gradient(to bottom, rgba(139, 115, 245, 0.15), transparent 38%) padding-box, 
+      rgba(20, 21, 26, 0.5);
+  }
+  .pricing-card--pro::after {
+    background: linear-gradient(to bottom, rgba(139, 115, 245, 0.4), rgba(139, 115, 245, 0.02));
+  }
+  .pricing-card--pro::before {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8) 50%, transparent);
+  }
+
+  /* Card 3: Max Card Glow & Highlight */
+  .pricing-card--max {
+    background: 
+      linear-gradient(to bottom, rgba(241, 196, 15, 0.15), transparent 40%) padding-box, 
+      rgba(22, 23, 28, 0.5);
+  }
+  .pricing-card--max::after {
+    background: linear-gradient(to bottom, rgba(241, 196, 15, 0.4), rgba(241, 196, 15, 0.02));
+  }
+  .pricing-card--max::before {
+    background: linear-gradient(90deg, transparent, rgba(241, 196, 15, 0.8) 50%, transparent);
+  }
+
+  /* Card hovers */
+  .pricing-card:hover {
+    transform: translateY(-0.25rem);
+    background: rgba(17, 18, 22, 0.6);
+    box-shadow: 
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.25),
+      0 16px 48px 0 rgba(0, 0, 0, 0.5);
+  }
+  .pricing-card:hover::after {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.04));
+  }
+  .pricing-card--pro:hover {
+    background: 
+      linear-gradient(to bottom, rgba(139, 115, 245, 0.3), transparent 38%) padding-box, 
+      rgba(20, 21, 26, 0.65);
+  }
+  .pricing-card--pro:hover::after {
+    background: linear-gradient(to bottom, rgba(139, 115, 245, 0.55), rgba(139, 115, 245, 0.04));
+  }
+  .pricing-card--max:hover {
+    background: 
+      linear-gradient(to bottom, rgba(241, 196, 15, 0.3), transparent 40%) padding-box, 
+      rgba(22, 23, 28, 0.65);
+  }
+  .pricing-card--max:hover::after {
+    background: linear-gradient(to bottom, rgba(241, 196, 15, 0.55), rgba(241, 196, 15, 0.04));
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .card-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+  }
+
+  .card-badge {
+    position: absolute;
+    top: 16px;
+    right: -36px;
+    width: 140px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(45deg);
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-align: center;
+    pointer-events: none;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+
+  .pricing-card--pro .card-badge {
+    background: linear-gradient(135deg, #8b73ff, #6f52ff);
+    color: #ffffff;
+  }
+
+  .pricing-card--max .card-badge {
+    background: linear-gradient(135deg, #f1c40f, #e5c158);
+    color: #111216;
+  }
+
+  .price-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 2rem;
+    flex-grow: 1;
+  }
+
+  .price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+
+  .price-current {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .pricing-card--max .price-current {
+    color: #f1c40f;
+  }
+
+  .price-slash {
+    color: rgba(255, 255, 255, 0.56);
+    font-size: 0.95rem;
+    font-weight: 400;
+  }
+
+  .price-original {
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.85rem;
+    text-decoration: line-through;
+    font-weight: 400;
+  }
+
+  .price-approx {
+    font-size: 1.5rem;
+    color: #fff;
+    margin-right: 0.05rem;
+    font-weight: 400;
+  }
+
+  .price-approx-small {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.3);
+    margin-right: 0.02rem;
+    font-weight: 400;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .price-billing-detail {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.9rem;
+    line-height: 1.5rem;
+    margin-top: 0.5rem;
+    white-space: pre-line;
+  }
+
+  /* Buttons styling matching the screen design */
+  .subscribe-btn {
+    width: 100%;
+    min-height: 3.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 0;
+    border-radius: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .subscribe-btn:disabled {
+    cursor: wait;
+    opacity: 0.6;
+  }
+
+  /* Lite Card Button: Dark grey background, white text */
+  .pricing-card--lite .subscribe-btn {
+    background: #25262b;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .pricing-card--lite .subscribe-btn:hover:not(:disabled) {
+    background: #31333a;
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  /* Pro Card Button: White background, black text */
+  .pricing-card--pro .subscribe-btn {
+    background: #ffffff;
+    color: #111216;
+  }
+  .pricing-card--pro .subscribe-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.9);
+    transform: scale(0.985);
+  }
+
+  /* Max Card Button: Golden background, black text */
+  .pricing-card--max .subscribe-btn {
+    background: #f1c40f;
+    color: #111216;
+    box-shadow: 0 4px 15px rgba(241, 196, 15, 0.15);
+  }
+  .pricing-card--max .subscribe-btn:hover:not(:disabled) {
+    background: #f39c12;
+    transform: scale(0.985);
+  }
+
+  .loader {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(0, 0, 0, 0.15);
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .pricing-card--lite .loader {
+    border-color: rgba(255, 255, 255, 0.25);
+    border-top-color: #fff;
+  }
+
+  .loader[hidden] {
+    display: none;
+  }
+
+  .feedback-section {
+    min-height: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .feedback-section[hidden] {
+    display: none;
+  }
+
+  .user-email,
+  .waitlist-message {
+    color: rgba(255, 255, 255, 0.58);
+    font-size: 0.78rem;
+    line-height: 1.55;
+    text-align: center;
+  }
+
+  .waitlist-message {
+    color: #9dffd0;
+    font-weight: 500;
+  }
+
+  /* Cancel Banner Notification styling (GitHub-like banner below navbar) */
+  .payment-banner {
+    position: relative;
+    width: 100%;
+    background-color: #2b1a1b;
+    border-bottom: 1px solid rgba(248, 81, 73, 0.4);
+    color: #ff7b72;
+    font-size: 13px;
+    margin-top: -3.5rem; /* pull up closer to header to balance padding */
+    margin-bottom: 2rem;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .payment-banner__content {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .payment-banner__text {
+    flex-grow: 1;
+    text-align: center;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
+  .payment-banner__close {
+    background: none;
+    border: none;
+    color: #8b949e;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .payment-banner__close:hover {
+    color: #c9d1d9;
+    background-color: rgba(240, 246, 252, 0.1);
+  }
+
+  /* Success CTA styling (Clean centered green text link) */
+  .success-cta {
+    display: flex;
+    justify-content: center;
+    margin: 3rem 0 2rem;
+    animation: fadeIn 0.4s ease;
+  }
+
+  .success-cta[hidden] {
+    display: none;
+  }
+
+  .success-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 0.5rem 1rem;
+    color: #10b981;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    letter-spacing: 0.02em;
+  }
+
+  .success-btn:hover {
+    color: #34d399;
+    text-decoration: underline;
+    text-underline-offset: 6px;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Subscription Details Section */
+  .premium__details {
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .premium__details h2 {
+    font-size: 1.4rem;
+    margin: 0 0 1.5rem;
+  }
+
+  .details-content-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 3.5rem;
+    align-items: start;
+  }
+
+  .features {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem; /* 减小行间距 */
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .features li {
+    display: flex;
+    gap: 0.75rem;
+    color: rgba(255, 255, 255, 0.76);
+    line-height: 1.45;
+    white-space: nowrap; /* 确保左侧的四个对号不换行 */
+  }
+
+  .features li::before {
+    content: "✓";
+    color: #a999ff;
+    font-weight: 900;
+  }
+
+  .policy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 0;
+  }
+
+  .policy-grid a {
+    padding: 1rem 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.9rem;
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .policy-grid a:hover,
+  .policy-grid a:focus-visible {
+    border-color: #a999ff;
+    background: rgba(169, 153, 255, 0.06);
+  }
+
+  .policy-grid strong,
+  .policy-grid span {
+    display: block;
+  }
+
+  .policy-grid strong {
+    margin-bottom: 0.45rem;
+    font-size: 0.82rem;
+    color: #fff;
+  }
+
+  .policy-grid span {
+    color: rgba(255, 255, 255, 0.54);
+    font-size: 0.72rem;
+    line-height: 1.5;
+  }
+
+  .legal-copy {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.72rem;
+    line-height: 1.55;
+    text-align: center;
+  }
+
+  .legal-copy a,
+  .secondary-actions a {
+    color: #c1b5ff;
+    text-underline-offset: 0.2em;
+  }
+
+  .secondary-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+    font-size: 0.78rem;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (max-width: 900px) {
+
+
+    .details-content-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .pricing-grid {
+      grid-template-columns: 1fr;
+      max-width: 24rem;
+      margin: 2rem auto;
+    }
+    
+    .policy-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Force dark mode variables for the header and body when viewing premium page */
+  :global(body:has(.premium)) {
+    --rgb-text: 255, 255, 255;
+    --rgb-text-alt: 153, 161, 179;
+    --rgb-brand-1: 162, 142, 247;
+    --rgb-brand-2: 43, 49, 29;
+    --rgb-brand-3: 31, 26, 61;
+    --rgb-brand-4: 46, 54, 34;
+    --rgb-brand-5: 172, 214, 60;
+    --color-bg: #0d1117;
+    --color-surface: #1e1e24;
+    --color-surface-translucent: rgba(30, 30, 36, 0.95);
+    
+    --color-text: rgb(var(--rgb-text));
+    --color-text-alt: rgb(var(--rgb-text-alt));
+    --color-brand-1: rgb(var(--rgb-brand-1));
+    --color-brand-2: rgb(var(--rgb-brand-2));
+    --color-brand-3: rgb(var(--rgb-brand-3));
+    --color-brand-4: rgb(var(--rgb-brand-4));
+    --color-brand-5: rgb(var(--rgb-brand-5));
+  }
+
+  :global(body:has(.premium) .logo svg) {
+    filter: invert(1) brightness(2) !important;
+  }
+</style>
+
+<script
+  is:inline
+  define:vars={{
+    requestLabel: copy.request,
+    loadingLabel: copy.loading,
+    signInLabel: copy.signIn,
+    successMessage: premiumPlan.checkoutLive
+      ? (isEnglish
+        ? "Redirecting to Stripe Checkout. Your Premium access will activate after payment is confirmed."
+        : "正在跳转至 Stripe 结账页。付款确认后将开通专业版权限。")
+      : copy.success,
+    duplicateMessage: copy.duplicate,
+    errorMessage: copy.error,
+    signedInAs: copy.signedInAs,
+    signInUrl,
+    checkoutLive: premiumPlan.checkoutLive,
+    checkoutFunctionUrl: premiumPlan.checkoutFunctionUrl,
+    locale: lang,
+    paymentSuccessMessage: isEnglish
+      ? "Payment successful! Your Premium access has been activated."
+      : "支付成功！您的专业版权限已开通。",
+    paymentCancelMessage: isEnglish
+      ? "Payment cancelled. You can try subscribing again when you are ready."
+      : "支付已取消。您可以随时重新尝试订阅。",
+  }}
+>
+  async function initPremiumEarlyAccess() {
+    const buttons = document.querySelectorAll(".subscribe-btn");
+    const emailHint = document.getElementById("user-display-email");
+    const message = document.getElementById("waitlist-message");
+    const feedbackSection = document.querySelector(".feedback-section");
+
+    if (!buttons.length || !message) return;
+
+    function updateFeedbackVisibility() {
+      if (!feedbackSection) return;
+      const isEmailVisible = emailHint && !emailHint.hidden;
+      const isMessageVisible = message && !message.hidden;
+      if (isEmailVisible || isMessageVisible) {
+        feedbackSection.hidden = false;
+      } else {
+        feedbackSection.hidden = true;
+      }
+    }
+
+    // Set initial visibility
+    updateFeedbackVisibility();
+
+    // Close banner handler
+    const closeBannerBtn = document.getElementById("close-cancel-banner-btn");
+    if (closeBannerBtn) {
+      closeBannerBtn.addEventListener("click", () => {
+        const cancelBanner = document.getElementById("payment-cancel-banner");
+        if (cancelBanner) {
+          cancelBanner.hidden = true;
+        }
+      });
+    }
+
+    // Check payment status from URL query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get("status");
+    if (status === "success") {
+      // Hide the pricing grid
+      const pricingGrid = document.getElementById("premium-pricing-grid");
+      if (pricingGrid) {
+        pricingGrid.hidden = true;
+        pricingGrid.style.display = "none";
+      }
+
+      // Show success CTA
+      const successCta = document.getElementById("payment-success-cta");
+      if (successCta) {
+        successCta.hidden = false;
+      }
+
+      // Hide waitlist feedback section
+      const feedbackSection = document.querySelector(".feedback-section");
+      if (feedbackSection) {
+        feedbackSection.hidden = true;
+        feedbackSection.style.display = "none";
+      }
+
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+    } else if (status === "cancel") {
+      // Show top cancel banner
+      const cancelBanner = document.getElementById("payment-cancel-banner");
+      const cancelBannerText = cancelBanner?.querySelector(".payment-banner__text");
+      if (cancelBanner && cancelBannerText) {
+        cancelBannerText.textContent = paymentCancelMessage;
+        cancelBanner.hidden = false;
+      }
+
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
+
+    const session = await window.auth?.getSession();
+    if (session && emailHint) {
+      emailHint.textContent = `${signedInAs}: ${session.user.email}`;
+      emailHint.hidden = false;
+      updateFeedbackVisibility();
+    } else {
+      buttons.forEach(btn => {
+        const btnText = btn.querySelector(".btn-text");
+        if (btnText) btnText.textContent = signInLabel;
+      });
+      updateFeedbackVisibility();
+    }
+
+    buttons.forEach(button => {
+      button.addEventListener("click", async () => {
+        const activeSession = await window.auth?.getSession();
+        if (!activeSession) {
+          window.location.href = signInUrl;
+          return;
+        }
+
+        const currentBtnText = button.querySelector(".btn-text");
+        const currentLoader = button.querySelector(".loader");
+        const selectedCycleName = button.getAttribute("data-cycle");
+
+        // Disable all buttons during submission
+        buttons.forEach(btn => btn.disabled = true);
+        if (currentBtnText) currentBtnText.textContent = loadingLabel;
+        if (currentLoader) currentLoader.hidden = false;
+        message.hidden = true;
+        updateFeedbackVisibility();
+
+        try {
+          const planKey = button.getAttribute("data-plan-key");
+          if (checkoutLive) {
+            if (!planKey) throw new Error("Missing checkout plan");
+            const response = await fetch(checkoutFunctionUrl, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${activeSession.access_token}`,
+              },
+              body: JSON.stringify({ plan_key: planKey, locale }),
+            });
+            const checkout = await response.json().catch(() => null);
+            if (!response.ok || !checkout?.url) throw new Error("Could not start checkout");
+            window.location.assign(checkout.url);
+            return;
+          }
+
+          const { error } = await window.auth.client.from("waitlist").insert({
+            uid: activeSession.user.id,
+            email: activeSession.user.email,
+          });
+
+          if (error && error.code !== "23505") throw error;
+
+          let cycleSuccessMessage = successMessage;
+          if (error?.code === "23505") {
+            cycleSuccessMessage = duplicateMessage;
+          } else {
+            cycleSuccessMessage = `${successMessage} [${selectedCycleName}]`;
+          }
+          message.textContent = cycleSuccessMessage;
+          message.hidden = false;
+          updateFeedbackVisibility();
+        } catch (error) {
+          message.textContent = errorMessage;
+          message.hidden = false;
+          updateFeedbackVisibility();
+        } finally {
+          buttons.forEach(btn => {
+            btn.disabled = false;
+            const btnText = btn.querySelector(".btn-text");
+            if (btnText) btnText.textContent = activeSession ? btn.getAttribute("data-default-text") : signInLabel;
+            const loader = btn.querySelector(".loader");
+            if (loader) loader.hidden = true;
+          });
+        }
+      });
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initPremiumEarlyAccess, {
+      once: true,
+    });
+  } else {
+    initPremiumEarlyAccess();
+  }
+</script>
+
+<script is:inline type="module">
+  import TubesCursor from "https://cdn.jsdelivr.net/npm/threejs-components@0.0.19/build/cursors/tubes1.min.js"
+
+  function initTubes() {
+    const el = document.getElementById('tubes-cursor-canvas')
+    if (!el) return
+
+    const app = TubesCursor(el, {
+      tubes: {
+        colors: ["#f967fb", "#53bc28", "#6958d5"],
+        lights: {
+          intensity: 200,
+          colors: ["#83f36e", "#fe8a2e", "#ff008a", "#60aed5"]
+        }
+      }
+    })
+
+    el.addEventListener('click', () => {
+      const colors = randomColors(3)
+      const lightsColors = randomColors(4)
+      app.tubes.setColors(colors)
+      app.tubes.setLightsColors(lightsColors)
+    })
+  }
+
+  function randomColors(count) {
+    return new Array(count)
+      .fill(0)
+      .map(() => "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0'))
+  }
+
+  if (document.readyState === 'complete') {
+    initTubes()
+  } else {
+    window.addEventListener('load', initTubes)
+  }
+
+  document.addEventListener('astro:after-swap', initTubes)
+</script>

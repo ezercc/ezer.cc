@@ -4,5 +4,7 @@ export const premiumPlan = {
   amount: "4.99",
   interval: "month",
   displayPrice: "USD 4.99",
-  checkoutLive: false,
+  checkoutLive: true,
+  checkoutFunctionUrl:
+    "https://msufgvqofnihylcnxyac.supabase.co/functions/v1/create-stripe-checkout",
 } as const;
