@@ -32,7 +32,7 @@ Ezer 是由 **EzerLab LLC** 提供的在线财报研究软件。服务完全以�
 
 付费订阅开放后，专业版权限通常会在支付服务商确认付款成功后立即激活。系统可能通过账户界面和账户邮箱确认交付。
 
-如果支付成功后 24 小时仍未获得对应权限，请从账户邮箱联系 [joe@ezerlab.org](mailto:joe@ezerlab.org)，并提供订单或付款标识。请勿发送完整卡号或验证码。
+如果支付成功后 24 小时仍未获得对应权限，请从账户邮箱联系 [contact@ezer.cc](mailto:contact@ezer.cc)，并提供订单或付款标识。请勿发送完整卡号或验证码。
 
 ## 5. 用户责任
 
@@ -54,6 +54,6 @@ Ezer 是由 **EzerLab LLC** 提供的在线财报研究软件。服务完全以�
 
 ## 8. 联系方式
 
-数字交付支持：[joe@ezerlab.org](mailto:joe@ezerlab.org)
+数字交付支持：[contact@ezer.cc](mailto:contact@ezer.cc)
 
 运营主体：**EzerLab LLC**

@@ -286,10 +286,9 @@ async function checkAndUpdateQuota(user: any) {
     return { allowed: true, remaining: freeQuota.remaining };
   }
 
-  // 3. Handle Premium Logic. Stripe webhooks maintain paid_through; the
-  // legacy premium_end_date remains only as a temporary compatibility fallback.
+  // Stripe webhooks maintain paid_through; premium_until supports legacy plans.
   if (plan.plan_type === 'premium') {
-    const entitlementEnd = plan.paid_through || plan.premium_end_date;
+    const entitlementEnd = plan.paid_through || plan.premium_until;
     const endDate = entitlementEnd ? new Date(entitlementEnd) : null;
     const isActivePremium = endDate && !Number.isNaN(endDate.getTime()) && endDate > new Date();
 

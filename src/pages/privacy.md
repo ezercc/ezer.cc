@@ -85,7 +85,7 @@ EzerLab 是美国怀俄明州公司，并通过分布式服务商运营。信息
 
 我们采用与服务性质相称的访问控制、加密传输、日志和供应商安全措施。但任何互联网服务都无法保证绝对安全。
 
-如果你认为账户或个人信息存在风险，请立即联系 [joe@ezerlab.org](mailto:joe@ezerlab.org)。
+如果你认为账户或个人信息存在风险，请立即联系 [contact@ezer.cc](mailto:contact@ezer.cc)。
 
 ## 9. 你的选择与权利
 
@@ -121,4 +121,4 @@ Ezer 使用软件和模型协助解析公开披露并生成研究材料。这些
 
 成立地：美国怀俄明州
 
-隐私与客户支持：[joe@ezerlab.org](mailto:joe@ezerlab.org)
+隐私与客户支持：[contact@ezer.cc](mailto:contact@ezer.cc)

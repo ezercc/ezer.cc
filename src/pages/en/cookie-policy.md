@@ -59,4 +59,4 @@ Storage duration depends on purpose, provider configuration, and browser setting
 
 ## 8. Changes and contact
 
-We will update this Policy and date if tools or purposes materially change. Questions may be sent to [joe@ezerlab.org](mailto:joe@ezerlab.org).
+We will update this Policy and date if tools or purposes materially change. Questions may be sent to [contact@ezer.cc](mailto:contact@ezer.cc).

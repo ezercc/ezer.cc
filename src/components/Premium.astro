@@ -53,7 +53,7 @@ const copy = isEnglish
       privacy: "Privacy Policy",
       refunds: "Refund and Cancellation Policy",
       delivery: "Digital Delivery Policy",
-      support: "Questions? Email joe@ezerlab.org",
+      support: "Questions? Email contact@ezer.cc",
       paymentMethodLabel: "Payment method",
       card: "Card",
       alipay: "Alipay",
@@ -126,7 +126,7 @@ const copy = isEnglish
       privacy: "隐私政策",
       refunds: "退款与取消政策",
       delivery: "数字交付政策",
-      support: "如有疑问，请发送邮件至 joe@ezerlab.org",
+      support: "如有疑问，请发送邮件至 contact@ezer.cc",
       paymentMethodLabel: "支付方式",
       card: "银行卡",
       alipay: "支付宝",
@@ -382,7 +382,7 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
         </p>
         <div class="secondary-actions">
           <a href={`${prefix}/check/?preview=true`}>{copy.demo}</a>
-          <a href="mailto:joe@ezerlab.org">{copy.support}</a>
+          <a href="mailto:contact@ezer.cc">{copy.support}</a>
         </div>
       </div>
     </div>
@@ -1330,12 +1330,12 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
       try {
         const { data: plan, error } = await window.auth.client
           .from("user_plans")
-          .select("plan_type, paid_through, premium_end_date")
+          .select("plan_type, paid_through, premium_until")
           .eq("uid", session.user.id)
           .single();
 
         if (!error && plan) {
-          const entitlementEnd = plan.paid_through || plan.premium_end_date;
+          const entitlementEnd = plan.paid_through || plan.premium_until;
           const endDate = entitlementEnd ? new Date(entitlementEnd) : null;
           hasActivePremium =
             plan.plan_type === "premium" &&

@@ -85,7 +85,7 @@ After account deletion, some backup, transaction, anti-fraud, tax, or legal reco
 
 We use access controls, encryption in transit, logging, and vendor safeguards proportionate to the Service. No internet service can promise absolute security.
 
-If you believe an account or personal information is at risk, contact [joe@ezerlab.org](mailto:joe@ezerlab.org) promptly.
+If you believe an account or personal information is at risk, contact [contact@ezer.cc](mailto:contact@ezer.cc) promptly.
 
 ## 9. Your choices and rights
 
@@ -121,4 +121,4 @@ Data controller and operator: **EzerLab LLC**
 
 State of formation: Wyoming, United States
 
-Privacy and customer support: [joe@ezerlab.org](mailto:joe@ezerlab.org)
+Privacy and customer support: [contact@ezer.cc](mailto:contact@ezer.cc)

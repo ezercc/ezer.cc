@@ -32,7 +32,7 @@ The planned price is **USD 4.99 per month**. Final price, tax, and renewal statu
 
 After paid subscriptions open, Premium access will normally activate immediately after the payment provider confirms a successful payment. Delivery may be confirmed in the account and by email.
 
-If access is unavailable 24 hours after confirmed payment, email [joe@ezerlab.org](mailto:joe@ezerlab.org) from the account email with the order or payment identifier. Do not send a full card number or one-time code.
+If access is unavailable 24 hours after confirmed payment, email [contact@ezer.cc](mailto:contact@ezer.cc) from the account email with the order or payment identifier. Do not send a full card number or one-time code.
 
 ## 5. User responsibilities
 
@@ -54,6 +54,6 @@ If we fail to deliver paid core access under this Policy, we will first try to r
 
 ## 8. Contact
 
-Digital delivery support: [joe@ezerlab.org](mailto:joe@ezerlab.org)
+Digital delivery support: [contact@ezer.cc](mailto:contact@ezer.cc)
 
 Operator: **EzerLab LLC**

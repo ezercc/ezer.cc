@@ -15,7 +15,7 @@ keywords: 弈泽退款, 订阅取消, EzerLab LLC, 数字服务退款
 
 ## 2. 取消订阅
 
-月度订阅可随时通过账户中的订阅管理功能取消；如该功能暂不可用，可发送邮件至 [joe@ezerlab.org](mailto:joe@ezerlab.org)。
+月度订阅可随时通过账户中的订阅管理功能取消；如该功能暂不可用，可发送邮件至 [contact@ezer.cc](mailto:contact@ezer.cc)。
 
 - 取消将在当前已付费周期结束时生效；
 - 取消后不会继续产生新的续订费用；
@@ -58,7 +58,7 @@ keywords: 弈泽退款, 订阅取消, EzerLab LLC, 数字服务退款
 
 ## 7. 如何申请
 
-请从账户邮箱发送至 [joe@ezerlab.org](mailto:joe@ezerlab.org)，并提供：
+请从账户邮箱发送至 [contact@ezer.cc](mailto:contact@ezer.cc)，并提供：
 
 - 账户邮箱；
 - 交易日期、金额和订单或付款标识；
@@ -79,4 +79,4 @@ keywords: 弈泽退款, 订阅取消, EzerLab LLC, 数字服务退款
 
 运营主体：**EzerLab LLC**
 
-账单、退款和取消支持：[joe@ezerlab.org](mailto:joe@ezerlab.org)
+账单、退款和取消支持：[contact@ezer.cc](mailto:contact@ezer.cc)

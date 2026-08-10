@@ -15,7 +15,7 @@ This Policy will apply when **EzerLab LLC** begins directly selling paid Ezer di
 
 ## 2. Cancelling a subscription
 
-You may cancel a monthly subscription at any time through account subscription controls. If those controls are unavailable, email [joe@ezerlab.org](mailto:joe@ezerlab.org).
+You may cancel a monthly subscription at any time through account subscription controls. If those controls are unavailable, email [contact@ezer.cc](mailto:contact@ezer.cc).
 
 - Cancellation takes effect at the end of the current paid period.
 - No new renewal charge will occur after effective cancellation.
@@ -58,7 +58,7 @@ Brief maintenance, third-party outages, or user-device problems ordinarily do no
 
 ## 7. How to request a refund
 
-Email [joe@ezerlab.org](mailto:joe@ezerlab.org) from the account email and include:
+Email [contact@ezer.cc](mailto:contact@ezer.cc) from the account email and include:
 
 - the account email;
 - transaction date, amount, and order or payment identifier;
@@ -79,4 +79,4 @@ If you have a billing question, contact us first so we can provide transaction i
 
 Operator: **EzerLab LLC**
 
-Billing, refund, and cancellation support: [joe@ezerlab.org](mailto:joe@ezerlab.org)
+Billing, refund, and cancellation support: [contact@ezer.cc](mailto:contact@ezer.cc)

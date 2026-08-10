@@ -30,7 +30,7 @@ Ezer 是订阅式软件工具，用于整理公开披露的公司文件、结构
 
 你必须年满 18 周岁，且具备订立合同的法律能力。你同意提供准确、完整和及时更新的账户信息，并妥善保护登录凭据。
 
-你对账户下发生的活动负责。如怀疑账户被未经授权使用，请立即发送邮件至 [joe@ezerlab.org](mailto:joe@ezerlab.org)。
+你对账户下发生的活动负责。如怀疑账户被未经授权使用，请立即发送邮件至 [contact@ezer.cc](mailto:contact@ezer.cc)。
 
 ## 4. 免费服务、付费订阅与价格
 
@@ -121,4 +121,4 @@ Ezer 是订阅式软件工具，用于整理公开披露的公司文件、结构
 
 成立地：美国怀俄明州
 
-客户支持与法律通知：[joe@ezerlab.org](mailto:joe@ezerlab.org)
+客户支持与法律通知：[contact@ezer.cc](mailto:contact@ezer.cc)

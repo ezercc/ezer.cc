@@ -59,4 +59,4 @@ Unless expressly disclosed, EzerLab does not represent an analyzed company, exch
 
 ## 8. Feedback and corrections
 
-If a source, value, or interpretation may be wrong, email [joe@ezerlab.org](mailto:joe@ezerlab.org) with the page link, company, reporting period, and issue. We will evaluate and correct where appropriate, but cannot promise resolution within a particular time.
+If a source, value, or interpretation may be wrong, email [contact@ezer.cc](mailto:contact@ezer.cc) with the page link, company, reporting period, and issue. We will evaluate and correct where appropriate, but cannot promise resolution within a particular time.

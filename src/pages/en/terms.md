@@ -30,7 +30,7 @@ Outputs may contain omissions, delays, parsing errors, model errors, or source l
 
 You must be at least 18 and legally able to enter a contract. You agree to provide accurate, complete, and current account information and to protect your login credentials.
 
-You are responsible for activity under your account. If you suspect unauthorized use, contact [joe@ezerlab.org](mailto:joe@ezerlab.org) promptly.
+You are responsible for activity under your account. If you suspect unauthorized use, contact [contact@ezer.cc](mailto:contact@ezer.cc) promptly.
 
 ## 4. Free Service, paid subscriptions, and pricing
 
@@ -121,4 +121,4 @@ Operator: **EzerLab LLC**
 
 State of formation: Wyoming, United States
 
-Customer support and legal notices: [joe@ezerlab.org](mailto:joe@ezerlab.org)
+Customer support and legal notices: [contact@ezer.cc](mailto:contact@ezer.cc)

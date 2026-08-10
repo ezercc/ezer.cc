@@ -15,7 +15,7 @@ EzerLab 的注册代理或法律通信地址仅用于公司注册及正式邮件
 
 ## 客户支持邮箱
 
-**[joe@ezerlab.org](mailto:joe@ezerlab.org)**
+**[contact@ezer.cc](mailto:contact@ezer.cc)**
 
 你可以就以下事项联系我们：
 
