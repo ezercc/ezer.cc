@@ -229,30 +229,15 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
 
       <!-- Active Premium User Container -->
       <div id="active-premium-container" class="active-premium-container" hidden>
-        <div class="active-card">
-          <div class="active-card__icon"><i class="fa-solid fa-crown"></i></div>
-          <p class="active-card__message">
-            {
-              isEnglish ? (
-                <>
-                  You currently have active Premium,{" "}
-                  <a href={`${prefix}/search/`} class="active-card__link">
-                    experience it now
-                  </a>
-                </>
-              ) : (
-                <>
-                  您当前已开通专业版，{" "}
-                  <a href={`${prefix}/search/`} class="active-card__link">
-                    立即体验
-                  </a>
-                </>
-              )
-            }
-          </p>
-          <a href={`https://account.ezer.cc/${isEnglish ? "en/" : ""}`} class="active-card__btn">
-            {isEnglish ? "Manage Subscription / Search" : "管理订阅/去搜索"}
+        <div class="active-premium-content">
+          <a id="active-premium-btn" href={`${prefix}/search/`} class="active-premium-btn">
+            {isEnglish ? "You have activated Premium! Click to experience ➔" : "您当前已开通专业版，立即体验 ➔"}
           </a>
+          <div class="active-premium-manage">
+            <a id="active-premium-secondary-link" href={`https://account.ezer.cc/${isEnglish ? "en/" : ""}`}>
+              {isEnglish ? "Manage Subscription" : "管理订阅"}
+            </a>
+          </div>
         </div>
       </div>
 
@@ -966,7 +951,7 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
   .active-premium-container {
     display: flex;
     justify-content: center;
-    margin: 3rem 0 2rem;
+    margin: -1.25rem 0 0;
     animation: fadeIn 0.4s ease;
   }
 
@@ -974,100 +959,46 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
     display: none;
   }
 
-  .active-card {
+  .active-premium-content {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 0.5rem;
     text-align: center;
-    padding: 3rem 2rem;
-    border-radius: 1.25rem;
-    background: rgba(17, 18, 22, 0.45);
-    backdrop-filter: blur(8px) saturate(120%);
-    -webkit-backdrop-filter: blur(8px) saturate(120%);
-    box-shadow:
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
-      0 8px 32px 0 rgba(0, 0, 0, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    max-width: 32rem;
-    width: 100%;
-    position: relative;
-    overflow: hidden;
   }
 
-  /* Sleek top highlight line like pricing cards */
-  .active-card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 20%;
-    right: 20%;
-    height: 1.5px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.7) 50%,
-      transparent
-    );
-    filter: blur(0.5px);
-    z-index: 2;
-  }
-
-  .active-card__icon {
-    font-size: 2.5rem;
-    margin-bottom: 1.25rem;
-    color: #f1c40f;
-    animation: pulse 2s infinite ease-in-out;
-  }
-
-  .active-card__message {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 1.15rem;
-    line-height: 1.6;
-    margin: 0 0 2rem 0;
-  }
-
-  .active-card__link {
-    color: #a999ff;
-    text-decoration: underline;
-    text-underline-offset: 4px;
-    font-weight: 600;
-    transition: color 0.2s ease;
-  }
-
-  .active-card__link:hover {
-    color: #c1b5ff;
-  }
-
-  .active-card__btn {
+  .active-premium-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: #ffffff;
-    color: #111216;
-    font-size: 1rem;
-    font-weight: 600;
-    padding: 0.8rem 2rem;
-    border-radius: 0.75rem;
+    background: none;
+    border: none;
+    padding: 0.25rem 1rem;
+    color: #10b981;
     text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    letter-spacing: 0.02em;
+  }
+
+  .active-premium-btn:hover {
+    color: #34d399;
+    text-decoration: underline;
+    text-underline-offset: 6px;
+  }
+
+  .active-premium-manage a {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.85rem;
+    text-decoration: underline;
+    text-underline-offset: 3px;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
   }
 
-  .active-card__btn:hover {
-    background: rgba(255, 255, 255, 0.9);
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
-  }
-
-  @keyframes pulse {
-    0%, 100% {
-      transform: scale(1);
-      opacity: 0.9;
-    }
-    50% {
-      transform: scale(1.1);
-      opacity: 1;
-    }
+  .active-premium-manage a:hover {
+    color: rgba(255, 255, 255, 0.75);
   }
 
   @keyframes fadeIn {
@@ -1367,6 +1298,25 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
       const activePremiumContainer = document.getElementById("active-premium-container");
       if (activePremiumContainer) {
         activePremiumContainer.hidden = false;
+
+        // Customise texts if redirected on successful payment
+        if (isSuccessRedirect) {
+          const mainBtn = document.getElementById("active-premium-btn");
+          const secondaryLink = document.getElementById("active-premium-secondary-link");
+
+          if (mainBtn) {
+            mainBtn.textContent = locale === "en"
+              ? "Thank you for subscribing to Ezer Premium! Your entitlements will be credited within 5 minutes."
+              : "感谢您订阅弈泽专业版，您的权益将在5分钟内到账。";
+            mainBtn.removeAttribute("href");
+            mainBtn.style.cursor = "default";
+            mainBtn.style.pointerEvents = "none";
+          }
+          if (secondaryLink) {
+            secondaryLink.textContent = locale === "en" ? "Experience Now" : "立即体验";
+            secondaryLink.href = `${prefix}/search/`;
+          }
+        }
       }
 
       // Hide waitlist feedback section
