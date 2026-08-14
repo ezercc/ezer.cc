@@ -374,7 +374,6 @@ async function checkAndUpdateQuota(user: any) {
   console.log(`[Quota] Plan quota exhausted for ${uid}. Attempting to consume invitation/referral quota...`);
 
   try {
-    // 调用 Supabase 存储过程（RPC）来扣减邀请/受邀额度
     const rpcResp = await fetch(`${SUPABASE_URL}/rest/v1/rpc/consume_user_quota_array`, {
       method: 'POST',
       headers: {
@@ -388,131 +387,29 @@ async function checkAndUpdateQuota(user: any) {
       })
     });
 
-    if (rpcResp.ok) {
-      const success = await rpcResp.json();
-      if (success === true) {
-        console.log(`[Quota] Successfully consumed 1 invitation quota via RPC for ${uid}`);
-        return { allowed: true, remaining: 0, is_reward_quota: true };
-      } else {
-        console.warn(`[Quota] RPC returned false (insufficient reward quota) for ${uid}`);
-      }
-    } else {
+    if (!rpcResp.ok) {
       const errText = await rpcResp.text();
-      console.error(`[Quota RPC Error] Status: ${rpcResp.status}, Body: ${errText}`);
+      console.error(`[Quota RPC Error] status=${rpcResp.status} body=${errText}`);
+    } else {
+      const consumed = await rpcResp.json();
+      if (consumed === true) {
+        console.log(`[Quota] Consumed one reward quota for ${uid}`);
+        return { allowed: true, remaining: 0, is_reward_quota: true };
+      }
+      if (consumed === false) {
+        console.log(`[Quota] Reward quota exhausted for ${uid}`);
+        return { allowed: false };
+      }
+      console.error('[Quota RPC Error] returned an invalid response');
     }
   } catch (rpcErr) {
     console.error('[Quota RPC Exception]', rpcErr);
   }
 
-  // 7. Fallback: 如果 RPC 故障或报错，手动在 JS 里校验并扣减邀请/受邀额度（自愈模式）
-  console.warn('[Quota] RPC failed or returned false. Running JS fallback for invitee/inviter quota...');
-  try {
-    const [profResp, invResp] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${uid}`, {
-        headers: {
-          'apikey': SUPABASE_SERVICE_KEY,
-          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
-        }
-      }),
-      fetch(`${SUPABASE_URL}/rest/v1/invitations?user_id=eq.${uid}`, {
-        headers: {
-          'apikey': SUPABASE_SERVICE_KEY,
-          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
-        }
-      })
-    ]);
-
-    if (!profResp.ok) {
-      const errTxt = await profResp.text();
-      console.error(`[Quota Fallback Profile Get Error] Status: ${profResp.status}, Body: ${errTxt}`);
-      return { allowed: false };
-    }
-
-    const profiles = await profResp.json();
-    if (!profiles || profiles.length === 0) {
-      console.error(`[Quota Fallback] Profile not found for ${uid}`);
-      return { allowed: false };
-    }
-
-    const profile = profiles[0];
-    const regDate = new Date(profile.created_at);
-    const expireDate = new Date(regDate);
-    expireDate.setMonth(expireDate.getMonth() + 1);
-
-    let inviteeAvailable = 0;
-    if (profile.referred_by && expireDate > new Date()) {
-      inviteeAvailable = Math.max(0, 3 - (profile.invitee_quota_used || 0));
-    }
-
-    let inviterAvailable = 0;
-    let inviterRecord = null;
-    if (invResp.ok) {
-      const invitations = await invResp.json();
-      if (invitations && invitations.length > 0) {
-        inviterRecord = invitations[0];
-        inviterAvailable = inviterRecord.remaining_uses || 0;
-      }
-    }
-
-    console.log(`[Quota Fallback Check] User ${uid}: inviteeAvailable=${inviteeAvailable}, inviterAvailable=${inviterAvailable}`);
-
-    if (inviteeAvailable + inviterAvailable < 1) {
-      console.log(`[Quota Fallback] No available reward quota for ${uid}`);
-      return { allowed: false };
-    }
-
-    // 优先扣减被邀请人额度
-    if (inviteeAvailable > 0) {
-      const used = profile.invitee_quota_used || 0;
-      const patchResp = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${uid}`, {
-        method: 'PATCH',
-        headers: {
-          'apikey': SUPABASE_SERVICE_KEY,
-          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          invitee_quota_used: used + 1,
-          updated_at: new Date().toISOString()
-        })
-      });
-
-      if (patchResp.ok) {
-        console.log(`[Quota Fallback] Successfully consumed 1 invitee quota for ${uid}. Remaining: ${3 - (used + 1)}`);
-        return { allowed: true, remaining: 0, is_reward_quota: true };
-      } else {
-        const errTxt = await patchResp.text();
-        console.error(`[Quota Fallback PATCH Profile Error] Status: ${patchResp.status}, Body: ${errTxt}`);
-      }
-    }
-    // 其次扣减邀请人奖励额度
-    else if (inviterAvailable > 0) {
-      const patchResp = await fetch(`${SUPABASE_URL}/rest/v1/invitations?user_id=eq.${uid}`, {
-        method: 'PATCH',
-        headers: {
-          'apikey': SUPABASE_SERVICE_KEY,
-          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          remaining_uses: inviterAvailable - 1,
-          updated_at: new Date().toISOString()
-        })
-      });
-
-      if (patchResp.ok) {
-        console.log(`[Quota Fallback] Successfully consumed 1 inviter quota for ${uid}. Remaining: ${inviterAvailable - 1}`);
-        return { allowed: true, remaining: 0, is_reward_quota: true };
-      } else {
-        const errTxt = await patchResp.text();
-        console.error(`[Quota Fallback PATCH Invitation Error] Status: ${patchResp.status}, Body: ${errTxt}`);
-      }
-    }
-  } catch (fallbackErr) {
-    console.error('[Quota Fallback Exception]', fallbackErr);
-  }
-
-  // 8. 确实没有可用额度了
+  // Never fall back to a client-side read/modify/write quota update. A failed
+  // RPC may have committed before its response was lost, and REST updates are
+  // not atomic with the preceding reads.
+  console.error(`[Quota] Reward quota RPC unavailable for ${uid}; failing closed`);
   return { allowed: false };
 }
 

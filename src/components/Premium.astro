@@ -1193,6 +1193,7 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
     paymentCancelMessage: isEnglish
       ? "Payment cancelled. You can try subscribing again when you are ready."
       : "支付已取消。您可以随时重新尝试订阅。",
+    prefix,
   }}
 >
   async function initPremiumEarlyAccess() {
@@ -1243,7 +1244,10 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
         cancelBannerText.textContent = paymentCancelMessage;
         cancelBanner.hidden = false;
       }
+    }
 
+    // Clean URL query parameters immediately to avoid blocking by async network calls
+    if (status === "success" || status === "cancel") {
       const cleanUrl = window.location.pathname;
       window.history.replaceState({}, document.title, cleanUrl);
     }
@@ -1323,11 +1327,6 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
       if (feedbackSection) {
         feedbackSection.hidden = true;
         feedbackSection.style.display = "none";
-      }
-
-      if (isSuccessRedirect) {
-        const cleanUrl = window.location.pathname;
-        window.history.replaceState({}, document.title, cleanUrl);
       }
     }
 
