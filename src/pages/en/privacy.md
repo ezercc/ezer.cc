@@ -3,7 +3,7 @@ layout: ../../layouts/LegalLayout.astro
 title: Privacy Policy
 description: How EzerLab LLC collects, uses, shares, and protects personal information across Ezer accounts, the website, financial-statement research, and analytics.
 eyebrow: EzerLab LLC privacy
-effectiveDate: July 30, 2026
+effectiveDate: August 16, 2026
 keywords: Ezer privacy, EzerLab LLC, personal information, cookies, data processing
 ---
 
@@ -21,7 +21,7 @@ It does not govern independently operated third-party websites, data sources, or
 - support, feedback, refund, and dispute communications;
 - company searches, research parameters, ratings, and other product inputs;
 - files or text uploaded where a feature permits them; and
-- subscription, billing-status, and transaction identifiers. Payment providers process full card data; we do not store full card numbers.
+- subscription, billing-status, order, and transaction identifiers. Stripe processes full card data under its own policies; we do not store full card numbers.
 
 Do not submit credentials, identity documents, material non-public information, health information, or unrelated sensitive personal data in research inputs.
 
@@ -34,14 +34,14 @@ Do not submit credentials, identity documents, material non-public information, 
 
 ### Information from third parties
 
-We may receive account-verification status, transaction status, public filing data, or risk signals from authentication, hosting, payment, data, and security providers.
+We may receive account-verification status, order or transaction status, public filing data, or risk signals from authentication, hosting, payment, data, and security providers.
 
 ## 3. How we use information
 
 We may process information to:
 
-- create and protect accounts and provide research, reports, and subscription features;
-- process payments, deliver digital services, and respond to refund or support requests;
+- create and protect accounts and provide research, reports, paid Services, and subscription features;
+- process payments, subscriptions or one-time purchases through Stripe, deliver digital services, and respond to refund or support requests;
 - enforce quotas, prevent abuse, investigate security events, and apply our Terms;
 - debug, monitor performance, and improve accuracy, availability, and user experience;
 - send product or service communications with consent or as permitted by law; and
@@ -63,7 +63,7 @@ We may disclose required information to:
 - **Vercel, Cloudflare, and content-delivery providers** for hosting, delivery, security, and performance;
 - **Upstash** for rate limiting, caching, or runtime data;
 - **Google Analytics, Microsoft Clarity, and Baidu Analytics** for consented analytics;
-- **Stripe, Airwallex, or another disclosed payment provider** for transactions and compliance when payments are enabled;
+- **Stripe** for Checkout, subscriptions or one-time payments, billing, refunds, and necessary fraud-prevention and compliance processing;
 - model, data, and infrastructure providers that process necessary queries and public filing data to generate structured research; and
 - professional advisers, law enforcement, or regulators where legally required or needed to protect lawful rights.
 
