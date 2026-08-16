@@ -1,38 +1,36 @@
 ---
 layout: ../../layouts/LegalLayout.astro
 title: Digital Delivery Policy
-description: How Ezer free and paid financial-statement research software is delivered, activated, accessed, and supported.
+description: How Ezer free and paid financial-statement research software is delivered, paid for, activated, accessed, and supported.
 eyebrow: Digital service delivery
-effectiveDate: July 30, 2026
-keywords: Ezer digital delivery, software subscription activation, Ezer Premium, online service
+effectiveDate: August 16, 2026
+keywords: Ezer digital delivery, software subscription activation, Ezer Premium, Stripe, online service
 ---
 
 ## 1. Product and delivery format
 
 Ezer is online financial-statement research software provided by **EzerLab LLC**. The Service is delivered entirely online; no physical goods are shipped.
 
-Users access available company search, structured analysis, source references, history, or report-export features through ezer.cc and associated account pages. Features and quotas are described on the relevant plan page and in the account.
+Users access available company search, structured analysis, source references, history, or report-export features through ezer.cc and associated account pages. Features and quotas are described on the relevant plan page, checkout page, and in the account.
 
 ## 2. Free Service
 
 The free experience is generally available when an account is created, a user signs in, or a public demo is opened. Free features may be limited by monthly quota, company coverage, report period, or feature availability.
 
-## 3. Premium early access
+## 3. Paid plans and purchase information
 
-Premium is not yet collecting payments. Joining the early-access list:
+EzerLab offers paid digital services. Before purchase, Stripe Checkout displays the applicable price, currency, billing interval, applicable taxes, renewal status, and available payment methods.
 
-- requires no payment;
-- does not create a paid subscription;
-- does not guarantee a particular launch date; and
-- only permits us to contact you when subscriptions open.
+- Card plans offered monthly, quarterly, or annually are automatically renewing subscriptions billed for the interval shown at purchase until cancelled.
+- Alipay quarterly and annual plans offered on the Chinese-language page are one-time prepaid purchases and do not automatically renew.
+- After an Alipay one-time purchase expires, you may make a new purchase if you wish to continue using paid Services.
+- Plans, prices, available payment methods, and availability by region may change. The final checkout and order-confirmation information controls for a particular purchase.
 
-The planned price is **USD 4.99 per month**. Final price, tax, and renewal status will appear before payment.
+## 4. Payment confirmation and digital delivery
 
-## 4. Activation after paid launch
+After the payment provider confirms a successful payment and necessary processing is complete, we grant the corresponding Premium access. Access status and the applicable access period may be viewed through associated account pages.
 
-After paid subscriptions open, Premium access will normally activate immediately after the payment provider confirms a successful payment. Delivery may be confirmed in the account and by email.
-
-If access is unavailable 24 hours after confirmed payment, email [joe@ezerlab.org](mailto:joe@ezerlab.org) from the account email with the order or payment identifier. Do not send a full card number or one-time code.
+A return to the site after payment does not by itself confirm payment or entitlement. If the corresponding access is not displayed within a reasonable time, email [contact@ezer.cc](mailto:contact@ezer.cc) from the account email with the order or payment identifier. Do not send a full card number, bank password, or one-time code.
 
 ## 5. User responsibilities
 
@@ -50,10 +48,10 @@ Company, period, source, and report-format coverage changes with public disclosu
 
 ## 7. Service problems and remedies
 
-If we fail to deliver paid core access under this Policy, we will first try to restore access. If we cannot restore it within a reasonable time, a refund or other remedy may be available under the [Refund and Cancellation Policy](/en/refund-and-cancellation/).
+If we fail to deliver paid core access under this Policy, we will first try to restore access. If we cannot restore it within a reasonable time, a refund or other appropriate remedy may be available under the [Refund and Cancellation Policy](/en/refund-and-cancellation/).
 
 ## 8. Contact
 
-Digital delivery support: [joe@ezerlab.org](mailto:joe@ezerlab.org)
+Digital delivery support: [contact@ezer.cc](mailto:contact@ezer.cc)
 
 Operator: **EzerLab LLC**

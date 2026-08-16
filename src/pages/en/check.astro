@@ -1784,6 +1784,35 @@ const translations = ui[lang];
     if (label) loadingTextEl.textContent = label;
   }
 
+  function formatDetailValue(value: unknown): string {
+    if (typeof value === 'string') return value.trim();
+
+    if (Array.isArray(value)) {
+      return value
+        .map(formatDetailValue)
+        .filter(Boolean)
+        .join(', ');
+    }
+
+    if (value && typeof value === 'object') {
+      const record = value as Record<string, unknown>;
+      for (const key of ['text', 'content', 'detail', 'summary', 'message', 'description']) {
+        const text = formatDetailValue(record[key]);
+        if (text) return text;
+      }
+
+      try {
+        return JSON.stringify(value);
+      } catch {
+        return '';
+      }
+    }
+
+    if (typeof value === 'number') return Number.isFinite(value) ? String(value) : '';
+    if (typeof value === 'boolean') return String(value);
+    return '';
+  }
+
   /**
    * Process a single event from the stream
    */
@@ -1943,14 +1972,13 @@ const translations = ui[lang];
         ];
 
         for (const field of fields) {
-          const val = d[field.key];
-          if (val && val.length) {
+          const text = formatDetailValue(d[field.key]);
+          if (text) {
             const li = document.createElement('li');
             li.innerHTML = `<span class="label">${field.label}:</span> `;
             const textSpan = document.createElement('span');
             li.appendChild(textSpan);
             detailsList.appendChild(li);
-            const text = Array.isArray(val) ? val.join(', ') : val;
             if (skipAnimation) {
               textSpan.textContent = text;
             } else {
@@ -1979,6 +2007,7 @@ const translations = ui[lang];
           const sourceContainer = document.createElement('div');
           sourceContainer.className = 'source-refs-container';
           sourceContainer.style.marginTop = '14px';
+          sourceContainer.style.marginBottom = '14px';
           sourceContainer.style.paddingTop = '10px';
           sourceContainer.style.borderTop = '1px dashed rgba(255,255,255,0.08)';
           sourceContainer.style.fontSize = '0.85em';
@@ -2156,7 +2185,6 @@ const translations = ui[lang];
   // ── Main entry point ──
   async function main() {
     let collectedData: any[] = [];
-    const cacheKey = `cache:check:${code}:${year}:${period}:${lang}`;
 
     try {
 
@@ -2190,6 +2218,12 @@ const translations = ui[lang];
         if (localResp.status === 401) {
           cleanup();
           showError('unauthorized');
+          return;
+        }
+        // BUG1 Fix: Explicitly intercept 403 (Quota Exceeded) for a clean UI path.
+        if (localResp.status === 403) {
+          cleanup();
+          showError('Quota exceeded');
           return;
         }
 
@@ -2254,8 +2288,7 @@ const translations = ui[lang];
             }, 
             true, // isSSE
             () => {
-                // onFirstChunk: Clear initial timeout and start a new 5-minute data transfer timeout
-                console.log('First chunk received. Resetting timeout for data transfer...');
+                // Each chunk extends the 5-minute inactivity timeout.
                 clearTimeout(timeoutId);
                 timeoutId = setTimeout(() => {
                     controller.abort();
@@ -2265,6 +2298,10 @@ const translations = ui[lang];
         );
 
         clearTimeout(timeoutId);
+        if (!isSuccessfullyCompleted) {
+            showError();
+            return;
+        }
 
         // Step 3: Fetch Final Result from auto-decoding Brotli endpoint if available, otherwise fallback to resultUrl
         const finalFetchUrl = resultBrUrl || resultUrl;
@@ -2292,16 +2329,16 @@ const translations = ui[lang];
             }
         }
 
-        // Step 4: Request BFF to verify and store cache securely
-        if (isSuccessfullyCompleted && collectedData.length > 0) {
+        // Step 4: Request BFF to verify and store cache securely.
+        // The BFF resolves the result endpoint from the task binding; the browser
+        // only needs to provide the task ID for either Brotli or JSON results.
+        if (isSuccessfullyCompleted && collectedData.length > 0 && taskId) {
             console.log('Analysis complete and verified. Requesting BFF cache backfill...');
             
             const backfillCache = async () => {
+              // BUG2 companion fix: Do not send token; BFF must always use its env BACKEND_TOKEN.
               const backfillPayload = {
-                action: 'backfill',
-                cacheKey: cacheKey,
-                resultBrRawUrl: resultBrRawUrl || resultUrl,
-                token: tempToken || null
+                taskId
               };
 
               console.log('Sending backfill request to BFF:', backfillPayload);
@@ -2477,7 +2514,7 @@ const translations = ui[lang];
     response: Response, 
     onEachItem?: (item: any) => void, 
     isSSE = false,
-    onFirstChunk?: () => void
+    onChunk?: () => void
   ) {
     if (preview === 'true') {
       // Hijack and speed up to 99%
@@ -2514,16 +2551,12 @@ const translations = ui[lang];
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let buffer = '';
-    let isFirstChunk = true;
 
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
-      
-      if (isFirstChunk) {
-        isFirstChunk = false;
-        if (onFirstChunk) onFirstChunk();
-      }
+
+      if (onChunk) onChunk();
 
       buffer += decoder.decode(value, { stream: true });
 

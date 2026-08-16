@@ -26,12 +26,12 @@ function signTaskUrl(urlStr: string, taskId: string, scope: string): string {
     const iat = Math.floor(Date.now() / 1000);
     const exp = iat + 600; // 10 minutes
     const jti = randomUUID ? randomUUID() : Math.random().toString(36).substring(2, 15);
-    
+
     const header = {
       alg: "RS256",
       typ: "JWT"
     };
-    
+
     const payload = {
       task_id: taskId,
       scope,
@@ -40,18 +40,18 @@ function signTaskUrl(urlStr: string, taskId: string, scope: string): string {
       exp,
       jti
     };
-    
+
     const encodedHeader = base64UrlEncode(JSON.stringify(header));
     const encodedPayload = base64UrlEncode(JSON.stringify(payload));
     const signingInput = `${encodedHeader}.${encodedPayload}`;
-    
+
     const sign = createSign('SHA256');
     sign.update(signingInput);
     sign.end();
-    
+
     const signature = sign.sign(privateKey);
     const encodedSignature = base64UrlEncode(signature);
-    
+
     const jwsToken = `${signingInput}.${encodedSignature}`;
 
     const url = new URL(urlStr);
@@ -81,6 +81,37 @@ const API_BASE = (getEnv('EZER_AUDIT_API_BASE') || "https://api.ezer.cc").replac
 const BACKEND_API = `${API_BASE}/api/tasks`;
 const BACKEND_TOKEN = getEnv('BACKEND_TOKEN');
 const CACHE_EXPIRY = 30 * 24 * 60 * 60; // 30 days in seconds
+const PENDING_TASK_EXPIRY = 15 * 60; // Keep task/cache bindings short-lived
+
+type PendingCheckBinding = {
+  userId: string;
+  taskId: string;
+  cacheKey: string;
+  indexEntry: string;
+  resultUrl: string;
+  resultKind: 'brotli' | 'json';
+};
+
+function isValidTaskId(taskId: unknown): taskId is string {
+  return typeof taskId === 'string' && /^[A-Za-z0-9._:-]{1,128}$/.test(taskId);
+}
+
+function getCacheIndexEntry(cacheKey: string): string | null {
+  const parts = cacheKey.split(':');
+  if (parts.length !== 6 || parts[0] !== 'cache' || parts[1] !== 'check') return null;
+  return `${parts[2]}:${parts[3]}:${parts[4]}:${parts[5]}`;
+}
+
+function isTaskResultUrl(urlStr: string, taskId: string, kind: 'brotli' | 'json'): boolean {
+  try {
+    const actual = new URL(urlStr);
+    const expectedOrigin = new URL(BACKEND_API).origin;
+    const expectedPath = `/api/tasks/${encodeURIComponent(taskId)}/${kind === 'brotli' ? 'result.br.raw' : 'result'}`;
+    return actual.origin === expectedOrigin && actual.pathname === expectedPath;
+  } catch {
+    return false;
+  }
+}
 
 /**
  * Helper to decompress Brotli data from a Base64 string
@@ -142,65 +173,130 @@ async function getSupabaseUser(cookies: string) {
   }
 }
 
+async function consumeFreePlanQuota(uid: string, email: string) {
+  try {
+    const resp = await fetch(`${SUPABASE_URL}/rest/v1/rpc/consume_free_plan_quota`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_SERVICE_KEY!,
+        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY!}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        p_uid: uid,
+        p_email: email || null
+      })
+    });
+
+    if (!resp.ok) {
+      const errText = await resp.text();
+      console.error(`[Quota Free RPC Error] Status: ${resp.status}, Body: ${errText}`);
+      return null;
+    }
+
+    const result = await resp.json();
+    if (!Array.isArray(result) || result.length !== 1) {
+      console.error('[Quota Free RPC Error] Expected exactly one result row');
+      return null;
+    }
+
+    const row = result[0];
+    if (
+      !row || typeof row.allowed !== 'boolean' ||
+      typeof row.plan_is_free !== 'boolean' ||
+      (row.remaining !== null && !Number.isInteger(row.remaining))
+    ) {
+      console.error('[Quota Free RPC Error] Invalid result row');
+      return null;
+    }
+
+    return {
+      allowed: row.allowed,
+      remaining: row.remaining,
+      planIsFree: row.plan_is_free
+    };
+  } catch (err) {
+    console.error('[Quota Free RPC Exception]', err);
+    return null;
+  }
+}
+
 /**
  * Helper to manage quota via Supabase REST
  */
 async function checkAndUpdateQuota(user: any) {
   if (!SUPABASE_SERVICE_KEY) {
-    console.warn('SUPABASE_SERVICE_ROLE_KEY not configured, skipping quota check');
-    return { allowed: true };
+    console.error('SUPABASE_SERVICE_ROLE_KEY not configured');
+    return { allowed: false, configuration_error: true };
   }
 
   const uid = user.id;
   const email = user.email;
 
   // 1. Get current plan
-  let resp = await fetch(`${SUPABASE_URL}/rest/v1/user_plans?uid=eq.${uid}`, {
-    headers: {
-      'apikey': SUPABASE_SERVICE_KEY,
-      'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
-    }
-  });
+  let resp: Response;
+  try {
+    resp = await fetch(`${SUPABASE_URL}/rest/v1/user_plans?uid=eq.${uid}`, {
+      headers: {
+        'apikey': SUPABASE_SERVICE_KEY,
+        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
+      }
+    });
+  } catch (err) {
+    console.error('[Quota Plan Get Exception]', err);
+    return { allowed: false };
+  }
+
+  if (!resp.ok) {
+    const errText = await resp.text();
+    console.error(`[Quota Plan Get Error] Status: ${resp.status}, Body: ${errText}`);
+    return { allowed: false };
+  }
+
+  let plans: any;
+  try {
+    plans = await resp.json();
+  } catch (err) {
+    console.error('[Quota Plan Get Parse Error]', err);
+    return { allowed: false };
+  }
+
+  if (!Array.isArray(plans)) {
+    console.error('[Quota Plan Get Error] Expected an array response');
+    return { allowed: false };
+  }
 
   let plan = null;
-  const plans = await resp.json();
 
   if (plans && plans.length > 0) {
     plan = plans[0];
-  } else {
-    // 2. Create default free plan if not exists
-    const newPlan = {
-      uid,
-      email,
-      plan_type: 'free',
-      quota_remaining: 3,
-      last_used_date: new Date().toISOString().split('T')[0]
-    };
-
-    await fetch(`${SUPABASE_URL}/rest/v1/user_plans`, {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_SERVICE_KEY,
-        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=representation'
-      },
-      body: JSON.stringify(newPlan)
-    });
-    return { allowed: true, remaining: 2 }; // Just used one
   }
 
   const today = new Date().toISOString().split('T')[0];
   const currentMonth = today.substring(0, 7); // "YYYY-MM"
 
-  // 3. Handle Premium Logic
+  // Atomically create and consume the first Free-plan quota. The database
+  // advisory lock and unique uid index prevent concurrent first requests from
+  // minting extra analyses.
+  if (!plan) {
+    const freeQuota = await consumeFreePlanQuota(uid, email);
+    if (!freeQuota || !freeQuota.planIsFree || !freeQuota.allowed || freeQuota.remaining === null) {
+      return { allowed: false };
+    }
+    return { allowed: true, remaining: freeQuota.remaining };
+  }
+
+  // Stripe webhooks maintain paid_through; premium_until supports legacy plans.
   if (plan.plan_type === 'premium') {
-    // Check for Expiry
-    if (plan.premium_end_date) {
-      const endDate = new Date(plan.premium_end_date);
-      if (endDate < new Date()) {
-        // Plan Expired: Revert to free
-        await fetch(`${SUPABASE_URL}/rest/v1/user_plans?uid=eq.${uid}`, {
+    const entitlementEnd = plan.paid_through || plan.premium_until;
+    const endDate = entitlementEnd ? new Date(entitlementEnd) : null;
+    const isActivePremium = endDate && !Number.isNaN(endDate.getTime()) && endDate > new Date();
+
+    if (!isActivePremium) {
+      // A cancelled or failed renewal never removes already-paid access early.
+      // This downgrade happens only after the server-maintained entitlement end.
+      try {
+        const downgradeResp = await fetch(`${SUPABASE_URL}/rest/v1/user_plans?uid=eq.${uid}`, {
           method: 'PATCH',
           headers: {
             'apikey': SUPABASE_SERVICE_KEY,
@@ -209,13 +305,22 @@ async function checkAndUpdateQuota(user: any) {
           },
           body: JSON.stringify({
             plan_type: 'free',
-            quota_remaining: 3 - 1, // Reset to 3 but consume one
+            quota_remaining: 3 - 1,
             last_used_date: today,
             updated_at: new Date().toISOString()
           })
         });
-        return { allowed: true, remaining: 2 };
+
+        if (!downgradeResp.ok) {
+          const errText = await downgradeResp.text();
+          console.error(`[Quota Premium Downgrade Error] Status: ${downgradeResp.status}, Body: ${errText}`);
+          return { allowed: false };
+        }
+      } catch (err) {
+        console.error('[Quota Premium Downgrade Exception]', err);
+        return { allowed: false };
       }
+      return { allowed: true, remaining: 2 };
     }
 
     // Monthly Reset Logic for Premium
@@ -225,53 +330,50 @@ async function checkAndUpdateQuota(user: any) {
       remaining = 0; // Reset to 0 for new month
     }
 
-    // Update Quota (minus values show usage)
-    await fetch(`${SUPABASE_URL}/rest/v1/user_plans?uid=eq.${uid}`, {
-      method: 'PATCH',
-      headers: {
-        'apikey': SUPABASE_SERVICE_KEY,
-        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        quota_remaining: remaining - 1,
-        last_used_date: today,
-        updated_at: new Date().toISOString()
-      })
-    });
+    // Update quota usage for reporting; active Premium access remains unlimited.
+    try {
+      const premiumUsageResp = await fetch(`${SUPABASE_URL}/rest/v1/user_plans?uid=eq.${uid}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          quota_remaining: remaining - 1,
+          last_used_date: today,
+          updated_at: new Date().toISOString()
+        })
+      });
+
+      if (!premiumUsageResp.ok) {
+        const errText = await premiumUsageResp.text();
+        console.warn(`[Quota Premium Usage Tracking Error] Status: ${premiumUsageResp.status}, Body: ${errText}`);
+      }
+    } catch (err) {
+      console.warn('[Quota Premium Usage Tracking Exception]', err);
+    }
     return { allowed: true, remaining: 99 };
   }
 
-  // 4. Monthly Reset Logic for Free Users (changed from Daily to Monthly reset)
-  let remaining = plan.quota_remaining;
-  const lastMonth = plan.last_used_date ? plan.last_used_date.substring(0, 7) : "";
-  if (lastMonth !== currentMonth) {
-    remaining = 3; // Reset to 3 for the new month
+  // 4. Monthly reset and Free-plan consumption are performed atomically in
+  // Supabase so simultaneous requests cannot reuse the same remaining balance.
+  const freeQuota = await consumeFreePlanQuota(uid, email);
+  if (!freeQuota) {
+    return { allowed: false };
   }
-
-  // 5. If plan quota is available, consume it
-  if (remaining > 0) {
-    await fetch(`${SUPABASE_URL}/rest/v1/user_plans?uid=eq.${uid}`, {
-      method: 'PATCH',
-      headers: {
-        'apikey': SUPABASE_SERVICE_KEY,
-        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        quota_remaining: remaining - 1,
-        last_used_date: today,
-        updated_at: new Date().toISOString()
-      })
-    });
-    return { allowed: true, remaining: remaining - 1 };
+  if (!freeQuota.planIsFree) {
+    // The plan changed between the initial read and the RPC; fail closed.
+    return { allowed: false };
+  }
+  if (freeQuota.allowed && freeQuota.remaining !== null) {
+    return { allowed: true, remaining: freeQuota.remaining };
   }
 
   // 6. If plan quota is exhausted, consume invitation/referral quota
   console.log(`[Quota] Plan quota exhausted for ${uid}. Attempting to consume invitation/referral quota...`);
-  
+
   try {
-    // 调用 Supabase 存储过程（RPC）来扣减邀请/受邀额度
     const rpcResp = await fetch(`${SUPABASE_URL}/rest/v1/rpc/consume_user_quota_array`, {
       method: 'POST',
       headers: {
@@ -285,131 +387,29 @@ async function checkAndUpdateQuota(user: any) {
       })
     });
 
-    if (rpcResp.ok) {
-      const success = await rpcResp.json();
-      if (success === true) {
-        console.log(`[Quota] Successfully consumed 1 invitation quota via RPC for ${uid}`);
-        return { allowed: true, remaining: 0, is_reward_quota: true };
-      } else {
-        console.warn(`[Quota] RPC returned false (insufficient reward quota) for ${uid}`);
-      }
-    } else {
+    if (!rpcResp.ok) {
       const errText = await rpcResp.text();
-      console.error(`[Quota RPC Error] Status: ${rpcResp.status}, Body: ${errText}`);
+      console.error(`[Quota RPC Error] status=${rpcResp.status} body=${errText}`);
+    } else {
+      const consumed = await rpcResp.json();
+      if (consumed === true) {
+        console.log(`[Quota] Consumed one reward quota for ${uid}`);
+        return { allowed: true, remaining: 0, is_reward_quota: true };
+      }
+      if (consumed === false) {
+        console.log(`[Quota] Reward quota exhausted for ${uid}`);
+        return { allowed: false };
+      }
+      console.error('[Quota RPC Error] returned an invalid response');
     }
   } catch (rpcErr) {
     console.error('[Quota RPC Exception]', rpcErr);
   }
 
-  // 7. Fallback: 如果 RPC 故障或报错，手动在 JS 里校验并扣减邀请/受邀额度（自愈模式）
-  console.warn('[Quota] RPC failed or returned false. Running JS fallback for invitee/inviter quota...');
-  try {
-    const [profResp, invResp] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${uid}`, {
-        headers: {
-          'apikey': SUPABASE_SERVICE_KEY,
-          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
-        }
-      }),
-      fetch(`${SUPABASE_URL}/rest/v1/invitations?user_id=eq.${uid}`, {
-        headers: {
-          'apikey': SUPABASE_SERVICE_KEY,
-          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
-        }
-      })
-    ]);
-
-    if (!profResp.ok) {
-      const errTxt = await profResp.text();
-      console.error(`[Quota Fallback Profile Get Error] Status: ${profResp.status}, Body: ${errTxt}`);
-      return { allowed: false };
-    }
-
-    const profiles = await profResp.json();
-    if (!profiles || profiles.length === 0) {
-      console.error(`[Quota Fallback] Profile not found for ${uid}`);
-      return { allowed: false };
-    }
-
-    const profile = profiles[0];
-    const regDate = new Date(profile.created_at);
-    const expireDate = new Date(regDate);
-    expireDate.setMonth(expireDate.getMonth() + 1);
-
-    let inviteeAvailable = 0;
-    if (profile.referred_by && expireDate > new Date()) {
-      inviteeAvailable = Math.max(0, 3 - (profile.invitee_quota_used || 0));
-    }
-
-    let inviterAvailable = 0;
-    let inviterRecord = null;
-    if (invResp.ok) {
-      const invitations = await invResp.json();
-      if (invitations && invitations.length > 0) {
-        inviterRecord = invitations[0];
-        inviterAvailable = inviterRecord.remaining_uses || 0;
-      }
-    }
-
-    console.log(`[Quota Fallback Check] User ${uid}: inviteeAvailable=${inviteeAvailable}, inviterAvailable=${inviterAvailable}`);
-
-    if (inviteeAvailable + inviterAvailable < 1) {
-      console.log(`[Quota Fallback] No available reward quota for ${uid}`);
-      return { allowed: false };
-    }
-
-    // 优先扣减被邀请人额度
-    if (inviteeAvailable > 0) {
-      const used = profile.invitee_quota_used || 0;
-      const patchResp = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${uid}`, {
-        method: 'PATCH',
-        headers: {
-          'apikey': SUPABASE_SERVICE_KEY,
-          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          invitee_quota_used: used + 1,
-          updated_at: new Date().toISOString()
-        })
-      });
-
-      if (patchResp.ok) {
-        console.log(`[Quota Fallback] Successfully consumed 1 invitee quota for ${uid}. Remaining: ${3 - (used + 1)}`);
-        return { allowed: true, remaining: 0, is_reward_quota: true };
-      } else {
-        const errTxt = await patchResp.text();
-        console.error(`[Quota Fallback PATCH Profile Error] Status: ${patchResp.status}, Body: ${errTxt}`);
-      }
-    } 
-    // 其次扣减邀请人奖励额度
-    else if (inviterAvailable > 0) {
-      const patchResp = await fetch(`${SUPABASE_URL}/rest/v1/invitations?user_id=eq.${uid}`, {
-        method: 'PATCH',
-        headers: {
-          'apikey': SUPABASE_SERVICE_KEY,
-          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          remaining_uses: inviterAvailable - 1,
-          updated_at: new Date().toISOString()
-        })
-      });
-
-      if (patchResp.ok) {
-        console.log(`[Quota Fallback] Successfully consumed 1 inviter quota for ${uid}. Remaining: ${inviterAvailable - 1}`);
-        return { allowed: true, remaining: 0, is_reward_quota: true };
-      } else {
-        const errTxt = await patchResp.text();
-        console.error(`[Quota Fallback PATCH Invitation Error] Status: ${patchResp.status}, Body: ${errTxt}`);
-      }
-    }
-  } catch (fallbackErr) {
-    console.error('[Quota Fallback Exception]', fallbackErr);
-  }
-
-  // 8. 确实没有可用额度了
+  // Never fall back to a client-side read/modify/write quota update. A failed
+  // RPC may have committed before its response was lost, and REST updates are
+  // not atomic with the preceding reads.
+  console.error(`[Quota] Reward quota RPC unavailable for ${uid}; failing closed`);
   return { allowed: false };
 }
 
@@ -443,6 +443,11 @@ export const GET: APIRoute = async ({ url, request }) => {
   }
 
   const quota = await checkAndUpdateQuota(user);
+  if ((quota as any).configuration_error) {
+    return new Response(JSON.stringify({
+      error: 'Database key not configured'
+    }), { status: 500 });
+  }
   if (!quota.allowed) {
     return new Response(JSON.stringify({
       error: 'Quota exceeded',
@@ -468,9 +473,9 @@ export const GET: APIRoute = async ({ url, request }) => {
 
       if (cachedData) {
         console.log(`[Cache Hit & Extended] ${cacheKey}`);
-        
+
         let streamEvents = cachedData;
-        
+
         // Handle decompression or parsing depending on format
         if (typeof cachedData === 'string') {
           try {
@@ -494,7 +499,7 @@ export const GET: APIRoute = async ({ url, request }) => {
               streamEvents = Array.isArray(decompressed) ? decompressed : (decompressed.stream || decompressed);
             }
           }
-} else if (cachedData && Array.isArray(cachedData.stream)) {
+        } else if (cachedData && Array.isArray(cachedData.stream)) {
           streamEvents = cachedData.stream;
         }
 
@@ -508,7 +513,7 @@ export const GET: APIRoute = async ({ url, request }) => {
 
     // 4. Cache Miss - Init task on backend server-side to hide long-term Token,
     // then return task_id and stream URLs for direct browser streaming.
-    console.log(`[Cache Miss] ${cacheKey}. Initializing backend task from BFF...`);
+    console.log(`[Cache Miss] ${kv ? cacheKey : 'Redis not configured'}. Initializing backend task from BFF...`);
     const formattedCode = formatSymbol(code);
     const apiPeriod = period === 'full' ? 'FY' : (period || 'FY');
 
@@ -537,8 +542,11 @@ export const GET: APIRoute = async ({ url, request }) => {
       const backendOrigin = new URL(BACKEND_API).origin;
       const toAbsolute = (urlStr: string | null | undefined) => {
         if (!urlStr) return null;
-        if (urlStr.startsWith('http')) return urlStr;
-        return `${backendOrigin}${urlStr}`;
+        try {
+          return new URL(urlStr, `${backendOrigin}/`).toString();
+        } catch {
+          return null;
+        }
       };
 
       console.log(`[BFF] Task created successfully. Task ID: ${taskData.task_id}`);
@@ -547,6 +555,38 @@ export const GET: APIRoute = async ({ url, request }) => {
       const rawResult = toAbsolute(taskData.result_url);
       const rawResultBr = toAbsolute(taskData.result_br_url);
       const rawResultBrRaw = toAbsolute(taskData.result_br_raw_url);
+
+      if (!isValidTaskId(taskData.task_id)) {
+        return new Response(JSON.stringify({ error: 'Backend returned an invalid task ID' }), { status: 502 });
+      }
+
+      const resultUrl = rawResultBrRaw || rawResult;
+      const resultKind: PendingCheckBinding['resultKind'] = rawResultBrRaw ? 'brotli' : 'json';
+      const indexEntry = getCacheIndexEntry(cacheKey);
+      if (!resultUrl || !indexEntry || !isTaskResultUrl(resultUrl, taskData.task_id, resultKind)) {
+        console.error('[BFF] Backend task returned an invalid result endpoint');
+        return new Response(JSON.stringify({ error: 'Backend task returned invalid result metadata' }), { status: 502 });
+      }
+
+      const pendingBinding: PendingCheckBinding = {
+        userId: user.id,
+        taskId: taskData.task_id,
+        cacheKey,
+        indexEntry,
+        resultUrl,
+        resultKind
+      };
+      if (kv) {
+        const pendingKey = `pending:check:${taskData.task_id}`;
+        try {
+          await kv.set(pendingKey, JSON.stringify(pendingBinding), { ex: PENDING_TASK_EXPIRY });
+        } catch (pendingErr) {
+          console.error('[BFF] Failed to persist pending task binding:', pendingErr);
+          return new Response(JSON.stringify({ error: 'Failed to prepare cache backfill' }), { status: 500 });
+        }
+      } else {
+        console.log(`[BFF] Redis is not configured, skipping pending task binding for task ${taskData.task_id}`);
+      }
 
       return new Response(JSON.stringify({
         action: 'direct_stream',
@@ -580,42 +620,54 @@ export const GET: APIRoute = async ({ url, request }) => {
  */
 export const POST: APIRoute = async ({ request }) => {
   if (!kv) {
-    return new Response(JSON.stringify({ error: 'KV Cache not configured' }), { status: 500 });
+    console.log('[BFF] Redis is not configured, skipping cache write on POST request.');
+    return new Response(JSON.stringify({ message: 'Redis not configured, skipping cache write' }), { status: 200 });
   }
 
   try {
-    const body = await request.json();
-    const { action, cacheKey, resultBrRawUrl, token } = body;
+    let body: any;
+    try {
+      body = await request.json();
+    } catch {
+      return new Response(JSON.stringify({ error: 'Invalid JSON payload' }), { status: 400 });
+    }
+    const { taskId } = body || {};
 
-    // 1. Authenticate user
     const cookies = (request as any).headers.get('cookie') || '';
     const user = await getSupabaseUser(cookies);
     if (!user) {
       return new Response(JSON.stringify({ error: 'Unauthorized', code: 'UNAUTHORIZED' }), { status: 401 });
     }
 
-    // 2. Validate payload and action
-    if (action !== 'backfill' || !cacheKey || !resultBrRawUrl) {
-      return new Response(JSON.stringify({ error: 'Invalid payload or missing action' }), { status: 400 });
+    if (!isValidTaskId(taskId)) {
+      return new Response(JSON.stringify({ error: 'Invalid task ID' }), { status: 400 });
     }
 
-    // 3. Server-side fetch and validation
-    const backendOrigin = new URL(BACKEND_API).origin;
-    let absoluteFetchUrl = resultBrRawUrl;
-    if (!absoluteFetchUrl.startsWith('http')) {
-      absoluteFetchUrl = `${backendOrigin}${absoluteFetchUrl}`;
+    const pendingKey = `pending:check:${taskId}`;
+    const pendingRaw = await kv.get<string>(pendingKey);
+    if (!pendingRaw) {
+      return new Response(JSON.stringify({ error: 'Pending task binding not found' }), { status: 404 });
     }
 
-    // SSRF Mitigation: Ensure URL domain matches backend
-    const fetchUrlObj = new URL(absoluteFetchUrl);
-    const expectedUrlObj = new URL(BACKEND_API);
-    if (fetchUrlObj.host !== expectedUrlObj.host) {
-      return new Response(JSON.stringify({ error: 'Forbidden target URL host' }), { status: 400 });
+    let binding: PendingCheckBinding;
+    try {
+      binding = typeof pendingRaw === 'string' ? JSON.parse(pendingRaw) : pendingRaw as unknown as PendingCheckBinding;
+    } catch {
+      return new Response(JSON.stringify({ error: 'Invalid pending task binding' }), { status: 500 });
     }
 
-    console.log(`[BFF Cache Backfill] Pulling result from backend: ${absoluteFetchUrl}`);
-    const resultResp = await fetch(absoluteFetchUrl, {
-      headers: { 'Authorization': `Bearer ${token || BACKEND_TOKEN}` }
+    if (
+      !binding || binding.taskId !== taskId || binding.userId !== user.id ||
+      typeof binding.cacheKey !== 'string' || typeof binding.indexEntry !== 'string' ||
+      !['brotli', 'json'].includes(binding.resultKind) ||
+      !isTaskResultUrl(binding.resultUrl, taskId, binding.resultKind)
+    ) {
+      return new Response(JSON.stringify({ error: 'Invalid pending task binding' }), { status: 403 });
+    }
+
+    const resultResp = await fetch(binding.resultUrl, {
+      headers: { 'Authorization': `Bearer ${BACKEND_TOKEN}` },
+      redirect: 'error'
     });
 
     if (!resultResp.ok) {
@@ -623,39 +675,54 @@ export const POST: APIRoute = async ({ request }) => {
       return new Response(JSON.stringify({ error: `Pull results failed: ${resultResp.status}` }), { status: 502 });
     }
 
-    const arrayBuffer = await resultResp.arrayBuffer();
-    const uint8Array = new Uint8Array(arrayBuffer);
+    const uint8Array = new Uint8Array(await resultResp.arrayBuffer());
+    let dataToStore: string;
 
-    // Keep base64 formatting compatible with preexisting frontend cache format
-    let binary = '';
-    const len = uint8Array.byteLength;
-    for (let i = 0; i < len; i++) {
-      binary += String.fromCharCode(uint8Array[i]);
-    }
-    const base64Data = btoa(binary);
-
-    // 4. Write to KV Cache
-    await kv.set(cacheKey, base64Data, { ex: CACHE_EXPIRY });
-
-    // Track in ZSET for Sitemap (uses timestamp as score)
-    try {
-      const parts = cacheKey.split(':'); // cache:check:code:year:period:lang
-      if (parts.length >= 6) {
-        const entry = `${parts[2]}:${parts[3]}:${parts[4]}:${parts[5]}`;
-        await kv.zadd('analysis_index', { score: Date.now(), member: entry });
+    if (binding.resultKind === 'brotli') {
+      try {
+        const decompressed = brotliDecompressSync(Buffer.from(uint8Array));
+        const parsed = JSON.parse(decompressed.toString('utf8'));
+        const stream = Array.isArray(parsed) ? parsed : parsed?.stream;
+        if (!Array.isArray(stream)) throw new Error('Unsupported Brotli result shape');
+      } catch {
+        return new Response(JSON.stringify({ error: 'Invalid Brotli result from backend' }), { status: 502 });
       }
-    } catch (zerr) {
-      console.warn('[ZSET Error]', zerr);
+      let binary = '';
+      for (const byte of uint8Array) binary += String.fromCharCode(byte);
+      dataToStore = btoa(binary);
+    } else {
+      try {
+        const parsed = JSON.parse(Buffer.from(uint8Array).toString('utf8'));
+        const stream = Array.isArray(parsed) ? parsed : parsed?.stream;
+        if (!Array.isArray(stream)) throw new Error('Unsupported JSON result shape');
+        dataToStore = JSON.stringify(parsed);
+      } catch {
+        return new Response(JSON.stringify({ error: 'Invalid JSON result from backend' }), { status: 502 });
+      }
     }
 
-    console.log(`[Cache Stored via BFF Backfill] ${cacheKey}`);
+    const committed = await kv.eval<number>(
+      `local pending = redis.call('GET', KEYS[1]);
+       if not pending or pending ~= ARGV[1] then return 0 end;
+       redis.call('SET', KEYS[2], ARGV[2], 'EX', ARGV[3]);
+       redis.call('ZADD', KEYS[3], ARGV[4], ARGV[5]);
+       redis.call('DEL', KEYS[1]);
+       return 1;`,
+      [pendingKey, binding.cacheKey, 'analysis_index'],
+      [JSON.stringify(binding), dataToStore, CACHE_EXPIRY, Date.now(), binding.indexEntry]
+    );
 
+    if (Number(committed) !== 1) {
+      return new Response(JSON.stringify({ error: 'Pending task already finalized or expired' }), { status: 409 });
+    }
+
+    console.log(`[Cache Stored via BFF Backfill] ${binding.cacheKey}`);
     return new Response(JSON.stringify({ success: true }), { status: 200 });
   } catch (err: any) {
     console.error('[API Error in POST callback]', err);
     return new Response(JSON.stringify({ error: err.message }), { status: 500 });
   }
-}
+};
 
 /**
  * Creates a ReadableStream that outputs JSON lines with artificial delays

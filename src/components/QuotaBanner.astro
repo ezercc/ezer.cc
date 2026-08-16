@@ -186,14 +186,19 @@ const premiumUrl = lang === 'zh' ? '/premium/?from=quota' : '/en/premium/?from=q
 
     const { data: plan, error } = await window.auth.client
       .from('user_plans')
-      .select('*')
+      .select('plan_type, quota_remaining, last_used_date, paid_through')
       .eq('uid', session.user.id)
       .single();
     
     if (error && error.code !== 'PGRST116') return; // Ignore "not found"
 
-    if (plan && plan.plan_type === 'premium') {
-      // Premium users don't see the banner
+    const paidThrough = plan?.paid_through ? new Date(plan.paid_through) : null;
+    const hasActivePremium = plan?.plan_type === 'premium'
+      && paidThrough
+      && !Number.isNaN(paidThrough.getTime())
+      && paidThrough > new Date();
+    if (hasActivePremium) {
+      // Only the server-maintained paid-through projection determines access.
       return;
     }
 

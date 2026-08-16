@@ -3,7 +3,7 @@ layout: ../../layouts/LegalLayout.astro
 title: Terms of Service
 description: Terms governing Ezer financial-statement research software operated by EzerLab LLC, including accounts, subscriptions, acceptable use, intellectual property, and limitations.
 eyebrow: EzerLab LLC legal
-effectiveDate: July 30, 2026
+effectiveDate: August 16, 2026
 keywords: Ezer terms, EzerLab LLC, subscription terms, financial statement research software
 ---
 
@@ -30,32 +30,30 @@ Outputs may contain omissions, delays, parsing errors, model errors, or source l
 
 You must be at least 18 and legally able to enter a contract. You agree to provide accurate, complete, and current account information and to protect your login credentials.
 
-You are responsible for activity under your account. If you suspect unauthorized use, contact [joe@ezerlab.org](mailto:joe@ezerlab.org) promptly.
+You are responsible for activity under your account. If you suspect unauthorized use, contact [contact@ezer.cc](mailto:contact@ezer.cc) promptly.
 
-## 4. Free Service, paid subscriptions, and pricing
+## 4. Free Service, paid plans, and pricing
 
-Some features may be available without charge and may be subject to usage, feature, or frequency limits. Premium is currently accepting early-access requests; joining the list does not create a charge before paid subscriptions open.
+Some features may be available without charge and may be subject to usage, feature, or frequency limits. EzerLab also offers paid digital services.
 
-When paid subscriptions become available:
+Before purchase, Stripe Checkout displays the applicable currency, price, billing interval, applicable taxes, available payment methods, and renewal status. The final checkout and order-confirmation information controls for a particular purchase.
 
-- checkout will show the currency, price, billing interval, applicable taxes, and renewal status before payment;
-- monthly subscriptions will renew monthly until cancelled;
-- we will provide reasonable notice before price changes that affect future charges; and
-- payments will be processed by disclosed third-party payment providers, and we will not store full card numbers.
-
-The current planned price and launch status appear on the [Premium page](/en/premium/) and checkout. If they differ, the final checkout controls.
+- Card plans offered monthly, quarterly, or annually automatically renew for the interval shown at purchase until cancelled.
+- Quarterly and annual Alipay plans offered on the Chinese-language page are one-time prepaid purchases and do not automatically renew.
+- We will provide reasonable notice before price changes that affect future automatic-renewal charges.
+- Payments are processed by Stripe, and we do not store full card numbers.
 
 ## 5. Digital delivery
 
-Free features are generally available when your account becomes usable. After paid subscriptions launch, paid access will normally activate immediately after successful payment, as detailed in the [Digital Delivery Policy](/en/delivery-policy/).
+Free features are generally available when your account becomes usable. After the payment provider confirms a successful payment and necessary processing is complete, we grant the corresponding paid access, as detailed in the [Digital Delivery Policy](/en/delivery-policy/).
 
-You are responsible for providing a working email address and maintaining account access. Contact support if the corresponding access is not available within 24 hours after a successful payment.
+You are responsible for providing a working email address and maintaining account access. Contact support if the corresponding access is not available within a reasonable time.
 
 ## 6. Cancellation, refunds, and disputes
 
-Monthly subscriptions may be cancelled at any time, normally effective at the end of the current paid period. Started periods are not prorated except where required by law.
+Automatically renewing subscriptions purchased by card may be cancelled under the [Refund and Cancellation Policy](/en/refund-and-cancellation/), normally effective at the end of the current paid period. Started periods are not prorated except where required by law.
 
-Rules for first subscription charges, duplicate or incorrect charges, and non-delivery appear in the [Refund and Cancellation Policy](/en/refund-and-cancellation/). We encourage you to contact support before initiating a payment dispute so we can investigate promptly.
+Rules for first-purchase payments, duplicate or incorrect payments, and non-delivery appear in the [Refund and Cancellation Policy](/en/refund-and-cancellation/). We encourage you to contact support before initiating a payment dispute so we can investigate promptly.
 
 ## 7. Acceptable use
 
@@ -121,4 +119,4 @@ Operator: **EzerLab LLC**
 
 State of formation: Wyoming, United States
 
-Customer support and legal notices: [joe@ezerlab.org](mailto:joe@ezerlab.org)
+Customer support and legal notices: [contact@ezer.cc](mailto:contact@ezer.cc)

@@ -5,11 +5,16 @@ export const prerender = false; // SSR mode
 export async function GET() {
   const kvRestUrl = import.meta.env.UPSTASH_REDIS_KV_REST_API_URL;
   const kvRestToken = import.meta.env.UPSTASH_REDIS_KV_REST_API_TOKEN;
-  const kv = new Redis({ url: kvRestUrl, token: kvRestToken });
-
-  // 1. Fetch latest entries from Redis ZSET (up to 1000 items)
-  // entries format: "code:year:period:lang"
-  const entries = await kv.zrange<string[]>('analysis_index', 0, 1000, { rev: true });
+  
+  let entries: string[] = [];
+  if (kvRestUrl && kvRestToken) {
+    try {
+      const kv = new Redis({ url: kvRestUrl, token: kvRestToken });
+      entries = await kv.zrange<string[]>('analysis_index', 0, 1000, { rev: true }) || [];
+    } catch (e) {
+      console.error('[Sitemap] Failed to fetch sitemap entries from Redis:', e);
+    }
+  }
 
   const baseUrl = import.meta.env.SITE.replace(/\/$/, ''); // Remove trailing slash if any
 

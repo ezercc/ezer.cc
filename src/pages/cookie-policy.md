@@ -59,4 +59,4 @@ Vercel、Cloudflare 等托管和内容分发服务可能为交付、安全、防
 
 ## 8. 更新与联系
 
-工具或用途发生重大变化时，我们会更新本政策和日期。问题请发送至 [joe@ezerlab.org](mailto:joe@ezerlab.org)。
+工具或用途发生重大变化时，我们会更新本政策和日期。问题请发送至 [contact@ezer.cc](mailto:contact@ezer.cc)。

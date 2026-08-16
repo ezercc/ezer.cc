@@ -15,7 +15,7 @@ Any registered-agent or legal-mail address is used for company registration and 
 
 ## Customer support email
 
-**[joe@ezerlab.org](mailto:joe@ezerlab.org)**
+**[contact@ezer.cc](mailto:contact@ezer.cc)**
 
 Contact us about:
 

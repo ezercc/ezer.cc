@@ -17,6 +17,44 @@ export interface ChangelogItem {
 
 export const changelogData: ChangelogItem[] = [
   {
+    version: "v1.3.0",
+    date: "2026-08-14",
+    zh: {
+      title: "订阅支付与分析体验全面升级",
+      features: [
+        "升级专业版订阅体验，新增月付、季付与年付计划展示，并清晰呈现银行卡、支付宝等可选支付方式。",
+        "优化财报分析任务启动与报告加载体验，让报告能更快开始并随着生成过程逐步呈现。"
+      ],
+      improvements: [
+        "改进部分报告数据的处理与展示，提升分析结果的完整性和阅读体验。",
+        "新增 Cookie 同意、研究提示及法律信息页面，并统一相关页面布局，帮助用户更清楚了解数据使用与研究服务说明。",
+        "优化专业版、订阅与分析额度体验，并更清晰地展示已开通状态。"
+      ],
+      fixes: [
+        "优化结账完成后的页面链接，减少无关状态参数残留。",
+        "当奖励额度更新暂时不可用时采用更安全的处理方式，保障额度记录的一致性。",
+        "增强站点地图和部分依赖服务暂时不可用时的稳定性。"
+      ]
+    },
+    en: {
+      title: "Subscription, Payments & Analysis Experience Upgrade",
+      features: [
+        "Refined the Premium subscription experience with monthly, quarterly, and annual plan displays, along with clearly presented card and Alipay payment options.",
+        "Improved analysis startup and report loading so reports can begin sooner and appear progressively as they are generated."
+      ],
+      improvements: [
+        "Improved the processing and presentation of some report data for more complete, readable results.",
+        "Added cookie consent, research notices, and legal information pages, while unifying related page layouts to make data use and research-service terms clearer.",
+        "Refined the Premium, subscription, and analysis-credit experience, including clearer display of activated status."
+      ],
+      fixes: [
+        "Cleaned up checkout-completion links to avoid leaving unrelated state parameters in the URL.",
+        "Added safer handling when a reward-credit update is temporarily unavailable, helping keep credit records consistent.",
+        "Improved resilience for sitemap generation and when certain supporting services are temporarily unavailable."
+      ]
+    }
+  },
+  {
     version: "v1.2.2",
     date: "2026-07-09",
     zh: {
