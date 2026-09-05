@@ -36,7 +36,7 @@
 - Supabase：用户登录功能
 - Cloudflare：CDN 服务
 - Choice 金融终端：各公司财报数据
-- Gemini 3.1 Pro：财报分析模型
+- ChatGPT 5.6 Sol：财报分析模型
 
 ## 🤝 共同进化
 
