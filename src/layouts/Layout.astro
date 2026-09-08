@@ -7,6 +7,7 @@ import LanguageSwitcher from "../components/LanguageSwitcher.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import SmoothScroll from "../components/SmoothScroll.astro";
 import CookieConsent from "../components/CookieConsent.astro";
+import SurveyBanner from "../components/SurveyBanner.astro";
 import { pwaInfo } from "virtual:pwa-info";
 
 const { title, description, keywords, ogImage } = Astro.props;
@@ -197,6 +198,7 @@ const displayTitle = isHome
     </script>
   </head>
   <body>
+    <SurveyBanner />
     <a href="#main" class="skip-link">{t("accessibility.skip-to-content")}</a>
     <Header
       logoUrl={lang === "zh" ? "/" : "/en/"}
