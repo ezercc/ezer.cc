@@ -47,7 +47,9 @@ const t = useTranslations(lang);
     left: 0;
     right: 0;
     z-index: 100;
-    height: 44px;
+    height: auto;
+    min-height: 44px;
+    padding: 0.35rem 0;
     display: flex;
     align-items: center;
     background: linear-gradient(90deg, #ede9fe 0%, #e0e7ff 50%, #f3e8ff 100%);
@@ -74,7 +76,7 @@ const t = useTranslations(lang);
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 1.25rem;
+    padding: 0 2.2rem 0 1.25rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -85,14 +87,16 @@ const t = useTranslations(lang);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
+    gap: 0.8rem;
     font-size: 0.78rem;
+    width: 100%;
   }
 
   .survey-banner-text {
     font-weight: 400;
     color: currentColor;
     letter-spacing: -0.01em;
+    line-height: 1.4;
 
     strong {
       font-weight: 700;
@@ -137,11 +141,13 @@ const t = useTranslations(lang);
 
   .survey-banner-close {
     position: absolute;
-    right: 1rem;
+    right: 0.6rem;
+    top: 50%;
+    transform: translateY(-50%);
     background: transparent;
     border: none;
     color: currentColor;
-    opacity: 0.5;
+    opacity: 0.55;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -161,26 +167,29 @@ const t = useTranslations(lang);
   }
 
   @media (max-width: 768px) {
+    .survey-banner-container {
+      padding-left: 0.8rem;
+    }
+
     .survey-banner-center {
+      justify-content: flex-start;
       gap: 0.5rem;
-      font-size: 0.75rem;
-      padding-right: 1.5rem;
+      font-size: 0.74rem;
     }
 
     .survey-banner-text {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 200px;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+      max-width: none;
+      word-break: break-word;
+      line-height: 1.35;
+      flex: 1;
     }
 
     .survey-banner-btn {
-      padding: 0.2rem 0.55rem;
+      padding: 0.2rem 0.6rem;
       font-size: 0.72rem;
-    }
-
-    .survey-banner-close {
-      right: 0.5rem;
     }
   }
 </style>
@@ -192,6 +201,15 @@ const t = useTranslations(lang);
       const closeBtn = document.getElementById("close-survey-banner");
       if (!banner || !closeBtn) return;
 
+      function updateBannerHeight() {
+        if (!banner.classList.contains("hidden")) {
+          const h = banner.offsetHeight || 44;
+          document.documentElement.style.setProperty("--survey-banner-height", h + "px");
+        } else {
+          document.documentElement.style.setProperty("--survey-banner-height", "0px");
+        }
+      }
+
       const params = new URLSearchParams(window.location.search);
       const isMock = params.get("mock_survey") === "true" || params.get("preview") === "true";
 
@@ -199,6 +217,7 @@ const t = useTranslations(lang);
       if (!isMock && localStorage.getItem("ezer_survey_banner_closed") === "true") {
         banner.classList.add("hidden");
         document.body.classList.remove("has-survey-banner");
+        updateBannerHeight();
         return;
       }
 
@@ -223,15 +242,19 @@ const t = useTranslations(lang);
       if (isMock || session) {
         banner.classList.remove("hidden");
         document.body.classList.add("has-survey-banner");
+        updateBannerHeight();
+        window.addEventListener("resize", updateBannerHeight);
       } else {
         banner.classList.add("hidden");
         document.body.classList.remove("has-survey-banner");
+        updateBannerHeight();
       }
 
       closeBtn.onclick = function () {
         banner.classList.add("hidden");
         document.body.classList.remove("has-survey-banner");
         localStorage.setItem("ezer_survey_banner_closed", "true");
+        updateBannerHeight();
       };
     }
 
