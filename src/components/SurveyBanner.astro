@@ -1,0 +1,246 @@
+---
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+interface Props {
+  surveyUrl?: string;
+}
+
+const { surveyUrl = "https://wj.qq.com/s2/27687712/2x9k/" } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<div id="survey-banner" class="survey-banner hidden" role="banner">
+  <div class="survey-banner-container">
+    <div class="survey-banner-center">
+      <span class="survey-banner-text">
+        {lang === "zh" ? (
+          <>欢迎使用 Ezer，诚邀您填写表单参与调研，有概率获得 <strong>Premium</strong> 使用资格</>
+        ) : (
+          t("survey.banner_text")
+        )}
+      </span>
+      <a
+        href={surveyUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="survey-banner-btn"
+      >
+        <span>{t("survey.action_btn")}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="btn-arrow"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+      </a>
+    </div>
+    <button
+      id="close-survey-banner"
+      class="survey-banner-close"
+      aria-label={lang === "zh" ? "关闭横幅" : "Close banner"}
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+  </div>
+</div>
+
+<style>
+  .survey-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(90deg, #ede9fe 0%, #e0e7ff 50%, #f3e8ff 100%);
+    color: #1e1b4b;
+    border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  :global([data-theme="dark"]) .survey-banner {
+    background: linear-gradient(90deg, #1e1b4b 0%, #171738 50%, #2e1065 100%);
+    color: #ede9fe;
+    border-bottom: 1px solid rgba(139, 92, 246, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  }
+
+  .survey-banner.hidden {
+    display: none !important;
+  }
+
+  .survey-banner-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .survey-banner-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    font-size: 0.78rem;
+  }
+
+  .survey-banner-text {
+    font-weight: 400;
+    color: currentColor;
+    letter-spacing: -0.01em;
+
+    strong {
+      font-weight: 700;
+      color: #6d28d9;
+    }
+  }
+
+  :global([data-theme="dark"]) .survey-banner-text strong {
+    color: #c4b5fd;
+  }
+
+  .survey-banner-btn {
+    background: #7c3aed;
+    color: #ffffff !important;
+    font-weight: 600;
+    font-size: 0.74rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 100px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    white-space: nowrap;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25);
+    flex-shrink: 0;
+  }
+
+  .survey-banner-btn:hover {
+    background: #6d28d9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+  }
+
+  .btn-arrow {
+    transition: transform 0.2s ease;
+  }
+
+  .survey-banner-btn:hover .btn-arrow {
+    transform: translateX(2px);
+  }
+
+  .survey-banner-close {
+    position: absolute;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    color: currentColor;
+    opacity: 0.5;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+  }
+
+  .survey-banner-close:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.08);
+  }
+
+  :global([data-theme="dark"]) .survey-banner-close:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  @media (max-width: 768px) {
+    .survey-banner-center {
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      padding-right: 1.5rem;
+    }
+
+    .survey-banner-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 200px;
+    }
+
+    .survey-banner-btn {
+      padding: 0.2rem 0.55rem;
+      font-size: 0.72rem;
+    }
+
+    .survey-banner-close {
+      right: 0.5rem;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    async function initSurveyBanner() {
+      const banner = document.getElementById("survey-banner");
+      const closeBtn = document.getElementById("close-survey-banner");
+      if (!banner || !closeBtn) return;
+
+      const params = new URLSearchParams(window.location.search);
+      const isMock = params.get("mock_survey") === "true" || params.get("preview") === "true";
+
+      // If user manually closed it before and not in mock mode, do not display
+      if (!isMock && localStorage.getItem("ezer_survey_banner_closed") === "true") {
+        banner.classList.add("hidden");
+        document.body.classList.remove("has-survey-banner");
+        return;
+      }
+
+      // Safely fetch session, retrying if window.auth script is loading asynchronously
+      let session = null;
+      try {
+        if (window.auth && typeof window.auth.getSession === "function") {
+          session = await window.auth.getSession();
+        } else {
+          for (let i = 0; i < 10; i++) {
+            await new Promise((r) => setTimeout(r, 50));
+            if (window.auth && typeof window.auth.getSession === "function") {
+              session = await window.auth.getSession();
+              break;
+            }
+          }
+        }
+      } catch (e) {
+        console.error("SurveyBanner: auth session check failed", e);
+      }
+
+      if (isMock || session) {
+        banner.classList.remove("hidden");
+        document.body.classList.add("has-survey-banner");
+      } else {
+        banner.classList.add("hidden");
+        document.body.classList.remove("has-survey-banner");
+      }
+
+      closeBtn.onclick = function () {
+        banner.classList.add("hidden");
+        document.body.classList.remove("has-survey-banner");
+        localStorage.setItem("ezer_survey_banner_closed", "true");
+      };
+    }
+
+    if (document.readyState === "complete") {
+      initSurveyBanner();
+    } else {
+      window.addEventListener("load", initSurveyBanner);
+    }
+    document.addEventListener("astro:page-load", initSurveyBanner);
+    document.addEventListener("astro:after-swap", initSurveyBanner);
+  })();
+</script>

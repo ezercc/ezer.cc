@@ -113,6 +113,8 @@ export const ui = {
       '您已用完本月的分析额度，额度将在下月重置。您可以升级至专业版，或通过 <a href="https://account.ezer.cc/invite/" style="color:var(--color-brand-1);font-weight:bold;text-decoration:underline;">邀请好友</a> 赚取额外使用额度。',
     "quota.preview_msg": "当前正在查看预览，点击开启正式分析",
     "quota.start_now": "立即开始",
+    "survey.banner_text": "欢迎使用Ezer，诚邀您填写表单参与调研，有概率获得Premium使用资格",
+    "survey.action_btn": "立即参与",
   },
   en: {
     "nav.home": "Home",
@@ -226,5 +228,8 @@ export const ui = {
     "quota.preview_msg":
       "You are viewing a preview. Click to start a full analysis.",
     "quota.start_now": "Start Now",
+    "survey.banner_text":
+      "Welcome to Ezer! We invite you to complete a survey for a chance to win Premium access",
+    "survey.action_btn": "Participate Now",
   },
 } as const;

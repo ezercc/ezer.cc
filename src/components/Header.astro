@@ -85,7 +85,11 @@ const { logoUrl, logoAlt, link1, link2, links } = Astro.props;
     z-index: 10;
     color: var(--color-text);
     margin: 0 auto;
-    transition: transform 0.3s var(--ease-out-cubic);
+    transition: top 0.3s var(--ease-out-cubic), transform 0.3s var(--ease-out-cubic);
+
+    :global(body.has-survey-banner) & {
+      top: 44px;
+    }
 
     :global(body.is-nav-hidden) & {
       transform: translateY(-100%);
