@@ -635,8 +635,7 @@ const translations = ui[lang];
     background: var(--color-surface, #ffffff);
     border: 1px solid rgba(var(--rgb-brand-1), 0.14);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-    padding: 1rem 1rem 0.75rem;
-    gap: 0.75rem;
+    padding: 1.25rem 1.25rem 0.9rem;
     position: sticky;
     top: 160px;
     align-self: start;
@@ -1425,18 +1424,19 @@ const translations = ui[lang];
   .charts-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.65rem;
+    gap: 1rem;
+    margin-top: 0.8rem;
   }
 
   .chart-item {
     background: var(--color-bg-alt);
     border-radius: 8px;
-    padding: 0.55rem 0.6rem 0.4rem;
+    padding: 0.75rem 0.75rem 0.5rem;
     border: 1px solid rgba(var(--rgb-brand-1), 0.08);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
     display: none; /* Changed from flex */
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.4rem;
     opacity: 0;
     transform: translateY(6px);
     transition: opacity 0.4s ease-out, transform 0.4s ease-out, border-color 0.2s ease, box-shadow 0.2s ease;
@@ -1547,12 +1547,12 @@ const translations = ui[lang];
     background: var(--color-surface, #ffffff);
     border: 1px solid rgba(var(--rgb-brand-1), 0.12);
     border-radius: 6px;
-    padding: 1.2rem 1.35rem;
-    margin-bottom: 1.2rem;
+    padding: 1.4rem 1.5rem;
+    margin-bottom: 1.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 1.1rem;
     animation: fadeIn 0.3s ease-out;
   }
 
@@ -1567,7 +1567,7 @@ const translations = ui[lang];
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    padding-bottom: 0.55rem;
+    padding-bottom: 0.85rem;
     border-bottom: 1px solid rgba(var(--rgb-brand-1), 0.08);
   }
 
@@ -1632,8 +1632,8 @@ const translations = ui[lang];
   /* Sources Footnote */
   .section-b :global(.card-sources) {
     border-top: 1px solid rgba(var(--rgb-brand-1), 0.08);
-    padding-top: 0.55rem;
-    margin-top: 0;
+    padding-top: 0.75rem;
+    margin-top: 0.25rem;
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
@@ -2702,9 +2702,7 @@ const translations = ui[lang];
             type: 'inside',
             start: 0,
             end: 100,
-            zoomOnMouseWheel: false,
-            moveOnMouseMove: false,
-            moveOnMouseWheel: false
+            zoomLock: false
           }
         ],
         xAxis: {
@@ -2904,14 +2902,14 @@ const translations = ui[lang];
             fillerColor: isDark ? 'rgba(124, 58, 237, 0.28)' : 'rgba(124, 58, 237, 0.16)',
             borderColor: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(124, 58, 237, 0.2)',
             borderRadius: 6,
-            handleIcon: 'path://M-5,-10 h10 a3,3 0 0 1 3,3 v14 a3,3 0 0 1 -3,3 h-10 a3,3 0 0 1 -3,-3 v-14 a3,3 0 0 1 3,-3 z M-2,4 v-8 h1 v8 z M1,4 v-8 h1 v8 z',
-            handleSize: '110%',
+            handleIcon: 'path://M10.7,11.9v-1.3H9.3v1.3c0,0.4,0.3,0.7,0.7,0.7h0C10.4,12.6,10.7,12.3,10.7,11.9z M13.3,11.9v-1.3h-1.3v1.3c0,0.4,0.3,0.7,0.7,0.7h0C13,12.6,13.3,12.3,13.3,11.9z M12,0.5c-6.4,0-11.5,5.1-11.5,11.5s5.1,11.5,11.5,11.5s11.5-5.1,11.5-11.5S18.4,0.5,12,0.5z',
+            handleSize: '120%',
             handleStyle: {
               color: '#7c3aed',
               borderColor: '#ffffff',
               borderWidth: 1.5,
-              shadowBlur: 4,
-              shadowColor: 'rgba(0, 0, 0, 0.2)'
+              shadowBlur: 3,
+              shadowColor: 'rgba(0,0,0,0.2)'
             },
             moveHandleSize: 0,
             textStyle: {
@@ -3129,41 +3127,20 @@ const translations = ui[lang];
     }
   }
 
-  async function typeText(el: HTMLElement, text: string, _legacySpeed?: number) {
+  async function typeText(el: HTMLElement, text: string, speed = 20) {
     if (!el || !text) return;
-    const len = text.length;
-    let chunkSize = 1;
-    let delay = 14;
-
-    if (len < 100) {
-      chunkSize = 1;
-      delay = 14;
-    } else if (len <= 300) {
-      chunkSize = 2;
-      delay = 10;
-    } else {
-      chunkSize = 4;
-      delay = 10;
-    }
-
-    const scrollParent = el.closest('.scroll-wrapper-b') || el.closest('.text-output');
-    let i = 0;
-    while (i < len) {
-      const chunk = text.slice(i, i + chunkSize);
-      el.textContent += chunk;
-      i += chunkSize;
-
-      if (chunk.includes('\n') || chunk.includes('。') || chunk.includes('.')) {
-        if (scrollParent) {
-          scrollParent.scrollTo({ top: scrollParent.scrollHeight, behavior: 'smooth' });
-        }
+    const chars = text.split('');
+    for (const char of chars) {
+      el.textContent += char;
+      if (char === '\n' || char === '。' || char === '.') {
+        const scrollParent = el.closest('.scroll-wrapper-b') || el.closest('.text-output');
+        if (scrollParent) scrollParent.scrollTo({ top: scrollParent.scrollHeight, behavior: 'smooth' });
       }
-      await new Promise(r => setTimeout(r, delay));
+      await new Promise(r => setTimeout(r, speed));
     }
-
-    if (scrollParent) {
-      scrollParent.scrollTo({ top: scrollParent.scrollHeight, behavior: 'smooth' });
-    }
+    // Final scroll
+    const scrollParent = el.closest('.scroll-wrapper-b') || el.closest('.text-output');
+    if (scrollParent) scrollParent.scrollTo({ top: scrollParent.scrollHeight, behavior: 'smooth' });
 
     linkageParser.parseAndBind(el);
   }
@@ -3334,6 +3311,11 @@ const translations = ui[lang];
         const headerEl = document.createElement('div');
         headerEl.className = 'card-header';
 
+        const idTag = document.createElement('span');
+        idTag.className = 'card-id-tag';
+        idTag.textContent = cardId.toUpperCase().replace(/_/g, ' ');
+        headerEl.appendChild(idTag);
+
         const h3 = document.createElement('h3');
         h3.className = 'card-title';
         h3.textContent = titleText;
@@ -3341,12 +3323,21 @@ const translations = ui[lang];
 
         card.appendChild(headerEl);
         
+        // Skip typewriter animation for business_outlook or long text paragraphs
+        const skipAnimation = cardId === 'business_outlook' || (d.conclusion && d.conclusion.length > 150);
+        
         // ── 1. Executive Summary / Conclusion (Lead Paragraph) ──
         if (d.conclusion) {
           const conclusion = document.createElement('p');
           conclusion.className = 'conclusion';
           card.appendChild(conclusion);
-          await typeText(conclusion, d.conclusion);
+
+          if (skipAnimation) {
+            conclusion.textContent = d.conclusion;
+            linkageParser.parseAndBind(conclusion);
+          } else {
+            await typeText(conclusion, d.conclusion, 15);
+          }
         }
 
         // ── 2. Editorial Fields: Evidence, Cross-Checks, Counterpoints, Implication ──
@@ -3374,7 +3365,12 @@ const translations = ui[lang];
 
             card.appendChild(block);
 
-            await typeText(contentEl, valText);
+            if (skipAnimation) {
+              contentEl.textContent = valText;
+              linkageParser.parseAndBind(contentEl);
+            } else {
+              await typeText(contentEl, valText, 10);
+            }
           }
         }
 
@@ -3544,8 +3540,8 @@ const translations = ui[lang];
     placeholderC.start();
 
     for (const item of stream) {
-      await processEvent(item);
-      await new Promise(r => setTimeout(r, 100));
+      processEvent(item);
+      await new Promise(r => setTimeout(r, 200));
     }
 
     window.dispatchEvent(new CustomEvent('analysis-complete'));

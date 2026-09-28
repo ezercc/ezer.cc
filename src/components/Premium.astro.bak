@@ -596,20 +596,18 @@ const signInUrl = `https://account.ezer.cc/${isEnglish ? "en/" : ""}login/`;
         transparent 35rem
       ),
       #090a0f;
-    background-attachment: fixed;
     color: #fff;
     position: relative;
     overflow: hidden;
   }
 
   .tubes-cursor-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw !important;
-    height: 100vh !important;
+    position: absolute;
+    inset: 0;
     z-index: 0;
     pointer-events: none;
+    width: 100% !important;
+    height: 100% !important;
   }
 
   .premium__inner {

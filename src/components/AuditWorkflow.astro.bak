@@ -1,0 +1,785 @@
+---
+interface Props {
+  lang?: "zh" | "en";
+  class?: string;
+}
+
+const { lang = "zh", class: className = "" } = Astro.props;
+const isEn = lang === "en";
+
+const t = {
+  mainTitle: isEn ? "Ezer Audit Workflow" : "Ezer 审计工作流",
+  subTitle: isEn
+    ? "Structured financial data ingestion, evidence-bound analysis, audit challenge & verifier-hardened pipeline"
+    : "结构化金融数据接入、证据绑定分析、审计挑战与验证器加固的交付链路",
+  zoomHint: isEn ? "Click to view full architecture" : "点击查看高清全景架构",
+  closeModal: isEn ? "Close" : "关闭",
+  replayHint: isEn ? "Replay workflow sequence" : "重新演示执行时序",
+  replayLabel: isEn ? "Replay" : "重播",
+  
+  // Nodes
+  node1Title: isEn ? "1. Frontend Trigger" : "1. 前端触发",
+  node1Items: isEn
+    ? ["Input: code / period / year / lang", "Single SSE stream throughout analysis", "Underlying model keys never exposed"]
+    : ["输入：code / period / year / lang", "单条 SSE 贯穿整次分析", "前端不暴露底层模型密钥"],
+  node1Sub: isEn ? "Public Structured Sources" : "公开结构化数据源",
+
+  node2Title: isEn ? "2. Data Layer" : "2. 数据层",
+  node2Items: isEn
+    ? ["Eastmoney structured reports", "12-quarter historical series", "MX market & business context", "Readable field mapping & anchors"]
+    : ["东方财富结构化财报", "近 12 个季度历史序列", "MX 市场与业务补充上下文", "可读字段映射与来源锚点"],
+
+  node3Title: isEn ? "3. Orchestration" : "3. 编排层",
+  node3Items: isEn
+    ? ["Request validation & ticker parsing", "Evidence dossier assembly", "Task state machine & SSE dispatch", "Artifact persistence for replay"]
+    : ["请求校验与证券代码解析", "证据材料包组装", "任务状态机与 SSE 事件分发", "产物落盘，支持复盘与回放"],
+
+  roleHint: isEn ? "Dynamically switch analyst roles by market context" : "根据公司与市场上文动态切换分析角色",
+
+  node4Title: isEn ? "4. Analysis Model B" : "4. 分析模型 B",
+  node4Items: isEn
+    ? ["7 chapterized analysis cards", "Trend / correlation / mapping check", "Investor-oriented core findings", "Evidence & counter-evidence per card"]
+    : ["七张章节化分析卡", "趋势 / 关联 / 映射检查", "面向投资者的核心结论", "每张卡都附证据与反证点"],
+
+  node5Title: isEn ? "5. Audit Model C" : "5. 审计模型 C",
+  node5Items: isEn
+    ? ["Actively challenge fragile claims", "Reject unwarranted extrapolations", "PASS / WARNINGS / REJECTED rules", "Final summary & issue tracking"]
+    : ["专门挑战脆弱结论", "拒绝证据不足的外推", "PASS / WARNINGS / REJECTED 规则", "输出最终摘要与问题追踪"],
+
+  guardrailsTitle: isEn ? "Runtime Guardrails" : "运行护栏",
+  guardrailsItems: isEn
+    ? ["Bearer auth & datasource whitelist", "Task artifact logging for replay", "Auto-fallback on sparse evidence"]
+    : ["Bearer 鉴权与数据源白名单", "任务产物落盘，支持审计与回放", "证据不足时自动降级"],
+
+  verifierTitle: isEn ? "Verifier Quality Layer" : "Verifier 质量层",
+  verifierItems: isEn
+    ? ["Independent QA capability showcase", "Output consistency & schema checks", "Enterprise commercial trustworthiness"]
+    : ["独立质量控制能力展示", "输出一致性与契约检查", "支撑商业化可信度"],
+
+  node6Title: isEn ? "6. Frontend Delivery" : "6. 前端交付",
+  node6Items: isEn
+    ? ["Streaming progress, cards & audit", "Final verdict covers summary area", "Unified API for live demo & replay"]
+    : ["流式展示进度、分析卡与审计结果", "最终结论覆盖前端摘要区", "同一 API 既能演示也能复盘"],
+
+  // Badges & labels
+  reqBadge: isEn ? "Request" : "请求",
+  dossierBadge: isEn ? "Dossier" : "材料包",
+  analysisInputBadge: isEn ? "Input" : "分析输入",
+  cardsBadge: isEn ? "Cards" : "分析卡",
+  jsonlCards: isEn ? "JSONL Cards" : "JSONL 分析卡",
+  sseBadge: isEn ? "SSE Stream" : "SSE 流",
+  stdDossier: isEn ? "Standardized Evidence Dossier" : "标准化证据材料包",
+  qualityCheck: isEn ? "Quality Check" : "质量校验",
+  ruleGate: isEn ? "Rule Gate" : "规则门控",
+  auditResult: isEn ? "Audit Output" : "审计结果",
+};
+---
+
+<div class={`ezer-workflow-wrapper ${className}`} id="ezer-workflow-root">
+  <div class="workflow-card" id="ezer-workflow-trigger" title={t.zoomHint} role="button" tabindex="0">
+    <div class="workflow-header-bar">
+      <div class="flow-pill-tag">
+        <span class="pulse-dot"></span>
+        <span>{isEn ? "LIVE ARCHITECTURE" : "实装交付架构"}</span>
+      </div>
+      <div class="header-actions">
+        <button type="button" class="ctrl-btn replay-btn" id="ezer-workflow-replay-btn" title={t.replayHint} aria-label={t.replayHint}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+          </svg>
+          <span class="ctrl-btn-label">{t.replayLabel}</span>
+        </button>
+        <button type="button" class="ctrl-btn zoom-btn" aria-label={t.zoomHint}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <polyline points="9 21 3 21 3 15"></polyline>
+            <line x1="21" y1="3" x2="14" y2="10"></line>
+            <line x1="3" y1="21" x2="10" y2="14"></line>
+          </svg>
+          <span class="ctrl-btn-label">{isEn ? "Expand" : "放大"}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="svg-container">
+      <svg
+        viewBox="0 0 1180 540"
+        xmlns="http://www.w3.org/2000/svg"
+        class="workflow-svg"
+      >
+        <defs>
+          <!-- Grid Background Pattern -->
+          <pattern id="wf-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+            <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(40, 44, 52, 0.065)" stroke-width="0.8" />
+          </pattern>
+
+          <!-- Marker Arrow Heads - userSpaceOnUse ensures fixed sharp 8px arrows -->
+          <marker id="wf-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="8.5" markerHeight="8.5" orient="auto">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#24262b" />
+          </marker>
+          <marker id="wf-arrow-dashed" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="8.5" markerHeight="8.5" orient="auto">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#4b5563" />
+          </marker>
+        </defs>
+
+        <!-- Canvas Background (Static) -->
+        <rect x="0" y="0" width="1180" height="540" rx="14" fill="#faf9f2" class="canvas-bg" />
+        <rect x="0" y="0" width="1180" height="540" rx="14" fill="url(#wf-grid)" />
+
+        <!-- Title Section (Static) -->
+        <text x="40" y="38" class="svg-main-title">{t.mainTitle}</text>
+        <text x="40" y="62" class="svg-sub-title">{t.subTitle}</text>
+
+
+        <!-- ======================= SEQUENTIAL PIPELINE LAYERS ======================= -->
+
+        <!-- STEP 1: 前端触发 (Col 1 Top, x: 40, w: 190, y: 85, h: 120) -->
+        <g class="wf-step step-1">
+          <g class="wf-node">
+            <rect x="43" y="88" width="190" height="120" rx="9" fill="#24262b" />
+            <rect x="40" y="85" width="190" height="120" rx="8" fill="#f6ba43" stroke="#24262b" stroke-width="1.8" />
+            <path d="M 40 93 Q 40 85 48 85 L 222 85 Q 230 85 230 93 L 230 100 L 40 100 Z" fill="#df9c25" />
+            <text x="52" y="116" font-size="14" font-weight="700" fill="#1b1d22">{t.node1Title}</text>
+            <text x="52" y="139" font-size="11" fill="#23262d">{t.node1Items[0]}</text>
+            <text x="52" y="159" font-size="11" fill="#23262d">{t.node1Items[1]}</text>
+            <text x="52" y="179" font-size="11" fill="#23262d">{t.node1Items[2]}</text>
+            <text x="40" y="222" font-size="11" fill="#717886" font-weight="500">{t.node1Sub}</text>
+          </g>
+        </g>
+
+        <!-- STEP 2: 发起请求 (Col 1 -> Col 2, x: 230 -> 320, Gap: 90px) -->
+        <g class="wf-step step-2">
+          <!-- Line reaches x: 317 (leaving 3px margin to node 2 border) -->
+          <path d="M 230 145 L 317 145" stroke="#24262b" stroke-width="1.8" marker-end="url(#wf-arrow)" />
+          <path d="M 230 145 L 317 145" stroke="#e09b13" stroke-width="1.8" class="stream-line" />
+          <g class="badge-pill">
+            <rect x="257" y="134" width="38" height="22" rx="11" fill="#ffffff" stroke="#24262b" stroke-width="1.3" filter="drop-shadow(1.5px 1.5px 0px #24262b)" />
+            <text x="276" y="149" text-anchor="middle" font-size="10.2" font-weight="600" fill="#24262b">{t.reqBadge}</text>
+          </g>
+        </g>
+
+        <!-- STEP 3: 数据层就绪 (Col 2 Top, x: 320, w: 195, y: 78, h: 135) -->
+        <g class="wf-step step-3">
+          <g class="wf-node">
+            <rect x="323" y="81" width="195" height="135" rx="9" fill="#24262b" />
+            <rect x="320" y="78" width="195" height="135" rx="8" fill="#84b8f5" stroke="#24262b" stroke-width="1.8" />
+            <path d="M 320 86 Q 320 78 328 78 L 507 78 Q 515 78 515 86 L 515 93 L 320 93 Z" fill="#4588e6" />
+            <text x="333" y="110" font-size="14" font-weight="700" fill="#1b1d22">{t.node2Title}</text>
+            <text x="333" y="133" font-size="11" fill="#23262d">{t.node2Items[0]}</text>
+            <text x="333" y="153" font-size="11" fill="#23262d">{t.node2Items[1]}</text>
+            <text x="333" y="173" font-size="11" fill="#23262d">{t.node2Items[2]}</text>
+            <text x="333" y="193" font-size="11" fill="#23262d">{t.node2Items[3]}</text>
+          </g>
+        </g>
+
+        <!-- STEP 4: 组装材料包 (Col 2 -> Col 3, x: 515 -> 605, Gap: 90px) -->
+        <g class="wf-step step-4">
+          <!-- Line reaches x: 602 (leaving 3px margin to node 3 border) -->
+          <path d="M 515 145 L 602 145" stroke="#24262b" stroke-width="1.8" marker-end="url(#wf-arrow)" />
+          <path d="M 515 145 L 602 145" stroke="#3b82f6" stroke-width="1.8" class="stream-line" />
+          <g class="badge-pill">
+            <rect x="538" y="134" width={isEn ? "52" : "44"} height="22" rx="11" fill="#ffffff" stroke="#24262b" stroke-width="1.3" filter="drop-shadow(1.5px 1.5px 0px #24262b)" />
+            <text x={isEn ? "564" : "560"} y="149" text-anchor="middle" font-size="10.2" font-weight="600" fill="#24262b">{t.dossierBadge}</text>
+          </g>
+        </g>
+
+        <!-- STEP 5: 编排层启动 (Col 3 Top, x: 605, w: 195, y: 75, h: 138) -->
+        <g class="wf-step step-5">
+          <g class="wf-node">
+            <rect x="608" y="78" width="195" height="138" rx="9" fill="#24262b" />
+            <rect x="605" y="75" width="195" height="138" rx="8" fill="#ef9365" stroke="#24262b" stroke-width="1.8" />
+            <path d="M 605 83 Q 605 75 613 75 L 792 75 Q 800 75 800 83 L 800 90 L 605 90 Z" fill="#d96834" />
+            <text x="618" y="108" font-size="14" font-weight="700" fill="#1b1d22">{t.node3Title}</text>
+            <text x="618" y="131" font-size="11" fill="#23262d">{t.node3Items[0]}</text>
+            <text x="618" y="151" font-size="11" fill="#23262d">{t.node3Items[1]}</text>
+            <text x="618" y="171" font-size="11" fill="#23262d">{t.node3Items[2]}</text>
+            <text x="618" y="191" font-size="11" fill="#23262d">{t.node3Items[3]}</text>
+          </g>
+        </g>
+
+        <!-- STEP 6: 规则门控与运行护栏 (Col 3 Bottom, x: 605, w: 195, y: 355) -->
+        <g class="wf-step step-6">
+          <!-- Line reaches y: 352 (leaving 3px margin to guardrails top border) -->
+          <path d="M 702 213 L 702 352" stroke="#4b5563" stroke-width="1.8" stroke-dasharray="6,5" marker-end="url(#wf-arrow-dashed)" />
+          <rect x={isEn ? "670" : "674"} y="274" width={isEn ? "66" : "56"} height="22" rx="4" fill="#faf9f2" />
+          <text x="702" y="289" text-anchor="middle" font-size="10.5" fill="#606674" font-weight="500">{t.ruleGate}</text>
+          <g class="wf-node">
+            <rect x="608" y="358" width="195" height="125" rx="9" fill="#24262b" />
+            <rect x="605" y="355" width="195" height="125" rx="8" fill="#edd0b0" stroke="#24262b" stroke-width="1.8" />
+            <path d="M 605 363 Q 605 355 613 355 L 792 355 Q 800 355 800 363 L 800 370 L 605 370 Z" fill="#b48858" />
+            <text x="618" y="386" font-size="14" font-weight="700" fill="#1b1d22">{t.guardrailsTitle}</text>
+            <text x="618" y="410" font-size="11" fill="#23262d">{t.guardrailsItems[0]}</text>
+            <text x="618" y="430" font-size="11" fill="#23262d">{t.guardrailsItems[1]}</text>
+            <text x="618" y="450" font-size="11" fill="#23262d">{t.guardrailsItems[2]}</text>
+          </g>
+        </g>
+
+        <!-- STEP 7: 动态角色与分析输入派发 (Col 3 -> Col 4, x: 800 -> 890, Gap: 90px) -->
+        <g class="wf-step step-7">
+          <g class="role-bubble">
+            <rect x={isEn ? "865" : "880"} y="30" width={isEn ? "275" : "255"} height="30" rx="8" fill="#ffffff" stroke="#24262b" stroke-width="1.5" filter="drop-shadow(2px 2px 0px #24262b)" />
+            <text x={isEn ? "1002" : "1007"} y="49" text-anchor="middle" font-size={isEn ? "9.8" : "10.8"} fill="#333740" font-weight="500">{t.roleHint}</text>
+            <line x1={isEn ? "1002" : "1007"} y1="60" x2={isEn ? "1002" : "1007"} y2="70" stroke="#24262b" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#wf-arrow)" />
+          </g>
+          <!-- Line reaches x: 887 (leaving 3px margin to node 4 border) -->
+          <path d="M 800 145 L 887 145" stroke="#24262b" stroke-width="1.8" marker-end="url(#wf-arrow)" />
+          <path d="M 800 145 L 887 145" stroke="#e28a58" stroke-width="1.8" class="stream-line" />
+          <g class="badge-pill">
+            <rect x="822" y="134" width="56" height="22" rx="11" fill="#ffffff" stroke="#24262b" stroke-width="1.3" filter="drop-shadow(1.5px 1.5px 0px #24262b)" />
+            <text x="850" y="149" text-anchor="middle" font-size="10.2" font-weight="600" fill="#24262b">{t.analysisInputBadge}</text>
+          </g>
+        </g>
+
+        <!-- STEP 8: 分析模型 B 展开 (Col 4 Top, x: 890, w: 240, y: 73, h: 145) -->
+        <g class="wf-step step-8">
+          <g class="wf-node">
+            <rect x="893" y="76" width="240" height="145" rx="9" fill="#24262b" />
+            <rect x="890" y="73" width="240" height="145" rx="8" fill="#78c593" stroke="#24262b" stroke-width="1.8" />
+            <path d="M 890 81 Q 890 73 898 73 L 1122 73 Q 1130 73 1130 81 L 1130 88 L 890 88 Z" fill="#3c8d59" />
+            <line x1="890" y1="91" x2="1130" y2="91" stroke="#2b6b41" stroke-width="1.5" />
+            <text x="904" y="108" font-size="14" font-weight="700" fill="#1b1d22">{t.node4Title}</text>
+            <text x="904" y="131" font-size="11" fill="#23262d">{t.node4Items[0]}</text>
+            <text x="904" y="151" font-size="11" fill="#23262d">{t.node4Items[1]}</text>
+            <text x="904" y="171" font-size="11" fill="#23262d">{t.node4Items[2]}</text>
+            <text x="904" y="191" font-size="11" fill="#23262d">{t.node4Items[3]}</text>
+          </g>
+        </g>
+
+        <!-- STEP 9: 产出分析卡并下行 (Node 4 -> Node 5, y: 218 -> 267) -->
+        <g class="wf-step step-9">
+          <!-- Line reaches y: 264 (leaving 3px margin to node 5 top border) -->
+          <path d="M 1010 218 L 1010 264" stroke="#24262b" stroke-width="1.8" marker-end="url(#wf-arrow)" />
+          <path d="M 1010 218 L 1010 264" stroke="#3e8f5b" stroke-width="1.8" class="stream-line-vert" />
+          <text x="942" y="246" font-size="10.8" fill="#555c68" font-weight="500">{t.jsonlCards}</text>
+          <g class="badge-pill">
+            <rect x="987" y="233" width="46" height="22" rx="11" fill="#ffffff" stroke="#24262b" stroke-width="1.3" filter="drop-shadow(1.5px 1.5px 0px #24262b)" />
+            <text x="1010" y="248" text-anchor="middle" font-size="10.2" font-weight="600" fill="#24262b">{t.cardsBadge}</text>
+          </g>
+        </g>
+
+        <!-- STEP 10: 审计模型 C 挑战复核 (Col 4 Bottom, x: 890, w: 240, y: 267, h: 155) -->
+        <g class="wf-step step-10">
+          <g class="wf-node">
+            <rect x="893" y="270" width="240" height="155" rx="9" fill="#24262b" />
+            <rect x="890" y="267" width="240" height="155" rx="8" fill="#ea7a88" stroke="#24262b" stroke-width="1.8" />
+            <path d="M 890 275 Q 890 267 898 267 L 1122 267 Q 1130 267 1130 275 L 1130 282 L 890 282 Z" fill="#bc4653" />
+            <line x1="890" y1="285" x2="1130" y2="285" stroke="#93323e" stroke-width="1.5" />
+            <text x="904" y="303" font-size="14" font-weight="700" fill="#1b1d22">{t.node5Title}</text>
+            <text x="904" y="327" font-size="11" fill="#23262d">{t.node5Items[0]}</text>
+            <text x="904" y="347" font-size="11" fill="#23262d">{t.node5Items[1]}</text>
+            <text x="904" y="367" font-size="11" font-weight="600" fill="#1b1d22">{t.node5Items[2]}</text>
+            <text x="904" y="387" font-size="11" fill="#23262d">{t.node5Items[3]}</text>
+          </g>
+        </g>
+
+        <!-- STEP 11: 审计结果与证据包汇入 Verifier 质量层 -->
+        <g class="wf-step step-11">
+          <!-- 审计结果斜线：从 5 的左边缘靠上 (890, 320) 连接到 Verifier 右侧 (518, 360) -->
+          <!-- 在 x=700 处 y 约为 340，运行护栏顶部在 355，连线在护栏上方优雅通过，完全无穿模！ -->
+          <!-- 终点停留在 518（Verifier 右边缘在 515），保留 3px 边距使箭头 100% 完整展现 -->
+          <path d="M 890 320 L 518 360" stroke="#24262b" stroke-width="1.8" marker-end="url(#wf-arrow)" />
+          <path d="M 890 320 L 518 360" stroke="#bd4754" stroke-width="1.8" class="stream-line" />
+          <rect x={isEn ? "715" : "730"} y="324" width={isEn ? "82" : "56"} height="22" rx="4" fill="#faf9f2" />
+          <text x={isEn ? "756" : "758"} y="339" text-anchor="middle" font-size="10.5" fill="#555c68" font-weight="500">{t.auditResult}</text>
+          
+          <!-- 标准化证据材料包连线 (Col 2 内部纵向)：从数据层底部到 Verifier 顶部 (417, 342) -->
+          <path d="M 417 213 L 417 240" stroke="#24262b" stroke-width="1.8" />
+          <path d="M 417 240 L 417 342" stroke="#4b5563" stroke-width="1.8" stroke-dasharray="6,5" marker-end="url(#wf-arrow-dashed)" />
+          <text x="417" y="258" text-anchor="middle" font-size="10.8" fill="#555c68" font-weight="500">{t.stdDossier}</text>
+          <rect x={isEn ? "377" : "389"} y="274" width={isEn ? "86" : "56"} height="22" rx="4" fill="#faf9f2" />
+          <text x={isEn ? "420" : "417"} y="289" text-anchor="middle" font-size="10.5" fill="#606674" font-weight="500">{t.qualityCheck}</text>
+        </g>
+
+        <!-- STEP 12: Verifier 质量层就绪 (Col 2 Bottom, x: 320, w: 195, y: 345, h: 135) -->
+        <g class="wf-step step-12">
+          <g class="wf-node">
+            <rect x="323" y="348" width="195" height="135" rx="9" fill="#24262b" />
+            <rect x="320" y="345" width="195" height="135" rx="8" fill="#64c4b6" stroke="#24262b" stroke-width="1.8" />
+            <path d="M 320 353 Q 320 345 328 345 L 507 345 Q 515 345 515 353 L 515 360 L 320 360 Z" fill="#369085" />
+            <text x="333" y="377" font-size="14" font-weight="700" fill="#1b1d22">{t.verifierTitle}</text>
+            <text x="333" y="401" font-size="11" fill="#23262d">{t.verifierItems[0]}</text>
+            <text x="333" y="421" font-size="11" fill="#23262d">{t.verifierItems[1]}</text>
+            <text x="333" y="441" font-size="11" fill="#23262d">{t.verifierItems[2]}</text>
+          </g>
+        </g>
+
+        <!-- STEP 13: 建立 SSE 流向前端交付传输 (Col 2 -> Col 1, x: 320 -> 230, Gap: 90px) -->
+        <g class="wf-step step-13">
+          <!-- Line reaches x: 233 (leaving 3px margin to node 6 border) -->
+          <path d="M 320 412 L 233 412" stroke="#24262b" stroke-width="1.8" marker-end="url(#wf-arrow)" />
+          <path d="M 320 412 L 233 412" stroke="#6b5ec7" stroke-width="1.8" class="stream-line" />
+          <!-- SSE Badge perfectly placed on the channel line between Verifier and Node 6, never on any card border! -->
+          <g class="badge-pill">
+            <rect x={isEn ? "245" : "253"} y="401" width={isEn ? "64" : "48"} height="22" rx="11" fill="#ffffff" stroke="#24262b" stroke-width="1.3" filter="drop-shadow(1.5px 1.5px 0px #24262b)" />
+            <text x={isEn ? "277" : "277"} y="416" text-anchor="middle" font-size="10.2" font-weight="600" fill="#24262b">{t.sseBadge}</text>
+          </g>
+        </g>
+
+        <!-- STEP 14: 6. 前端交付完整呈现 (Col 1 Bottom, x: 40, w: 190, y: 350, h: 130) -->
+        <g class="wf-step step-14">
+          <g class="wf-node">
+            <rect x="43" y="353" width="190" height="130" rx="9" fill="#24262b" />
+            <rect x="40" y="350" width="190" height="130" rx="8" fill="#9d91e6" stroke="#24262b" stroke-width="1.8" />
+            <path d="M 40 358 Q 40 350 48 350 L 222 350 Q 230 350 230 358 L 230 365 L 40 365 Z" fill="#6a5dc4" />
+            <text x="52" y="382" font-size="14" font-weight="700" fill="#1b1d22">{t.node6Title}</text>
+            <text x="52" y="406" font-size="11" fill="#23262d">{t.node6Items[0]}</text>
+            <text x="52" y="426" font-size="11" fill="#23262d">{t.node6Items[1]}</text>
+            <text x="52" y="446" font-size="11" fill="#23262d">{t.node6Items[2]}</text>
+          </g>
+        </g>
+
+      </svg>
+    </div>
+  </div>
+
+  <!-- Zoom Modal -->
+  <div class="workflow-modal-overlay" id="ezer-workflow-modal" aria-hidden="true">
+    <div class="workflow-modal-dialog">
+      <div class="modal-top-bar">
+        <span class="modal-heading">{t.mainTitle} - {isEn ? "Full Architecture View" : "全链路交付架构"}</span>
+        <button type="button" class="modal-close-btn" id="ezer-workflow-close-btn" aria-label={t.closeModal}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-content-body" id="ezer-workflow-modal-content">
+        <!-- Cloned SVG inserted here dynamically on open -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .ezer-workflow-wrapper {
+    position: relative;
+    width: 100%;
+    user-select: none;
+  }
+
+  /* Container smooth reveal styles */
+  .workflow-card {
+    position: relative;
+    width: 100%;
+    background: #faf9f2;
+    border-radius: 1.25rem;
+    border: 1.5px solid rgba(40, 44, 52, 0.16);
+    box-shadow: 0 16px 36px -12px rgba(11, 31, 91, 0.1), 0 4px 12px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+    cursor: zoom-in;
+    opacity: 0;
+    transform: translateY(24px) scale(0.99);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.35s ease;
+    will-change: opacity, transform;
+  }
+
+  .workflow-card.is-container-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .workflow-card:hover {
+    box-shadow: 0 22px 48px -10px rgba(11, 31, 91, 0.16), 0 8px 18px rgba(0, 0, 0, 0.05);
+  }
+
+  .workflow-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1.25rem 0.55rem;
+    border-bottom: 1px dashed rgba(40, 44, 52, 0.1);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+  }
+
+  .flow-pill-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #3b4252;
+    background: rgba(40, 44, 52, 0.06);
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+  }
+
+  .pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+    animation: wf-pulse 2s infinite;
+  }
+
+  @keyframes wf-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.6; }
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .ctrl-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.75rem;
+    border: 1px solid rgba(40, 44, 52, 0.18);
+    background: #ffffff;
+    border-radius: 0.5rem;
+    color: #2b303c;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .ctrl-btn:hover {
+    background: #24262b;
+    color: #ffffff;
+    border-color: #24262b;
+  }
+
+  .replay-btn:active svg {
+    transform: rotate(180deg);
+    transition: transform 0.25s ease;
+  }
+
+  .svg-container {
+    width: 100%;
+    height: auto;
+    padding: 0.6rem 0.9rem 0.8rem;
+    line-height: 0;
+  }
+
+  .workflow-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+
+  .svg-main-title {
+    font-size: 24px;
+    font-weight: 800;
+    fill: #1c1f26;
+    letter-spacing: -0.02em;
+  }
+
+  .svg-sub-title {
+    font-size: 12px;
+    font-weight: 500;
+    fill: #616775;
+  }
+
+  /* Nodes interaction */
+  .wf-node {
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: default;
+  }
+
+  .wf-node:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Stream Lines */
+  .stream-line {
+    stroke-dasharray: 6, 12;
+    animation: wf-flow 1.6s linear infinite;
+    opacity: 0.85;
+  }
+
+  .stream-line-vert {
+    stroke-dasharray: 6, 12;
+    animation: wf-flow-vert 1.6s linear infinite;
+    opacity: 0.85;
+  }
+
+  @keyframes wf-flow {
+    from { stroke-dashoffset: 18; }
+    to { stroke-dashoffset: 0; }
+  }
+
+  @keyframes wf-flow-vert {
+    from { stroke-dashoffset: 18; }
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* ==========================================================================
+     SEQUENTIAL STEP ANIMATION - SMOOTH CURVES
+     ========================================================================== */
+
+  /* Base state: All steps hidden by default before/during delay */
+  .workflow-card .wf-step {
+    opacity: 0;
+    transform: translateY(8px);
+    will-change: opacity, transform;
+  }
+
+  /* When animated class is attached via IntersectionObserver or Replay */
+  .workflow-card.is-animated .wf-step {
+    animation: wfStepEntrance 0.58s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+  }
+
+  /* Stagger delays across the 14 execution pipeline steps */
+  .workflow-card.is-animated .step-1  { animation-delay: 0.05s; }
+  .workflow-card.is-animated .step-2  { animation-delay: 0.18s; }
+  .workflow-card.is-animated .step-3  { animation-delay: 0.32s; }
+  .workflow-card.is-animated .step-4  { animation-delay: 0.46s; }
+  .workflow-card.is-animated .step-5  { animation-delay: 0.60s; }
+  .workflow-card.is-animated .step-6  { animation-delay: 0.74s; }
+  .workflow-card.is-animated .step-7  { animation-delay: 0.88s; }
+  .workflow-card.is-animated .step-8  { animation-delay: 1.02s; }
+  .workflow-card.is-animated .step-9  { animation-delay: 1.16s; }
+  .workflow-card.is-animated .step-10 { animation-delay: 1.30s; }
+  .workflow-card.is-animated .step-11 { animation-delay: 1.44s; }
+  .workflow-card.is-animated .step-12 { animation-delay: 1.58s; }
+  .workflow-card.is-animated .step-13 { animation-delay: 1.72s; }
+  .workflow-card.is-animated .step-14 { animation-delay: 1.86s; }
+
+  @keyframes wfStepEntrance {
+    0% {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Modal Dialog styles & Modal elements should ALWAYS stay visible immediately */
+  .workflow-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(8px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .workflow-modal-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .workflow-modal-dialog {
+    background: #faf9f2;
+    border-radius: 1.25rem;
+    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    width: 94vw;
+    max-width: 1200px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transform: scale(0.96);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .workflow-modal-overlay.is-open .workflow-modal-dialog {
+    transform: scale(1);
+  }
+
+  .modal-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1.5rem;
+    background: rgba(255, 255, 255, 0.85);
+    border-bottom: 1px solid rgba(40, 44, 52, 0.1);
+    backdrop-filter: blur(6px);
+  }
+
+  .modal-heading {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1f232d;
+  }
+
+  .modal-close-btn {
+    border: none;
+    background: rgba(40, 44, 52, 0.08);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #333;
+    transition: all 0.15s ease;
+  }
+
+  .modal-close-btn:hover {
+    background: #24262b;
+    color: #fff;
+  }
+
+  .modal-content-body {
+    padding: 1.25rem;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+  }
+
+  .modal-content-body :global(svg) {
+    width: 100%;
+    max-height: calc(85vh - 65px);
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+
+  /* Modal contents bypass sequential animation */
+  .modal-content-body :global(.wf-step) {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  @media (max-width: 768px) {
+    .workflow-modal-overlay {
+      padding: 1rem;
+    }
+    .modal-content-body {
+      padding: 0.75rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .workflow-card {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+    .workflow-card .wf-step {
+      opacity: 1 !important;
+      transform: none !important;
+      animation: none !important;
+    }
+  }
+</style>
+
+<script>
+  function initWorkflowInteractions() {
+    const card = document.getElementById("ezer-workflow-trigger");
+    const modal = document.getElementById("ezer-workflow-modal");
+    const closeBtn = document.getElementById("ezer-workflow-close-btn");
+    const modalContent = document.getElementById("ezer-workflow-modal-content");
+    const replayBtn = document.getElementById("ezer-workflow-replay-btn");
+
+    if (!card) return;
+
+    // 1. Smoothly reveal container first, then sequentially trigger nodes
+    let hasPlayed = false;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasPlayed) {
+            hasPlayed = true;
+            // First step: smooth container entrance
+            card.classList.add("is-container-visible");
+            // Delay 160ms for smooth staggered transition into node sequence
+            setTimeout(() => {
+              card.classList.add("is-animated");
+            }, 160);
+            observer.unobserve(card);
+          }
+        });
+      },
+      {
+        threshold: 0.18,
+        rootMargin: "0px 0px -40px 0px",
+      }
+    );
+
+    observer.observe(card);
+
+    // 2. Replay animation
+    if (replayBtn) {
+      replayBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        card.classList.remove("is-animated");
+        // Force reflow
+        void card.offsetWidth;
+        card.classList.add("is-animated");
+      });
+    }
+
+    // 3. Modal Zoom Open / Close
+    if (modal && closeBtn && modalContent) {
+      function openModal() {
+        if (modalContent && modalContent.children.length === 0) {
+          const svg = card?.querySelector(".workflow-svg");
+          if (svg) {
+            const clone = svg.cloneNode(true) as SVGElement;
+            modalContent.appendChild(clone);
+          }
+        }
+        modal?.classList.add("is-open");
+        modal?.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeModal() {
+        modal?.classList.remove("is-open");
+        modal?.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      card.addEventListener("click", (e) => {
+        if ((e.target as HTMLElement).closest("#ezer-workflow-replay-btn")) {
+          return;
+        }
+        openModal();
+      });
+
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openModal();
+        }
+      });
+
+      closeBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        closeModal();
+      });
+
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && modal?.classList.contains("is-open")) {
+          closeModal();
+        }
+      });
+    }
+  }
+
+  initWorkflowInteractions();
+  document.addEventListener("astro:page-load", initWorkflowInteractions);
+</script>

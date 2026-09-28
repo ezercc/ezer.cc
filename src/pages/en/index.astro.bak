@@ -188,8 +188,8 @@ import logo12 from "../../assets/vercel_transparent.png";
         features: [
           { title: "3 Financial Analyses Monthly" },
           { title: "Basic audit-chain experience" },
-          { title: "Core conclusions with open evidence" },
-          { title: "Analysis history", disabled: true },
+          { title: "Core conclusions and evidence notes" },
+          { title: "Community Support", disabled: true },
           { title: "Export Professional PDF Reports", disabled: true },
         ],
       },

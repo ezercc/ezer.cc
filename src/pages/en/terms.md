@@ -39,7 +39,7 @@ Some features may be available without charge and may be subject to usage, featu
 Before purchase, Stripe Checkout displays the applicable currency, price, billing interval, applicable taxes, available payment methods, and renewal status. The final checkout and order-confirmation information controls for a particular purchase.
 
 - Card plans offered monthly, quarterly, or annually automatically renew for the interval shown at purchase until cancelled.
-- Quarterly and annual Alipay plans offered on the Chinese-language page are one-time prepaid purchases and do not automatically renew.
+- Monthly, quarterly, and annual Alipay plans offered on the Chinese-language page are one-time prepaid purchases and do not automatically renew.
 - We will provide reasonable notice before price changes that affect future automatic-renewal charges.
 - Payments are processed by Stripe, and we do not store full card numbers.
 

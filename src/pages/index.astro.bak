@@ -189,8 +189,8 @@ import logo12 from "../assets/vercel_transparent.png";
         features: [
           { title: "每月3次财报分析" },
           { title: "基础审计链路体验" },
-          { title: "核心结论与公开证据链" },
-          { title: "历史分析记录", disabled: true },
+          { title: "核心结论与证据提示" },
+          { title: "社区支持", disabled: true },
           { title: "导出专业 PDF 报告", disabled: true },
         ],
       },

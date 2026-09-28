@@ -22,7 +22,7 @@ Monthly, quarterly, and annual plans purchased by card are automatically renewin
 
 ## 3. Alipay one-time purchases
 
-Quarterly and annual Alipay plans offered on the Chinese-language page are one-time prepaid purchases. They do not automatically renew and ordinarily do not require cancellation. After the applicable access period ends, you may make a new purchase if you wish to continue using paid Services.
+Monthly, quarterly, and annual Alipay plans offered on the Chinese-language page are one-time prepaid purchases. They do not automatically renew and ordinarily do not require cancellation. After the applicable access period ends, you may make a new purchase if you wish to continue using paid Services.
 
 The refund, duplicate or incorrect charge, unauthorized payment, and non-delivery provisions in this Policy also apply to eligible Alipay one-time purchases.
 

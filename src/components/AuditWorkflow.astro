@@ -1,0 +1,1174 @@
+---
+interface Props {
+  lang?: "zh" | "en";
+  class?: string;
+}
+
+const { lang = "zh", class: className = "" } = Astro.props;
+const isEn = lang === "en";
+
+const t = {
+  mainTitle: isEn ? "Ezer Audit Workflow" : "Ezer 审计工作流",
+  subTitle: isEn
+    ? "Structured financial data ingestion, evidence-bound analysis, audit challenge & verifier-hardened pipeline"
+    : "结构化金融数据接入、证据绑定分析、审计挑战与验证器加固的交付链路",
+  zoomHint: isEn ? "Click to view full architecture" : "点击查看高清全景架构",
+  closeModal: isEn ? "Close" : "关闭",
+  replayHint: isEn ? "Replay workflow sequence" : "重新演示执行时序",
+  replayLabel: isEn ? "Replay" : "重播",
+  
+  // Nodes
+  node1Title: isEn ? "1. Frontend Trigger" : "1. 前端触发",
+  node1Items: isEn
+    ? ["Input: code / period / year / lang", "Single SSE stream throughout analysis", "Underlying model keys never exposed"]
+    : ["输入：code / period / year / lang", "单条 SSE 贯穿整次分析", "前端不暴露底层模型密钥"],
+  node1Sub: isEn ? "Public Structured Sources" : "公开结构化数据源",
+
+  node2Title: isEn ? "2. Data Layer" : "2. 数据层",
+  node2Items: isEn
+    ? ["Eastmoney structured reports", "12-quarter historical series", "MX market & business context", "Readable field mapping & anchors"]
+    : ["东方财富结构化财报", "近 12 个季度历史序列", "MX 市场与业务补充上下文", "可读字段映射与来源锚点"],
+
+  node3Title: isEn ? "3. Orchestration" : "3. 编排层",
+  node3Items: isEn
+    ? ["Request validation & ticker parsing", "Evidence dossier assembly", "Task state machine & SSE dispatch", "Artifact persistence for replay"]
+    : ["请求校验与证券代码解析", "证据材料包组装", "任务状态机与 SSE 事件分发", "产物落盘，支持复盘与回放"],
+
+  roleHint: isEn ? "Dynamically switch analyst roles by market context" : "根据公司与市场上文动态切换分析角色",
+
+  node4Title: isEn ? "4. Analysis Model B" : "4. 分析模型 B",
+  node4Items: isEn
+    ? ["7 chapterized analysis cards", "Trend / correlation / mapping check", "Investor-oriented core findings", "Evidence & counter-evidence per card"]
+    : ["七张章节化分析卡", "趋势 / 关联 / 映射检查", "面向投资者的核心结论", "每张卡都附证据与反证点"],
+
+  node5Title: isEn ? "5. Audit Model C" : "5. 审计模型 C",
+  node5Items: isEn
+    ? ["Actively challenge fragile claims", "Reject unwarranted extrapolations", "PASS / WARNINGS / REJECTED rules", "Final summary & issue tracking"]
+    : ["专门挑战脆弱结论", "拒绝证据不足的外推", "PASS / WARNINGS / REJECTED 规则", "输出最终摘要与问题追踪"],
+
+  guardrailsTitle: isEn ? "Runtime Guardrails" : "运行护栏",
+  guardrailsItems: isEn
+    ? ["Bearer auth & datasource whitelist", "Task artifact logging for replay", "Auto-fallback on sparse evidence"]
+    : ["Bearer 鉴权与数据源白名单", "任务产物落盘，支持审计与回放", "证据不足时自动降级"],
+
+  verifierTitle: isEn ? "Verifier Quality Layer" : "Verifier 质量层",
+  verifierItems: isEn
+    ? ["Independent QA capability showcase", "Output consistency & schema checks", "Enterprise commercial trustworthiness"]
+    : ["独立质量控制能力展示", "输出一致性与契约检查", "支撑商业化可信度"],
+
+  node6Title: isEn ? "6. Frontend Delivery" : "6. 前端交付",
+  node6Items: isEn
+    ? ["Streaming progress, cards & audit", "Final verdict covers summary area", "Unified API for live demo & replay"]
+    : ["流式展示进度、分析卡与审计结果", "最终结论覆盖前端摘要区", "同一 API 既能演示也能复盘"],
+
+  // Badges & labels
+  reqBadge: isEn ? "Request" : "请求",
+  dossierBadge: isEn ? "Dossier" : "材料包",
+  analysisInputBadge: isEn ? "Input" : "分析输入",
+  cardsBadge: isEn ? "Cards" : "分析卡",
+  jsonlCards: isEn ? "JSONL Cards" : "JSONL 分析卡",
+  sseBadge: isEn ? "SSE Stream" : "SSE 流",
+  stdDossier: isEn ? "Standardized Evidence Dossier" : "标准化证据材料包",
+  qualityCheck: isEn ? "Quality Check" : "质量校验",
+  ruleGate: isEn ? "Rule Gate" : "规则门控",
+  auditResult: isEn ? "Audit Output" : "审计结果",
+};
+---
+
+<div class={`ezer-workflow-wrapper ${className}`} id="ezer-workflow-root">
+  <div class="workflow-card" id="ezer-workflow-trigger" title={t.zoomHint} role="button" tabindex="0">
+    <div class="workflow-header-bar">
+      <div class="flow-pill-tag">
+        <span class="pulse-dot"></span>
+        <span>{isEn ? "LIVE ARCHITECTURE" : "实装交付架构"}</span>
+      </div>
+      <div class="header-actions">
+        <button type="button" class="ctrl-btn replay-btn" id="ezer-workflow-replay-btn" title={t.replayHint} aria-label={t.replayHint}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+          </svg>
+          <span class="ctrl-btn-label">{t.replayLabel}</span>
+        </button>
+        <button type="button" class="ctrl-btn zoom-btn" aria-label={t.zoomHint}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <polyline points="9 21 3 21 3 15"></polyline>
+            <line x1="21" y1="3" x2="14" y2="10"></line>
+            <line x1="3" y1="21" x2="10" y2="14"></line>
+          </svg>
+          <span class="ctrl-btn-label">{isEn ? "Expand" : "放大"}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="svg-container">
+      <svg
+        viewBox="0 0 1180 460"
+        xmlns="http://www.w3.org/2000/svg"
+        class="workflow-svg"
+      >
+        <defs>
+          <!-- Grid Background Pattern -->
+          <pattern id="wf-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+            <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(40, 44, 52, 0.065)" stroke-width="0.8" />
+          </pattern>
+
+          <!-- Marker Arrow Heads - userSpaceOnUse ensures fixed sharp 8px arrows -->
+          <marker id="wf-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="8.5" markerHeight="8.5" orient="auto">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#24262b" />
+          </marker>
+          <marker id="wf-arrow-dashed" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="8.5" markerHeight="8.5" orient="auto">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#4b5563" />
+          </marker>
+        </defs>
+
+        <!-- Canvas Background (Transparent so container 0.3 opacity + blur 4px takes effect) -->
+        <rect x="0" y="0" width="1180" height="460" rx="14" fill="url(#wf-grid)" />
+
+        <!-- Title Section (Static) -->
+        <text x="40" y="34" class="svg-main-title">{t.mainTitle}</text>
+        <text x="40" y="54" class="svg-sub-title">{t.subTitle}</text>
+
+
+        <!-- ======================= SEQUENTIAL PIPELINE LAYERS ======================= -->
+
+        <!-- STEP 1: 前端触发 (Col 1 Top, x: 40, w: 190, y: 72, h: 115) -->
+        <g class="wf-step step-1">
+          <g class="wf-node">
+            <rect x="43" y="75" width="190" height="115" rx="9" fill="#24262b" />
+            <rect x="40" y="72" width="190" height="115" rx="8" fill="#f6ba43" stroke="#24262b" stroke-width="1.8" />
+            <text x="52" y="98" font-size="13.5" font-weight="700" fill="#1b1d22">{t.node1Title}</text>
+            <text x="52" y="119" font-size="10.5" fill="#23262d">{t.node1Items[0]}</text>
+            <text x="52" y="138" font-size="10.5" fill="#23262d">{t.node1Items[1]}</text>
+            <text x="52" y="157" font-size="10.5" fill="#23262d">{t.node1Items[2]}</text>
+            <text x="40" y="201" font-size="10.5" fill="#717886" font-weight="500">{t.node1Sub}</text>
+          </g>
+        </g>
+
+        <!-- STEP 2: 发起请求 (Col 1 -> Col 2, x: 230 -> 320, Gap: 90px) -->
+        <g class="wf-step step-2">
+          <!-- Line reaches x: 317 (leaving 3px margin to node 2 border) -->
+          <path d="M 230 128 L 317 128" stroke="#24262b" stroke-width="1.8" marker-end="url(#wf-arrow)" class="flow-draw-line" />
+          <path d="M 230 128 L 317 128" stroke="#e09b13" stroke-width="1.8" class="stream-line" />
+          <g class="badge-pill">
+            <rect x="257" y="117" width="38" height="22" rx="11" fill="#ffffff" stroke="#24262b" stroke-width="1.3" filter="drop-shadow(1.5px 1.5px 0px #24262b)" />
+            <text x="276" y="132" text-anchor="middle" font-size="10.2" font-weight="600" fill="#24262b">{t.reqBadge}</text>
+          </g>
+        </g>
+
+        <!-- STEP 3: 数据层就绪 (Col 2 Top, x: 320, w: 195, y: 72, h: 122) -->
+        <g class="wf-step step-3">
+          <g class="wf-node">
+            <rect x="323" y="75" width="195" height="122" rx="9" fill="#24262b" />
+            <rect x="320" y="72" width="195" height="122" rx="8" fill="#84b8f5" stroke="#24262b" stroke-width="1.8" />
+            <text x="333" y="96" font-size="13.5" font-weight="700" fill="#1b1d22">{t.node2Title}</text>
+            <text x="333" y="117" font-size="10.5" fill="#23262d">{t.node2Items[0]}</text>
+            <text x="333" y="135" font-size="10.5" fill="#23262d">{t.node2Items[1]}</text>
+            <text x="333" y="153" font-size="10.5" fill="#23262d">{t.node2Items[2]}</text>
+            <text x="333" y="171" font-size="10.5" fill="#23262d">{t.node2Items[3]}</text>
+          </g>
+        </g>
+
+        <!-- STEP 4: 组装材料包 (Col 2 -> Col 3, x: 515 -> 605, Gap: 90px) -->
+        <g class="wf-step step-4">
+          <!-- Line reaches x: 602 (leaving 3px margin to node 3 border) -->
+          <path d="M 515 128 L 602 128" stroke="#24262b" stroke-width="1.8" marker-end="url(#wf-arrow)" class="flow-draw-line" />
+          <path d="M 515 128 L 602 128" stroke="#3b82f6" stroke-width="1.8" class="stream-line" />
+          <g class="badge-pill">
+            <rect x="538" y="117" width={isEn ? "52" : "44"} height="22" rx="11" fill="#ffffff" stroke="#24262b" stroke-width="1.3" filter="drop-shadow(1.5px 1.5px 0px #24262b)" />
+            <text x={isEn ? "564" : "560"} y="132" text-anchor="middle" font-size="10.2" font-weight="600" fill="#24262b">{t.dossierBadge}</text>
+          </g>
+        </g>
+
+        <!-- STEP 5: 编排层启动 (Col 3 Top, x: 605, w: 195, y: 72, h: 122) -->
+        <g class="wf-step step-5">
+          <g class="wf-node">
+            <rect x="608" y="75" width="195" height="122" rx="9" fill="#24262b" />
+            <rect x="605" y="72" width="195" height="122" rx="8" fill="#ef9365" stroke="#24262b" stroke-width="1.8" />
+            <text x="618" y="96" font-size="13.5" font-weight="700" fill="#1b1d22">{t.node3Title}</text>
+            <text x="618" y="117" font-size="10.5" fill="#23262d">{t.node3Items[0]}</text>
+            <text x="618" y="135" font-size="10.5" fill="#23262d">{t.node3Items[1]}</text>
+            <text x="618" y="153" font-size="10.5" fill="#23262d">{t.node3Items[2]}</text>
+            <text x="618" y="171" font-size="10.5" fill="#23262d">{t.node3Items[3]}</text>
+          </g>
+        </g>
+
+        <!-- STEP 6: 规则门控与运行护栏 (Col 3 Bottom, x: 605, w: 195, y: 326) -->
+        <g class="wf-step step-6">
+          <!-- Line reaches y: 323 (leaving 3px margin to guardrails top border) -->
+          <path d="M 702 194 L 702 323" stroke="#4b5563" stroke-width="1.8" stroke-dasharray="6,5" marker-end="url(#wf-arrow-dashed)" class="flow-draw-line" />
+          <g class="flow-label">
+            <rect x={isEn ? "670" : "674"} y="246" width={isEn ? "66" : "56"} height="20" rx="4" fill="rgba(255, 255, 255, 0.8)" />
+            <text x="702" y="260" text-anchor="middle" font-size="10.2" fill="#606674" font-weight="500">{t.ruleGate}</text>
+          </g>
+          <g class="wf-node">
+            <rect x="608" y="329" width="195" height="115" rx="9" fill="#24262b" />
+            <rect x="605" y="326" width="195" height="115" rx="8" fill="#edd0b0" stroke="#24262b" stroke-width="1.8" />
+            <text x="618" y="352" font-size="13.5" font-weight="700" fill="#1b1d22">{t.guardrailsTitle}</text>
+            <text x="618" y="374" font-size="10.5" fill="#23262d">{t.guardrailsItems[0]}</text>
+            <text x="618" y="393" font-size="10.5" fill="#23262d">{t.guardrailsItems[1]}</text>
+            <text x="618" y="412" font-size="10.5" fill="#23262d">{t.guardrailsItems[2]}</text>
+          </g>
+        </g>
+
+        <!-- STEP 7: 动态角色与分析输入派发 (Col 3 -> Col 4, x: 800 -> 890, Gap: 90px) -->
+        <g class="wf-step step-7">
+          <g class="role-bubble">
+            <rect x={isEn ? "865" : "875"} y="26" width={isEn ? "275" : "255"} height="28" rx="7" fill="#ffffff" stroke="#24262b" stroke-width="1.5" filter="drop-shadow(2px 2px 0px #24262b)" />
+            <text x={isEn ? "1002" : "1002"} y="44" text-anchor="middle" font-size={isEn ? "9.6" : "10.5"} fill="#333740" font-weight="500">{t.roleHint}</text>
+            <line x1={isEn ? "1002" : "1002"} y1="54" x2={isEn ? "1002" : "1002"} y2="68" stroke="#24262b" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#wf-arrow)" />
+          </g>
+          <!-- Line reaches x: 887 (leaving 3px margin to node 4 border) -->
+          <path d="M 800 128 L 887 128" stroke="#24262b" stroke-width="1.8" marker-end="url(#wf-arrow)" class="flow-draw-line" />
+          <path d="M 800 128 L 887 128" stroke="#e28a58" stroke-width="1.8" class="stream-line" />
+          <g class="badge-pill">
+            <rect x="822" y="117" width="56" height="22" rx="11" fill="#ffffff" stroke="#24262b" stroke-width="1.3" filter="drop-shadow(1.5px 1.5px 0px #24262b)" />
+            <text x="850" y="132" text-anchor="middle" font-size="10.2" font-weight="600" fill="#24262b">{t.analysisInputBadge}</text>
+          </g>
+        </g>
+
+        <!-- STEP 8: 分析模型 B 展开 (Col 4 Top, x: 890, w: 240, y: 72, h: 124) -->
+        <g class="wf-step step-8">
+          <g class="wf-node">
+            <rect x="893" y="75" width="240" height="124" rx="9" fill="#24262b" />
+            <rect x="890" y="72" width="240" height="124" rx="8" fill="#78c593" stroke="#24262b" stroke-width="1.8" />
+            <text x="904" y="96" font-size="13.5" font-weight="700" fill="#1b1d22">{t.node4Title}</text>
+            <text x="904" y="117" font-size="10.5" fill="#23262d">{t.node4Items[0]}</text>
+            <text x="904" y="135" font-size="10.5" fill="#23262d">{t.node4Items[1]}</text>
+            <text x="904" y="153" font-size="10.5" fill="#23262d">{t.node4Items[2]}</text>
+            <text x="904" y="171" font-size="10.5" fill="#23262d">{t.node4Items[3]}</text>
+          </g>
+        </g>
+
+        <!-- STEP 9: 产出分析卡并下行 (Node 4 -> Node 5, y: 196 -> 235) -->
+        <g class="wf-step step-9">
+          <!-- Line reaches y: 235 (leaving 3px margin to node 5 top border) -->
+          <path d="M 1010 196 L 1010 235" stroke="#24262b" stroke-width="1.8" marker-end="url(#wf-arrow)" class="flow-draw-line" />
+          <path d="M 1010 196 L 1010 235" stroke="#3e8f5b" stroke-width="1.8" class="stream-line-vert" />
+          <g class="badge-pill">
+            <rect x={isEn ? "960" : "956"} y="207" width={isEn ? "100" : "108"} height="22" rx="11" fill="#ffffff" stroke="#24262b" stroke-width="1.3" filter="drop-shadow(1.5px 1.5px 0px #24262b)" />
+            <text x="1010" y="222" text-anchor="middle" font-size="10.2" font-weight="600" fill="#24262b">{t.jsonlCards}</text>
+          </g>
+        </g>
+
+        <!-- STEP 10: 审计模型 C 挑战复核 (Col 4 Bottom, x: 890, w: 240, y: 238, h: 146) -->
+        <g class="wf-step step-10">
+          <g class="wf-node">
+            <rect x="893" y="241" width="240" height="146" rx="9" fill="#24262b" />
+            <rect x="890" y="238" width="240" height="146" rx="8" fill="#ea7a88" stroke="#24262b" stroke-width="1.8" />
+            <text x="904" y="264" font-size="13.5" font-weight="700" fill="#1b1d22">{t.node5Title}</text>
+            <text x="904" y="285" font-size="10.5" fill="#23262d">{t.node5Items[0]}</text>
+            <text x="904" y="303" font-size="10.5" fill="#23262d">{t.node5Items[1]}</text>
+            <text x="904" y="321" font-size="10.5" font-weight="600" fill="#1b1d22">{t.node5Items[2]}</text>
+            <text x="904" y="339" font-size="10.5" fill="#23262d">{t.node5Items[3]}</text>
+          </g>
+        </g>
+
+        <!-- STEP 11: 审计结果与证据包汇入 Verifier 质量层 -->
+        <g class="wf-step step-11">
+          <!-- 审计结果斜线：从 5 的左边缘 (890, 286) 接入 Verifier 右侧 (518, 332) -->
+          <path d="M 890 286 L 518 332" stroke="#24262b" stroke-width="1.8" marker-end="url(#wf-arrow)" class="flow-draw-line" />
+          <path d="M 890 286 L 518 332" stroke="#bd4754" stroke-width="1.8" class="stream-line" />
+          <g class="flow-label">
+            <rect x={isEn ? "715" : "730"} y="295" width={isEn ? "82" : "56"} height="20" rx="4" fill="rgba(255, 255, 255, 0.8)" />
+            <text x={isEn ? "756" : "758"} y="309" text-anchor="middle" font-size="10.2" fill="#555c68" font-weight="500">{t.auditResult}</text>
+          </g>
+          
+          <!-- 标准化证据材料包连线 (Col 2 内部纵向)：从数据层底部到 Verifier 顶部 (417, 301) -->
+          <path d="M 417 194 L 417 218" stroke="#24262b" stroke-width="1.8" class="flow-draw-line" />
+          <path d="M 417 218 L 417 301" stroke="#4b5563" stroke-width="1.8" stroke-dasharray="6,5" marker-end="url(#wf-arrow-dashed)" class="flow-draw-line" />
+          <g class="flow-label">
+            <text x="417" y="228" text-anchor="middle" font-size="10.5" fill="#555c68" font-weight="500">{t.stdDossier}</text>
+            <rect x={isEn ? "377" : "389"} y="246" width={isEn ? "86" : "56"} height="20" rx="4" fill="rgba(255, 255, 255, 0.8)" />
+            <text x={isEn ? "420" : "417"} y="260" text-anchor="middle" font-size="10.2" fill="#606674" font-weight="500">{t.qualityCheck}</text>
+          </g>
+        </g>
+
+        <!-- STEP 12: Verifier 质量层就绪 (Col 2 Bottom, x: 320, w: 195, y: 304, h: 122) -->
+        <g class="wf-step step-12">
+          <g class="wf-node">
+            <rect x="323" y="307" width="195" height="122" rx="9" fill="#24262b" />
+            <rect x="320" y="304" width="195" height="122" rx="8" fill="#64c4b6" stroke="#24262b" stroke-width="1.8" />
+            <text x="333" y="330" font-size="13.5" font-weight="700" fill="#1b1d22">{t.verifierTitle}</text>
+            <text x="333" y="351" font-size="10.5" fill="#23262d">{t.verifierItems[0]}</text>
+            <text x="333" y="370" font-size="10.5" fill="#23262d">{t.verifierItems[1]}</text>
+            <text x="333" y="389" font-size="10.5" fill="#23262d">{t.verifierItems[2]}</text>
+          </g>
+        </g>
+
+        <!-- STEP 13: 建立 SSE 流向前端交付传输 (Col 2 -> Col 1, x: 320 -> 230, Gap: 90px) -->
+        <!-- SSE 药丸端正悬浮在两卡片之间的交付通道中央（x: 251~301），距左右卡片各有 21px 呼吸边距，绝对不压在任何卡片或边框上！ -->
+        <g class="wf-step step-13">
+          <!-- Line reaches x: 233 (leaving 3px margin to node 6 border) -->
+          <path d="M 320 365 L 233 365" stroke="#24262b" stroke-width="1.8" marker-end="url(#wf-arrow)" class="flow-draw-line" />
+          <path d="M 320 365 L 233 365" stroke="#6b5ec7" stroke-width="1.8" class="stream-line" />
+          <g class="badge-pill">
+            <rect x={isEn ? "245" : "251"} y="354" width={isEn ? "64" : "50"} height="22" rx="11" fill="#ffffff" stroke="#24262b" stroke-width="1.3" filter="drop-shadow(1.5px 1.5px 0px #24262b)" />
+            <text x={isEn ? "277" : "276"} y="369" text-anchor="middle" font-size="10.2" font-weight="600" fill="#24262b">{t.sseBadge}</text>
+          </g>
+        </g>
+
+        <!-- STEP 14: 6. 前端交付完整呈现 (Col 1 Bottom, x: 40, w: 190, y: 304, h: 122) -->
+        <g class="wf-step step-14">
+          <g class="wf-node">
+            <rect x="43" y="307" width="190" height="122" rx="9" fill="#24262b" />
+            <rect x="40" y="304" width="190" height="122" rx="8" fill="#9d91e6" stroke="#24262b" stroke-width="1.8" />
+            <text x="52" y="330" font-size="13.5" font-weight="700" fill="#1b1d22">{t.node6Title}</text>
+            <text x="52" y="351" font-size="10.5" fill="#23262d">{t.node6Items[0]}</text>
+            <text x="52" y="370" font-size="10.5" fill="#23262d">{t.node6Items[1]}</text>
+            <text x="52" y="389" font-size="10.5" fill="#23262d">{t.node6Items[2]}</text>
+          </g>
+        </g>
+
+      </svg>
+    </div>
+  </div>
+
+  <!-- Zoom Modal -->
+  <div class="workflow-modal-overlay" id="ezer-workflow-modal" aria-hidden="true">
+    <div class="workflow-modal-dialog">
+      <div class="modal-top-bar">
+        <span class="modal-heading">{t.mainTitle} - {isEn ? "Full Architecture View" : "全链路交付架构"}</span>
+        <div class="modal-top-actions">
+          <button type="button" class="modal-rotate-btn" id="ezer-workflow-rotate-btn" 
+            title={isEn ? "Toggle Landscape" : "切换横屏视角"} 
+            aria-label={isEn ? "Toggle Landscape" : "切换横屏视角"}
+            data-text-portrait={isEn ? "Portrait" : "转为竖屏"}
+            data-text-landscape={isEn ? "Landscape" : "旋转横屏"}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+              <line x1="12" y1="12" x2="12" y2="12.01"></line>
+            </svg>
+            <span class="rotate-btn-text">{isEn ? "Rotate" : "旋转横屏"}</span>
+          </button>
+          <button type="button" class="modal-close-btn" id="ezer-workflow-close-btn" aria-label={t.closeModal}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="modal-content-body" id="ezer-workflow-modal-content">
+        <!-- Cloned SVG inserted here dynamically on open -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .ezer-workflow-wrapper {
+    position: relative;
+    width: 100%;
+    user-select: none;
+  }
+
+  /* Container smooth reveal styles */
+  .workflow-card {
+    position: relative;
+    width: 100%;
+    background: rgba(250, 249, 242, 0.3);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: 1.25rem;
+    border: 1.5px solid rgba(40, 44, 52, 0.16);
+    box-shadow: 0 16px 36px -12px rgba(11, 31, 91, 0.1), 0 4px 12px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+    cursor: zoom-in;
+    opacity: 0;
+    transform: translateY(24px) scale(0.99);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.35s ease;
+    will-change: opacity, transform;
+  }
+
+  .workflow-card.is-container-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .workflow-card:hover {
+    box-shadow: 0 22px 48px -10px rgba(11, 31, 91, 0.16), 0 8px 18px rgba(0, 0, 0, 0.05);
+  }
+
+  .workflow-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1.25rem 0.55rem;
+    border-bottom: 1px dashed rgba(40, 44, 52, 0.1);
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .flow-pill-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #3b4252;
+    background: rgba(40, 44, 52, 0.06);
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+  }
+
+  .pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+    animation: wf-pulse 2s infinite;
+  }
+
+  @keyframes wf-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.6; }
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .ctrl-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.75rem;
+    border: 1px solid rgba(40, 44, 52, 0.18);
+    background: #ffffff;
+    border-radius: 0.5rem;
+    color: #2b303c;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .ctrl-btn:hover {
+    background: #24262b;
+    color: #ffffff;
+    border-color: #24262b;
+  }
+
+  .replay-btn:active svg {
+    transform: rotate(180deg);
+    transition: transform 0.25s ease;
+  }
+
+  .svg-container {
+    width: 100%;
+    height: auto;
+    padding: 0.6rem 0.9rem 0.8rem;
+    line-height: 0;
+  }
+
+  .workflow-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+
+  .svg-main-title {
+    font-size: 24px;
+    font-weight: 800;
+    fill: #1c1f26;
+    letter-spacing: -0.02em;
+  }
+
+  .svg-sub-title {
+    font-size: 12px;
+    font-weight: 500;
+    fill: #616775;
+  }
+
+  /* Nodes interaction */
+  .wf-node {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+    cursor: default;
+  }
+
+  .wf-node.is-node-active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .wf-node.is-node-active:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Connecting draw lines */
+  .flow-draw-line {
+    opacity: 0;
+    will-change: stroke-dashoffset, opacity;
+  }
+
+  .flow-draw-line.is-line-active {
+    opacity: 1;
+  }
+
+  /* Badge pills & labels */
+  .badge-pill {
+    opacity: 0;
+    transform: scale(0.5);
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: opacity, transform;
+  }
+
+  .badge-pill.is-pill-active {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .flow-label {
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  .flow-label.is-label-active {
+    opacity: 1;
+  }
+
+  .role-bubble {
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .role-bubble.is-bubble-active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Stream Lines */
+  .stream-line {
+    stroke-dasharray: 6, 12;
+    animation: wf-flow 1.6s linear infinite;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  .stream-line-vert {
+    stroke-dasharray: 6, 12;
+    animation: wf-flow-vert 1.6s linear infinite;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  .stream-line.is-stream-active,
+  .stream-line-vert.is-stream-active {
+    opacity: 0.85;
+  }
+
+  @keyframes wf-flow {
+    from { stroke-dashoffset: 18; }
+    to { stroke-dashoffset: 0; }
+  }
+
+  @keyframes wf-flow-vert {
+    from { stroke-dashoffset: 18; }
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* ==========================================================================
+     FULL-SCREEN MODAL LIGHTBOX - TELEPORTED TO BODY
+     ========================================================================== */
+  :global(.workflow-modal-overlay) {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(15, 23, 42, 0.72) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    z-index: 999999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 1.5rem !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  :global(.workflow-modal-overlay.is-open) {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
+  :global(.workflow-modal-dialog) {
+    background: #faf9f2 !important;
+    border-radius: 1.25rem !important;
+    border: 1px solid rgba(40, 44, 52, 0.16) !important;
+    box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
+    width: 90vw !important;
+    max-width: 1240px !important;
+    max-height: 90vh !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    transform: scale(0.96) !important;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  :global(.workflow-modal-overlay.is-open .workflow-modal-dialog) {
+    transform: scale(1) !important;
+  }
+
+  :global(.modal-top-bar) {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 0.85rem 1.5rem !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-bottom: 1px solid rgba(40, 44, 52, 0.1) !important;
+    backdrop-filter: blur(8px) !important;
+  }
+
+  :global(.modal-heading) {
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    color: #1f232d !important;
+  }
+
+  :global(.modal-close-btn) {
+    border: none !important;
+    background: rgba(40, 44, 52, 0.08) !important;
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    color: #333 !important;
+    transition: all 0.15s ease !important;
+  }
+
+  :global(.modal-close-btn:hover) {
+    background: #24262b !important;
+    color: #fff !important;
+  }
+
+  :global(.modal-content-body) {
+    padding: 1.25rem !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 0 !important;
+  }
+
+  :global(.modal-content-body svg) {
+    width: 100% !important;
+    max-height: calc(85vh - 65px) !important;
+    height: auto !important;
+    display: block !important;
+    object-fit: contain !important;
+  }
+
+  :global(.modal-content-body .wf-node),
+  :global(.modal-content-body .flow-draw-line),
+  :global(.modal-content-body .badge-pill),
+  :global(.modal-content-body .flow-label),
+  :global(.modal-content-body .role-bubble),
+  :global(.modal-content-body .stream-line),
+  :global(.modal-content-body .stream-line-vert) {
+    opacity: 1 !important;
+    transform: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+
+  :global(.modal-top-actions) {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.6rem !important;
+  }
+
+  :global(.modal-rotate-btn) {
+    border: 1px solid rgba(40, 44, 52, 0.16) !important;
+    background: #ffffff !important;
+    padding: 0.28rem 0.6rem !important;
+    border-radius: 0.45rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.35rem !important;
+    cursor: pointer !important;
+    color: #24262b !important;
+    font-size: 0.76rem !important;
+    font-weight: 600 !important;
+    transition: all 0.15s ease !important;
+  }
+
+  :global(.modal-rotate-btn:hover) {
+    background: #24262b !important;
+    color: #ffffff !important;
+  }
+
+  /* Desktop hides rotate button */
+  @media (min-width: 769px) {
+    :global(.modal-rotate-btn) {
+      display: none !important;
+    }
+  }
+
+  /* ==========================================================================
+     MOBILE AUTO-LANDSCAPE EXPANDED VIEWPORT
+     ========================================================================== */
+  @media (max-width: 768px) and (orientation: portrait) {
+    :global(.workflow-modal-overlay.is-mobile-landscape) {
+      padding: 0 !important;
+      overflow: hidden !important;
+    }
+
+    :global(.workflow-modal-overlay.is-mobile-landscape .workflow-modal-dialog),
+    :global(.workflow-modal-overlay.is-open.is-mobile-landscape .workflow-modal-dialog) {
+      position: absolute !important;
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%) rotate(90deg) !important;
+      width: 96vh !important;
+      max-width: 96vh !important;
+      height: 96vw !important;
+      max-height: 96vw !important;
+      margin: 0 !important;
+      border-radius: 0.75rem !important;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7) !important;
+    }
+
+    :global(.workflow-modal-overlay.is-mobile-landscape .modal-top-bar) {
+      padding: 0.35rem 0.8rem !important;
+      flex-shrink: 0 !important;
+    }
+
+    :global(.workflow-modal-overlay.is-mobile-landscape .modal-heading) {
+      font-size: 0.8rem !important;
+    }
+
+    :global(.workflow-modal-overlay.is-mobile-landscape .modal-content-body) {
+      padding: 0.35rem 0.6rem !important;
+      height: calc(96vw - 40px) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      -webkit-overflow-scrolling: touch !important;
+    }
+
+    :global(.workflow-modal-overlay.is-mobile-landscape .modal-content-body svg) {
+      width: 100% !important;
+      max-width: 100% !important;
+      height: auto !important;
+      max-height: 100% !important;
+      display: block !important;
+      margin: auto !important;
+    }
+  }
+
+  /* Physical landscape on mobile devices */
+  @media (max-height: 540px) and (orientation: landscape) {
+    :global(.workflow-modal-overlay) {
+      padding: 0.35rem !important;
+    }
+    :global(.workflow-modal-dialog) {
+      width: 96vw !important;
+      max-width: 96vw !important;
+      height: 96vh !important;
+      max-height: 96vh !important;
+      transform: none !important;
+      border-radius: 0.75rem !important;
+    }
+    :global(.modal-top-bar) {
+      padding: 0.35rem 0.8rem !important;
+    }
+    :global(.modal-heading) {
+      font-size: 0.8rem !important;
+    }
+    :global(.modal-content-body) {
+      padding: 0.35rem !important;
+      height: calc(96vh - 40px) !important;
+    }
+    :global(.modal-content-body svg) {
+      width: 100% !important;
+      height: 100% !important;
+      max-height: 100% !important;
+      object-fit: contain !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .workflow-card .wf-node,
+    .workflow-card .flow-draw-line,
+    .workflow-card .badge-pill,
+    .workflow-card .flow-label,
+    .workflow-card .role-bubble,
+    .workflow-card .stream-line,
+    .workflow-card .stream-line-vert {
+      opacity: 1 !important;
+      transform: none !important;
+      stroke-dashoffset: 0 !important;
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+  class WorkflowPipelinePlayer {
+    private container: HTMLElement;
+    private abortController: AbortController | null = null;
+    private textCache = new Map<SVGTextElement, string>();
+
+    constructor(container: HTMLElement) {
+      this.container = container;
+      this.cacheOriginalTexts();
+    }
+
+    private cacheOriginalTexts() {
+      const textEls = this.container.querySelectorAll<SVGTextElement>(".wf-node text");
+      textEls.forEach((el) => {
+        if (!this.textCache.has(el)) {
+          this.textCache.set(el, (el.textContent || "").trim());
+        }
+      });
+    }
+
+    public resetAll() {
+      if (this.abortController) {
+        this.abortController.abort();
+      }
+      this.abortController = new AbortController();
+
+      // Reset all cards
+      this.container.querySelectorAll(".wf-node").forEach((node) => {
+        node.classList.remove("is-node-active");
+      });
+
+      // Clear texts for typewriter effect
+      this.textCache.forEach((origText, el) => {
+        el.textContent = "";
+      });
+
+      // Reset connecting lines with zero length
+      this.container.querySelectorAll<SVGPathElement>(".flow-draw-line").forEach((path) => {
+        path.classList.remove("is-line-active");
+        try {
+          const len = Math.ceil(path.getTotalLength()) || 120;
+          path.style.transition = "none";
+          path.style.strokeDasharray = `${len} ${len}`;
+          path.style.strokeDashoffset = `${len}`;
+        } catch (_) {}
+      });
+
+      // Reset stream lines, pills and labels
+      this.container.querySelectorAll(".stream-line, .stream-line-vert").forEach((line) => {
+        line.classList.remove("is-stream-active");
+      });
+      this.container.querySelectorAll(".badge-pill").forEach((pill) => {
+        pill.classList.remove("is-pill-active");
+      });
+      this.container.querySelectorAll(".flow-label").forEach((lbl) => {
+        lbl.classList.remove("is-label-active");
+      });
+      this.container.querySelectorAll(".role-bubble").forEach((b) => {
+        b.classList.remove("is-bubble-active");
+      });
+    }
+
+    public async play() {
+      this.resetAll();
+      const signal = this.abortController!.signal;
+
+      const wait = (ms: number) =>
+        new Promise<void>((resolve, reject) => {
+          const timer = setTimeout(() => resolve(), ms);
+          signal.addEventListener("abort", () => {
+            clearTimeout(timer);
+            reject(new Error("Aborted"));
+          });
+        });
+
+      // Typewriter effect on a card's text items sequentially
+      const showAndTypeNode = async (stepSelector: string, charDelay = 14) => {
+        if (signal.aborted) return;
+        const stepEl = this.container.querySelector(stepSelector);
+        if (!stepEl) return;
+        const nodeEl = stepEl.querySelector(".wf-node");
+        if (nodeEl) {
+          nodeEl.classList.add("is-node-active");
+        }
+        await wait(100);
+
+        const texts = Array.from(stepEl.querySelectorAll<SVGTextElement>(".wf-node text"));
+        for (const textEl of texts) {
+          if (signal.aborted) return;
+          const fullStr = this.textCache.get(textEl) || textEl.textContent || "";
+          textEl.textContent = "";
+          for (let i = 1; i <= fullStr.length; i++) {
+            if (signal.aborted) return;
+            textEl.textContent = fullStr.slice(0, i) + (i < fullStr.length ? " ▍" : "");
+            await wait(charDelay);
+          }
+          textEl.textContent = fullStr;
+          await wait(30);
+        }
+      };
+
+      // Draw connecting arrow line from predecessor to successor
+      const drawLine = async (stepSelector: string, duration = 250) => {
+        if (signal.aborted) return;
+        const stepEl = this.container.querySelector(stepSelector);
+        if (!stepEl) return;
+
+        const paths = Array.from(stepEl.querySelectorAll<SVGPathElement>(".flow-draw-line"));
+        paths.forEach((path) => {
+          path.classList.add("is-line-active");
+          try {
+            const len = Math.ceil(path.getTotalLength()) || 120;
+            path.style.strokeDasharray = `${len} ${len}`;
+            path.style.strokeDashoffset = `${len}`;
+            void path.getBoundingClientRect(); // force layout reflow
+            path.style.transition = `stroke-dashoffset ${duration}ms cubic-bezier(0.2, 0.8, 0.3, 1)`;
+            path.style.strokeDashoffset = "0";
+          } catch (_) {}
+        });
+
+        // Pill badge pops up halfway through the line drawing
+        setTimeout(() => {
+          if (signal.aborted) return;
+          stepEl.querySelectorAll(".badge-pill").forEach((p) => p.classList.add("is-pill-active"));
+          stepEl.querySelectorAll(".flow-label").forEach((l) => l.classList.add("is-label-active"));
+          stepEl.querySelectorAll(".stream-line, .stream-line-vert").forEach((s) => s.classList.add("is-stream-active"));
+        }, duration * 0.45);
+
+        await wait(duration + 35);
+      };
+
+      try {
+        // 1. 卡片 1 (前端触发) 上浮出现 + 打字机
+        await showAndTypeNode(".step-1");
+
+        // 2. 箭头从 1 出发画向 2，携带 [请求] 药丸
+        await drawLine(".step-2", 250);
+
+        // 3. 卡片 2 (数据层) 顺势上浮出现 + 打字机
+        await showAndTypeNode(".step-3");
+
+        // 4. 箭头从 2 出发画向 3，携带 [材料包] 药丸
+        await drawLine(".step-4", 250);
+
+        // 5. 卡片 3 (编排层) 顺势上浮出现 + 打字机
+        await showAndTypeNode(".step-5");
+
+        // 6. 编排层规则门控下发 -> 运行护栏顺势上浮 + 动态分析角色气泡
+        drawLine(".step-6", 230);
+        await wait(80);
+        await showAndTypeNode(".step-6");
+
+        const roleBubble = this.container.querySelector(".role-bubble");
+        if (roleBubble) roleBubble.classList.add("is-bubble-active");
+
+        // 7. 箭头从 3 出发画向 4，携带 [分析输入] 药丸
+        await drawLine(".step-7", 250);
+
+        // 8. 卡片 4 (分析模型 B) 顺势上浮出现 + 打字机
+        await showAndTypeNode(".step-8");
+
+        // 9. 垂直箭头从 4 出发画向 5，携带 [JSONL 分析卡]
+        await drawLine(".step-9", 190);
+
+        // 10. 卡片 5 (审计模型 C) 顺势上浮出现 + 打字机
+        await showAndTypeNode(".step-10");
+
+        // 11. 审计结果斜线 (5 -> Verifier) 与 材料包校验垂线同时接入 Verifier
+        drawLine(".step-11", 280);
+        await wait(260);
+
+        // 12. 卡片 Verifier 质量层 顺势上浮出现 + 打字机
+        await showAndTypeNode(".step-12");
+
+        // 13. SSE 流连线从 Verifier 出发画向左侧，携带 [SSE 流] 药丸
+        await drawLine(".step-13", 250);
+
+        // 14. 卡片 6 (前端交付) 顺势上浮出现 + 打字机，全链路贯通！
+        await showAndTypeNode(".step-14");
+
+      } catch (_) {
+        // Aborted on reset or navigation
+      }
+    }
+  }
+
+  function initWorkflowInteractions() {
+    const card = document.getElementById("ezer-workflow-trigger");
+    const modal = document.getElementById("ezer-workflow-modal");
+    const closeBtn = document.getElementById("ezer-workflow-close-btn");
+    const modalContent = document.getElementById("ezer-workflow-modal-content");
+    const replayBtn = document.getElementById("ezer-workflow-replay-btn");
+
+    if (!card) return;
+
+    // Teleport Modal directly to document.body to break free from any ancestor containing block
+    if (modal && modal.parentElement !== document.body) {
+      document.body.appendChild(modal);
+    }
+
+    const player = new WorkflowPipelinePlayer(card);
+
+    // Trigger sequential playback when scrolled into view
+    let hasPlayed = false;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasPlayed) {
+            hasPlayed = true;
+            card.classList.add("is-container-visible");
+            player.play();
+            observer.unobserve(card);
+          }
+        });
+      },
+      {
+        threshold: 0.15,
+        rootMargin: "0px 0px -40px 0px",
+      }
+    );
+
+    observer.observe(card);
+
+    // Replay interaction
+    if (replayBtn) {
+      replayBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        player.play();
+      });
+    }
+
+    // Modal Zoom Open / Close & Mobile Landscape Management
+    if (modal && closeBtn && modalContent) {
+      const rotateBtn = document.getElementById("ezer-workflow-rotate-btn");
+
+      function isMobilePortrait() {
+        return window.innerWidth <= 768 && window.innerHeight >= window.innerWidth;
+      }
+
+      function updateRotateBtnState(isLandscape: boolean) {
+        if (!rotateBtn) return;
+        const textSpan = rotateBtn.querySelector(".rotate-btn-text");
+        if (textSpan) {
+          const portraitText = rotateBtn.getAttribute("data-text-portrait") || "转为竖屏";
+          const landscapeText = rotateBtn.getAttribute("data-text-landscape") || "旋转横屏";
+          textSpan.textContent = isLandscape ? portraitText : landscapeText;
+        }
+      }
+
+      function openModal() {
+        if (modalContent && modalContent.children.length === 0) {
+          const svg = card?.querySelector(".workflow-svg");
+          if (svg) {
+            const clone = svg.cloneNode(true) as SVGElement;
+            // Restore all full texts in cloned modal view
+            clone.querySelectorAll(".wf-node text").forEach((t) => {
+              const fullStr = t.getAttribute("data-full-text");
+              if (fullStr) t.textContent = fullStr;
+            });
+            modalContent.appendChild(clone);
+          }
+        }
+
+        // 手机竖屏状态下，放大直接自动切入横屏大图视角
+        if (isMobilePortrait()) {
+          modal?.classList.add("is-mobile-landscape");
+          updateRotateBtnState(true);
+          // 针对支持原生方向锁定的设备尝试硬件锁横屏
+          try {
+            if (screen.orientation && "lock" in screen.orientation) {
+              (screen.orientation as any).lock("landscape").catch(() => {});
+            }
+          } catch (_) {}
+        } else {
+          modal?.classList.remove("is-mobile-landscape");
+          updateRotateBtnState(false);
+        }
+
+        modal?.classList.add("is-open");
+        modal?.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeModal() {
+        modal?.classList.remove("is-open");
+        modal?.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+
+        // 解除硬件方向锁定
+        try {
+          if (screen.orientation && "unlock" in screen.orientation) {
+            screen.orientation.unlock();
+          }
+        } catch (_) {}
+      }
+
+      // 手动切换横/竖屏按钮
+      if (rotateBtn) {
+        rotateBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const willBeLandscape = !modal.classList.contains("is-mobile-landscape");
+          modal.classList.toggle("is-mobile-landscape", willBeLandscape);
+          updateRotateBtnState(willBeLandscape);
+        });
+      }
+
+      card.addEventListener("click", (e) => {
+        if ((e.target as HTMLElement).closest("#ezer-workflow-replay-btn")) {
+          return;
+        }
+        openModal();
+      });
+
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openModal();
+        }
+      });
+
+      closeBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        closeModal();
+      });
+
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && modal?.classList.contains("is-open")) {
+          closeModal();
+        }
+      });
+    }
+  }
+
+  initWorkflowInteractions();
+  document.addEventListener("astro:page-load", initWorkflowInteractions);
+</script>

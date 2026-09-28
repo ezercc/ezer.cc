@@ -20,35 +20,35 @@ export const changelogData: ChangelogItem[] = [
     version: "v1.4.0",
     date: "2026-09-28",
     zh: {
-      title: "首页审计工作流流程图重塑，分析页双栏布局与数据悬浮微卡片上线",
+      title: "审计链路与视觉交互体验全面升级",
       features: [
-        "全新首页审计工作流流程图：全景呈现结构化数据接入、材料编排、分析模型生成、审计模型红蓝对抗挑战到 Verifier 质量把关的工业级审计流水线，支持时序动态重播与高清全景架构图展开。",
-        "全新财务数据悬浮微卡片：正文核心财务指标新增交互浮层，光标悬停即显数值详情与历史同期对比，支持点击固定（Pin）、视口边缘自适应吸附及图表双向联动高亮。"
+        "强化证据链全透明可追溯体验：规范并统一各分析场景下的原文证据呈现，确保所有结论均逐行绑定财报原文出处与完整推演链路，让审计级分析经得起反复核查与严谨推敲。",
+        "重构背景 3D WebGL 交互渲染架构：采用视口固定定位（Viewport Fixed）设计，消除长页面滚动及容器高度伸缩带来的画布拉伸与重绘消耗，光标粒子追踪更丝滑、渲染性能显著提升。"
       ],
       improvements: [
-        "重构分析页面双栏布局架构：采用左侧 Sticky 标准化财务看板（走势图表与行业词云随屏吸附）与右侧流式章节分析卡深度协同的版面设计，大幅提升研读图文比对效率。",
-        "优化报告排版与暗黑模式视效：调优长篇分析文本行距字阶与图表对比度，全站导航吸顶与毛玻璃层次更加通透自然。",
-        "规范证据链全透明可追溯呈现：统一各卡片证据锚点样式，确保关键财务判断逐行绑定原文证据与计算逻辑。"
+        "优化服务方案与能力展示布局：重构方案对比矩阵，更清晰、直观地呈现不同使用场景下的核心审计能力与服务边界。",
+        "精细化打磨全站导航与视效层次：优化顶部导航栏（Header）毛玻璃质感、滚动吸顶动效与暗黑模式色彩配比，显著提升长时间查阅报告时的视觉舒适度。",
+        "优化财报分析额度状态反馈：改进分析额度的实时展示交互，提供更轻量清晰的状态提示与衔接体验。"
       ],
       fixes: [
-        "优化移动端与多分辨率屏幕下的图表自适应排版，修复特定宽度下的图表容器溢出问题。",
-        "优化光标快速划过指标标签时悬浮卡片的隐藏与状态管理，消除偶现定位残留。"
+        "修复特定交互场景下页面状态自动展开与滚动位置跳动的问题。",
+        "优化深色模式下部分财务指标图表与长报告文本的排版对比度细节。"
       ]
     },
     en: {
-      title: "Audit Workflow Diagram, Dual-Panel Analysis Layout & Floating Financial Micro-Cards",
+      title: "Audit Tracing & Visual Experience Upgrade",
       features: [
-        "All-New Interactive Audit Workflow Diagram: Visualized the multi-stage engineering pipeline across data ingestion, dossier orchestration, red-blue adversarial challenge, and verifier quality assurance, featuring sequence replay and high-res modal view.",
-        "Floating Financial Micro-Cards: Interactive metric tags throughout report text now reveal floating data cards on hover, showing instant figures, YoY/QoQ comparisons, pin-to-stay mode, and bidirectional chart highlighting without losing reading context."
+        "Enhanced Full Traceability for Evidence Chains: Standardized the presentation of source evidence across analysis workflows, ensuring every conclusion is bound line-by-line to original filing disclosures for rigorous verification.",
+        "Architectural Upgrade for 3D WebGL Background: Implemented viewport-fixed rendering to eliminate canvas distortion and repaint overhead during dynamic container changes, significantly boosting interactive fluidity and rendering performance."
       ],
       improvements: [
-        "Restructured Dual-Panel Analysis Layout: Upgraded report architecture with a sticky left panel (normalized trend charts and word cloud) and a sequential stream of chapterized audit cards on the right for seamless comparative analysis.",
-        "Refined Typography & Dark Mode Contrast: Polished text line-height, hierarchy, and chart color palettes across long-form reports to minimize visual fatigue during deep research.",
-        "Standardized Open Evidence Traceability: Unified source evidence anchors to ensure all critical audit deductions remain visibly bound line-by-line to original disclosures."
+        "Refined Service Capabilities Presentation: Restructured the capabilities matrix to present core audit features and workflow tiers more intuitively.",
+        "Polished Site Navigation & Visual Hierarchy: Fine-tuned header glassmorphism effects, scroll behaviors, and dark mode color contrast to enhance reading comfort during deep research.",
+        "Improved Quota Feedback & Status Prompts: Upgraded the quota tracking interface with clearer, more lightweight status prompts."
       ],
       fixes: [
-        "Fixed responsive chart container overflows across mobile viewports and varying screen resolutions.",
-        "Improved popover state management and hover cleanup to prevent lingering tooltips during rapid cursor traversal."
+        "Resolved unexpected layout expansion and scroll jump issues on initial page load.",
+        "Fixed subtle typography and contrast inconsistencies in financial charts and long-form reports under dark mode."
       ]
     }
   },

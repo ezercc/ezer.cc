@@ -1,0 +1,451 @@
+<title>中际旭创 2026Q1</title>
+<style>
+  :root {
+    --navy:#101d31; --ink:#1b2638; --slate:#526274; --faint:#8d9aaa;
+    --line:#dce2e9; --paper:#fff; --ground:#e9edf2; --accent:#6657c8;
+    --accent-soft:#f0effb; --wash:#f7f8fa; --serif:"Noto Serif SC","Source Han Serif SC",Georgia,serif;
+    --sans:"Noto Sans SC","Source Han Sans SC","Microsoft YaHei",sans-serif;
+    --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+  }
+  * { box-sizing:border-box; }
+  html { background:var(--ground); }
+  body { margin:0; color:var(--ink); background:var(--ground); font-family:var(--sans); }
+  .viewer { position:sticky; top:0; z-index:5; display:flex; align-items:center; justify-content:space-between; padding:11px 18px; color:#fff; background:var(--navy); box-shadow:0 2px 12px #101d3140; font:600 11px var(--mono); letter-spacing:.08em; }
+  .viewer button { padding:7px 11px; border:1px solid #ffffff40; border-radius:3px; color:#fff; background:transparent; font:inherit; cursor:pointer; }
+  .viewer button:hover { background:#ffffff14; }
+  main { display:grid; gap:24px; padding:30px 16px 56px; }
+  .report-page { position:relative; width:min(100%,840px); min-height:1188px; margin:auto; padding:64px 70px 62px; overflow:hidden; background:var(--paper); box-shadow:0 14px 44px #24364a1c; break-after:page; }
+  .cover { display:flex; flex-direction:column; justify-content:space-between; padding:72px 70px 64px; color:#fff; background:var(--navy); }
+  .cover::before { content:""; position:absolute; width:500px; height:500px; top:135px; right:-250px; border:1px solid #bdb7ff70; border-radius:50%; box-shadow:0 0 0 42px #bdb7ff0c,0 0 0 96px #bdb7ff09; }
+  .cover::after { content:""; position:absolute; right:0; bottom:0; left:0; height:190px; background:linear-gradient(115deg,#6657c8b3,#6657c800 68%); clip-path:polygon(0 55%,100% 0,100% 100%,0 100%); }
+  .cover-top,.cover-body,.cover-bottom { position:relative; z-index:1; }
+  .cover-top { display:flex; justify-content:space-between; align-items:center; font:700 11px var(--mono); letter-spacing:.14em; text-transform:uppercase; }
+  .cover-series { color:#bfb9ff; }
+  .cover-body { margin-top:135px; }
+  .cover-body h1 { max-width:610px; margin:0; font:700 70px/1.08 var(--serif); letter-spacing:-.07em; }
+  .cover-body h1 span { display:block; color:#c9c4ff; }
+  .cover-ticker { margin:29px 0 0; color:#c8d0db; font:600 16px var(--mono); letter-spacing:.1em; }
+  .cover-meta { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; max-width:610px; margin-top:76px; padding-top:17px; border-top:1px solid #ffffff31; }
+  .cover-meta span { display:block; color:#aebbc9; font:600 10px var(--mono); letter-spacing:.09em; text-transform:uppercase; }
+  .cover-meta strong { display:block; margin-top:7px; color:#fff; font-size:15px; }
+  .cover-bottom { display:flex; justify-content:space-between; align-items:end; gap:32px; padding-top:20px; border-top:1px solid #ffffff31; }
+  .cover-bottom p { max-width:470px; margin:0; color:#c5ced8; font-size:12px; line-height:1.75; }
+  .cover-mark { color:#fff; font:800 17px var(--mono); letter-spacing:.1em; }
+  .cover-mark b { color:#c9c4ff; }
+  .running-head { display:flex; justify-content:space-between; padding-bottom:15px; border-bottom:1px solid var(--line); color:var(--faint); font:600 10px var(--mono); letter-spacing:.07em; }
+  .running-foot { position:absolute; right:70px; bottom:28px; left:70px; display:flex; justify-content:space-between; color:var(--faint); font:10px var(--mono); }
+  .section-index { margin-top:49px; color:var(--accent); font:800 11px var(--mono); letter-spacing:.12em; }
+  h2 { max-width:650px; margin:11px 0 0; font:700 37px/1.25 var(--serif); letter-spacing:-.05em; }
+  .title-rule { width:44px; height:3px; margin:24px 0 0; background:var(--accent); }
+  .field { margin-top:20px; padding:16px 18px 17px; border:1px solid var(--line); background:var(--wash); }
+  .field--lead { margin-top:29px; padding:21px 23px 22px; border-color:#d8d3fa; border-left:4px solid var(--accent); background:var(--accent-soft); }
+  .field-label { color:var(--slate); font:800 10px var(--mono); letter-spacing:.12em; }
+  .field p { margin:8px 0 0; font-size:14px; line-height:1.78; }
+  .field--lead p { margin-top:10px; font-family:var(--serif); font-size:19px; line-height:1.62; }
+  .detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px; }
+  .detail-grid .field { height:100%; margin:0; }
+  .contents-page { padding-top:64px; }
+  .contents-title { margin-top:90px; font:700 42px/1.2 var(--serif); letter-spacing:-.05em; }
+  .toc { margin-top:43px; border-top:2px solid var(--ink); }
+  .toc-row { display:grid; grid-template-columns:34px auto 1fr 30px; gap:13px; align-items:center; padding:16px 0; border-bottom:1px solid var(--line); color:var(--slate); font:12px var(--mono); }
+  .toc-row strong { color:var(--ink); font:600 16px var(--sans); }
+  .toc-row i { height:1px; background:repeating-linear-gradient(90deg,var(--line) 0 2px,transparent 2px 6px); }
+  .metrics-page .section-index { margin-top:48px; }
+  .metrics-note { max-width:650px; margin:16px 0 0; color:var(--slate); font-size:13px; line-height:1.75; }
+  .metric-table { width:100%; margin-top:30px; border-collapse:collapse; }
+  .metric-table th { padding:10px 0; color:var(--faint); border-bottom:1px solid var(--line); text-align:left; font:700 10px var(--mono); letter-spacing:.09em; }
+  .metric-table th:last-child,.metric-table td:last-child { text-align:right; }
+  .metric-table td { padding:16px 0; border-bottom:1px solid var(--line); font-size:14px; }
+  .metric-table td:last-child { font:700 15px var(--mono); }
+  .gap-box { margin-top:28px; padding:17px 19px; border-top:3px solid var(--accent); background:var(--wash); }
+  .gap-box h3 { margin:0; font-size:13px; }
+  .gap-box ul { margin:9px 0 0; padding-left:18px; color:var(--slate); font-size:13px; line-height:1.7; }
+  .charts-page h2 { margin-top:11px; }
+  .chart-stack { display:grid; gap:25px; margin-top:30px; }
+  .echart-figure { margin:0; padding:0 0 12px; border-top:2px solid var(--ink); border-bottom:1px solid var(--line); }
+  .echart-head { display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding:13px 0 0; }
+  .echart-head strong { color:var(--ink); font:700 14px var(--sans); }
+  .echart-number { margin-right:10px; color:var(--accent); font:800 10px var(--mono); }
+  .echart-unit { color:var(--faint); font:10px var(--mono); }
+  .echart { width:100%; height:270px; }
+  .echart--cashflow { height:235px; }
+  .chart-box { padding:0 0 12px; border-top:2px solid var(--ink); border-bottom:1px solid var(--line); background:#fff; }
+  .chart-head { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:13px 0 0; color:var(--slate); font:700 10px var(--mono); letter-spacing:.07em; }
+  .chart-head > div { display:flex; align-items:center; gap:10px; }
+  .chart-head strong { color:var(--ink); font:700 14px var(--sans); letter-spacing:0; }
+  .chart-number { color:var(--accent); font:800 10px var(--mono); }
+  .chart-legend { display:flex; gap:13px; }
+  .chart-legend span { display:flex; align-items:center; gap:5px; color:var(--slate); font:600 11px var(--sans); letter-spacing:0; }
+  .chart-legend i { width:8px; height:8px; border-radius:50%; }
+  .chart-unit,.chart-note { color:var(--faint); font:10px var(--mono); letter-spacing:.04em; }
+  .chart-note { padding-left:58px; }
+  .line-chart,.bar-chart { display:block; width:100%; height:auto; margin-top:8px; overflow:visible; }
+  .chart-grid-lines line { stroke:#e4e8ed; stroke-width:1; }
+  .chart-grid-lines text,.chart-labels text,.chart-bars text { fill:#8190a0; font:9px var(--mono); }
+  .chart-end-label { fill:var(--ink); font:700 10px var(--sans); }
+  .revenue-area { fill:#6657c8; fill-opacity:.10; }
+  .chart-bars rect { fill:#8276d4; }
+  .audit-page h2 { margin-top:11px; }
+  .audit-page .field--lead { margin-top:29px; }
+  @media (max-width:700px) {
+    .report-page,.cover { min-height:auto; padding:42px 24px 56px; }
+    .cover-body { margin-top:90px; }
+    .cover-body h1 { font-size:51px; }
+    .cover-meta,.detail-grid { grid-template-columns:1fr; }
+    .cover-bottom { display:block; }
+    .cover-mark { margin-top:18px; }
+    .running-foot { right:24px; left:24px; }
+    h2 { font-size:30px; }
+    .contents-title { margin-top:55px; }
+  }
+  @media print {
+    @page { size:A4; margin:0; }
+    html,body { background:#fff; }
+    .viewer { display:none; }
+    main { display:block; padding:0; }
+    .report-page { width:210mm; min-height:297mm; margin:0; padding:17mm 18mm 16mm; box-shadow:none; }
+    .cover { padding:19mm 18mm 17mm; }
+    .running-foot { right:18mm; bottom:8mm; left:18mm; }
+    .report-page:last-child { break-after:auto; }
+  }
+</style>
+<div class="viewer"><span>REPORT PREVIEW</span><button type="button" onclick="window.print()">打印 / 保存 PDF</button></div>
+<main>
+  <section class="report-page cover">
+    <div class="cover-top"><span class="cover-series">Financial Research</span><span>2026Q1</span></div>
+    <div class="cover-body">
+      <h1>中际旭创<span>财务研究报告</span></h1>
+      <p class="cover-ticker">300308.SZ</p>
+      <div class="cover-meta">
+        <div><span>Company</span><strong>中际旭创</strong></div>
+        <div><span>Ticker</span><strong>300308.SZ</strong></div>
+        <div><span>Reporting period</span><strong>2026Q1</strong></div>
+      </div>
+    </div>
+    <div class="cover-bottom"><p>中际旭创 · 300308.SZ · 2026Q1</p><div class="cover-mark"><b>·</b> EZER</div></div>
+  </section>
+
+  <section class="report-page contents-page">
+    <header class="running-head"><span>中际旭创 · 300308.SZ</span><span>2026Q1</span></header>
+    <div class="contents-title">目录</div>
+    <div class="toc">
+      <div class="toc-row"><span>00</span><strong>财务数据概览</strong><i></i><span>03</span></div>
+      <div class="toc-row"><span>00</span><strong>历史财务趋势</strong><i></i><span>04</span></div>
+      
+  <div class="toc-row"><span>01</span><strong>盈利能力分析</strong><i></i><span>05</span></div>
+  <div class="toc-row"><span>02</span><strong>业务结构与市场分布</strong><i></i><span>06</span></div>
+  <div class="toc-row"><span>03</span><strong>现金流与营运质量</strong><i></i><span>07</span></div>
+  <div class="toc-row"><span>04</span><strong>研发投入与技术壁垒</strong><i></i><span>08</span></div>
+  <div class="toc-row"><span>05</span><strong>负债结构与偿债能力</strong><i></i><span>09</span></div>
+  <div class="toc-row"><span>06</span><strong>历史增长趋势分析</strong><i></i><span>10</span></div>
+  <div class="toc-row"><span>07</span><strong>资产构成分析</strong><i></i><span>11</span></div>
+      <div class="toc-row"><span>08</span><strong>审计复核记录</strong><i></i><span>12</span></div>
+    </div>
+    <footer class="running-foot"><span>预览数据</span><span>02</span></footer>
+  </section>
+
+  <section class="report-page metrics-page">
+    <header class="running-head"><span>中际旭创 · 300308.SZ</span><span>2026Q1</span></header>
+    <div class="section-index">00 / 财务数据概览</div>
+    <h2>归一化财务数据</h2>
+    <table class="metric-table"><thead><tr><th>项目</th><th>金额</th></tr></thead><tbody>
+      <tr><td>营业收入</td><td>¥19,496,398,083.95</td></tr><tr><td>净利润</td><td>¥5,734,501,526.83</td></tr><tr><td>期末现金及现金等价物</td><td>¥12,176,254,035.58</td></tr><tr><td>经营现金流</td><td>¥3,367,573,676.62</td></tr><tr><td>投资活动产生的现金流量净额</td><td>-¥1,947,791,652.29</td></tr><tr><td>总资产</td><td>¥56,580,677,310.74</td></tr><tr><td>总负债</td><td>¥18,465,774,898.96</td></tr>
+    </tbody></table>
+    <div class="gap-box"><h3>数据缺口</h3><ul><li>总资产收益率ROA缺失</li></ul></div>
+    <footer class="running-foot"><span>预览数据 · 财务数据</span><span>03</span></footer>
+  </section>
+
+  <section class="report-page charts-page">
+    <header class="running-head"><span>中际旭创 · 300308.SZ</span><span>2026Q1</span></header>
+    <div class="section-index">00 / 历史财务趋势</div>
+    <h2>历史财务趋势</h2>
+    <div class="chart-stack">
+      <figure class="echart-figure"><figcaption class="echart-head"><div><span class="echart-number">图 1</span><strong>营业收入与净利润趋势</strong></div><span class="echart-unit">单位：亿元</span></figcaption><div id="financial-trend-chart" class="echart" role="img" aria-label="营业收入与净利润趋势图"></div></figure>
+      <figure class="echart-figure"><figcaption class="echart-head"><div><span class="echart-number">图 2</span><strong>经营现金流趋势</strong></div><span class="echart-unit">单位：亿元</span></figcaption><div id="cashflow-chart" class="echart echart--cashflow" role="img" aria-label="经营现金流趋势图"></div></figure>
+    </div>
+    <footer class="running-foot"><span>预览数据 · 历史财务序列</span><span>04</span></footer>
+  </section>
+
+  
+  <section class="report-page analysis-page" data-page="05">
+    <header class="running-head"><span>中际旭创 · 300308.SZ</span><span>2026Q1</span></header>
+    <div class="section-index">01</div>
+    <h2>盈利能力分析</h2>
+    <div class="title-rule"></div>
+    <section class="field field--lead">
+      <div class="field-label">结论</div>
+      <p>中际旭创在2026年第一季度实现了爆发式增长，单季营业收入与净利润均创历史新高，体现了AI算力需求下高端光模块市场的强劲动能。</p>
+    </section>
+    <div class="detail-grid">
+      <section class="field">
+      <div class="field-label">依据</div>
+      <p>根据2026一季报，公司实现营业总收入19,496,398,083.95元，归属于母公司股东的净利润为5,734,501,526.83元。对比2025年报披露的2025Q4单季收入（约132.35亿元）和净利润（约36.65亿元），环比增长显著。</p>
+    </section>
+      <section class="field">
+      <div class="field-label">交叉验证</div>
+      <p>2026一季报中扣除非经常性损益后归属于母公司股东的净利润为5,717,748,340.78元，与归母净利润高度接近，显示盈利质量极高。</p>
+    </section>
+      <section class="field">
+      <div class="field-label">反向观点</div>
+      <p>虽然利润总额巨大，但2026Q1单季的销售毛利率数据在原始DTO中缺失，需结合历史趋势（2025年报为42.04%）观察高毛利产品占比是否持续提升。</p>
+    </section>
+      <section class="field">
+      <div class="field-label">投资启示</div>
+      <p>公司已进入业绩兑现的高速期，需关注未来季度毛利率是否受行业竞争或降价压力影响而出现波动。</p>
+    </section>
+    </div>
+    <footer class="running-foot"><span>预览数据 · 分析卡片</span><span>05</span></footer>
+  </section>
+  <section class="report-page analysis-page" data-page="06">
+    <header class="running-head"><span>中际旭创 · 300308.SZ</span><span>2026Q1</span></header>
+    <div class="section-index">02</div>
+    <h2>业务结构与市场分布</h2>
+    <div class="title-rule"></div>
+    <section class="field field--lead">
+      <div class="field-label">结论</div>
+      <p>公司高度依赖光通信收发模块业务，且海外市场是其核心收入来源，具有极强的全球竞争力。</p>
+    </section>
+    <div class="detail-grid">
+      <section class="field">
+      <div class="field-label">依据</div>
+      <p>2025年报主营构成分析显示，光通信收发模块收入达37,456,518,745.90元，占比97.95%，毛利率42.61%。国外地区收入占比达90.58%，毛利率44.64%，显著高于中国大陆的17.04%。</p>
+    </section>
+      <section class="field">
+      <div class="field-label">交叉验证</div>
+      <p>2025年报显示光通信收发模块销量为2109万只，生产量为2376万只，产销率维持在较高水平。</p>
+    </section>
+      <section class="field">
+      <div class="field-label">反向观点</div>
+      <p>极高的海外收入占比（超90%）使公司面临潜在的贸易政策风险及汇率波动风险。</p>
+    </section>
+      <section class="field">
+      <div class="field-label">投资启示</div>
+      <p>中际旭创是典型的AI算力出海龙头，其估值逻辑与全球云厂商资本开支高度绑定。</p>
+    </section>
+    </div>
+    <footer class="running-foot"><span>预览数据 · 分析卡片</span><span>06</span></footer>
+  </section>
+  <section class="report-page analysis-page" data-page="07">
+    <header class="running-head"><span>中际旭创 · 300308.SZ</span><span>2026Q1</span></header>
+    <div class="section-index">03</div>
+    <h2>现金流与营运质量</h2>
+    <div class="title-rule"></div>
+    <section class="field field--lead">
+      <div class="field-label">结论</div>
+      <p>2026年一季度经营活动现金流表现稳健，但由于大规模资本开支，整体现金净增加额受限。</p>
+    </section>
+    <div class="detail-grid">
+      <section class="field">
+      <div class="field-label">依据</div>
+      <p>2026一季报显示，经营活动产生的现金流量净额为3,367,573,676.62元。同期购建固定资产、无形资产和其他长期资产支付的现金高达1,929,199,282.88元。</p>
+    </section>
+      <section class="field">
+      <div class="field-label">交叉验证</div>
+      <p>2026一季报期末现金及现金等价物余额为12,176,254,035.58元，现金储备充足。</p>
+    </section>
+      <section class="field">
+      <div class="field-label">反向观点</div>
+      <p>2026Q1经营现金流净额（33.68亿元）低于同期归母净利润（57.35亿元），需关注应收账款回款周期或存货备货占用的影响。</p>
+    </section>
+      <section class="field">
+      <div class="field-label">投资启示</div>
+      <p>大规模的资本开支预示着公司仍在积极扩产以应对旺盛订单，短期现金流压力可控，长期产能释放将支撑业绩。</p>
+    </section>
+    </div>
+    <footer class="running-foot"><span>预览数据 · 分析卡片</span><span>07</span></footer>
+  </section>
+  <section class="report-page analysis-page" data-page="08">
+    <header class="running-head"><span>中际旭创 · 300308.SZ</span><span>2026Q1</span></header>
+    <div class="section-index">04</div>
+    <h2>研发投入与技术壁垒</h2>
+    <div class="title-rule"></div>
+    <section class="field field--lead">
+      <div class="field-label">结论</div>
+      <p>公司维持高强度的研发投入，研发人员占比近两成，为高端产品迭代提供技术支撑。</p>
+    </section>
+    <div class="detail-grid">
+      <section class="field">
+      <div class="field-label">依据</div>
+      <p>2025年报显示，研发支出合计1,675,931,098.18元，研发人员数量2169人，占比18.66%。研发投入占营业收入比例为4.38%。</p>
+    </section>
+      <section class="field">
+      <div class="field-label">交叉验证</div>
+      <p>资本化研发支出占研发投入比例仅为3.62%，显示研发会计处理非常稳健，利润含金量高。</p>
+    </section>
+      <section class="field">
+      <div class="field-label">反向观点</div>
+      <p>随着光模块向1.6T及更高速率演进，研发投入的绝对值可能进一步攀升，对利润率构成一定压力。</p>
+    </section>
+      <section class="field">
+      <div class="field-label">投资启示</div>
+      <p>低资本化率意味着未来的折旧摊销压力较小，技术领先优势是维持高毛利的关键。</p>
+    </section>
+    </div>
+    <footer class="running-foot"><span>预览数据 · 分析卡片</span><span>08</span></footer>
+  </section>
+  <section class="report-page analysis-page" data-page="09">
+    <header class="running-head"><span>中际旭创 · 300308.SZ</span><span>2026Q1</span></header>
+    <div class="section-index">05</div>
+    <h2>负债结构与偿债能力</h2>
+    <div class="title-rule"></div>
+    <section class="field field--lead">
+      <div class="field-label">结论</div>
+      <p>公司财务结构稳健，资产负债率长期维持在较低水平，财务风险较小。</p>
+    </section>
+    <div class="detail-grid">
+      <section class="field">
+      <div class="field-label">依据</div>
+      <p>根据历史12季度数据，资产负债率从2023Q3的25.91%小幅波动至2025年报的30.18%。2026一季报显示负债合计为18,465,774,898.96元，资产总计为56,580,677,310.74元。</p>
+    </section>
+      <section class="field">
+      <div class="field-label">交叉验证</div>
+      <p>2026一季报中流动负债合计16,302,769,791.49元，占总负债比例较高，主要为经营性负债。</p>
+    </section>
+      <section class="field">
+      <div class="field-label">反向观点</div>
+      <p>2026Q1合同负债仅为45,593,201.52元，相对于近200亿的单季营收规模，预收款项占比极低，显示行业普遍采用信用账期模式。</p>
+    </section>
+      <section class="field">
+      <div class="field-label">投资启示</div>
+      <p>低杠杆经营为公司未来的融资扩产留下了充足空间，财务安全性极高。</p>
+    </section>
+    </div>
+    <footer class="running-foot"><span>预览数据 · 分析卡片</span><span>09</span></footer>
+  </section>
+  <section class="report-page analysis-page" data-page="10">
+    <header class="running-head"><span>中际旭创 · 300308.SZ</span><span>2026Q1</span></header>
+    <div class="section-index">06</div>
+    <h2>历史增长趋势分析</h2>
+    <div class="title-rule"></div>
+    <section class="field field--lead">
+      <div class="field-label">结论</div>
+      <p>公司经历了从2023年开始的阶梯式增长，2025年起进入斜率更陡峭的爆发期。</p>
+    </section>
+    <div class="detail-grid">
+      <section class="field">
+      <div class="field-label">依据</div>
+      <p>营业总收入从2023Q1的18.37亿元增长至2025Q1的66.74亿元，再到2026Q1的194.96亿元，呈现指数级增长态势。</p>
+    </section>
+      <section class="field">
+      <div class="field-label">交叉验证</div>
+      <p>归母净利润同步从2023Q1的2.50亿元飙升至2026Q1的57.35亿元。</p>
+    </section>
+      <section class="field">
+      <div class="field-label">反向观点</div>
+      <p>历史高基数下，未来维持翻倍增长的难度加大，需关注行业需求见顶风险。</p>
+    </section>
+      <section class="field">
+      <div class="field-label">投资启示</div>
+      <p>业绩增长斜率已达历史高位，市场预期可能已充分计入，需警惕增速放缓带来的估值修正。</p>
+    </section>
+    </div>
+    <footer class="running-foot"><span>预览数据 · 分析卡片</span><span>10</span></footer>
+  </section>
+  <section class="report-page analysis-page" data-page="11">
+    <header class="running-head"><span>中际旭创 · 300308.SZ</span><span>2026Q1</span></header>
+    <div class="section-index">07</div>
+    <h2>资产构成分析</h2>
+    <div class="title-rule"></div>
+    <section class="field field--lead">
+      <div class="field-label">结论</div>
+      <p>公司资产结构以流动资产为主，体现了轻资产组装与高周转的经营特点。</p>
+    </section>
+    <div class="detail-grid">
+      <section class="field">
+      <div class="field-label">依据</div>
+      <p>2026一季报显示，流动资产合计40,125,459,627.71元，占资产总计（565.81亿元）的70.9%。固定资产为7,907,322,983.19元。</p>
+    </section>
+      <section class="field">
+      <div class="field-label">交叉验证</div>
+      <p>2025年报显示光通信模块库存量为521万只，相对于2109万只的年销量，库存水平处于合理区间。</p>
+    </section>
+      <section class="field">
+      <div class="field-label">反向观点</div>
+      <p>随着自建产能增加，固定资产规模正在快速扩张（2026Q1单季资本开支近20亿），资产结构正逐渐变重。</p>
+    </section>
+      <section class="field">
+      <div class="field-label">投资启示</div>
+      <p>关注产能利用率指标，若需求不及预期，高额的固定资产折旧将对利润产生较大反噬。</p>
+    </section>
+    </div>
+    <footer class="running-foot"><span>预览数据 · 分析卡片</span><span>11</span></footer>
+  </section>
+
+  <section class="report-page audit-page" data-page="12">
+    <header class="running-head"><span>中际旭创 · 300308.SZ</span><span>2026Q1</span></header>
+    <div class="section-index">08 / 审计复核记录</div>
+    <h2>审计挑战与复核结论</h2>
+    <div class="title-rule"></div>
+    <section class="field field--lead">
+      <div class="field-label">审计挑战 · 历史增长趋势分析 · LOW</div>
+      <p>原结论：营业总收入从2023Q1的18.37亿元增长至2025Q1的66.74亿元... 修正为：营业总收入从2024Q1的48.43亿元增长至2025Q1的66.74亿元，再到2026Q1的194.96亿元。。原因：根据近12季度历史序列，2024Q1收入为48.43亿元，原结论中引用的18.37亿元可能为更早年份数据，需修正以匹配当前数据窗口。</p>
+    </section><section class="field">
+      <div class="field-label">复核结论 · 盈利能力分析</div>
+      <p>2026年一季度营业收入（194.96亿元）与归母净利润（57.35亿元）数据准确，环比2025年第四季度增长趋势符合财务序列事实。</p>
+    </section><section class="field">
+      <div class="field-label">复核结论 · 业务结构与市场分布</div>
+      <p>业务结构数据与2025年报主营构成分析一致，光通信收发模块占比及海外收入占比（90.58%）均有原始数据支撑。</p>
+    </section><section class="field">
+      <div class="field-label">复核结论 · 研发投入与技术壁垒</div>
+      <p>研发投入金额、人员占比及极低的资本化率（3.62%）均与原始数据表述一致，体现了稳健的会计处理。</p>
+    </section><section class="field">
+      <div class="field-label">复核结论 · 负债结构与偿债能力</div>
+      <p>2026年一季度末的总资产与总负债数据准确，合同负债（4559万元）极低的观察符合行业信用账期特征。</p>
+    </section>
+    <footer class="running-foot"><span>预览数据 · 审计复核</span><span>12</span></footer>
+  </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js"></script>
+<script>
+(() => {
+  const rows = [{"reporting_period":"2023Q3","revenue":3026309127.2900004,"net_profit":682115099.5700002,"operating_cashflow":287094488.53999996},{"reporting_period":"2023Q4","revenue":3687694099.4300003,"net_profit":877659868.1399999,"operating_cashflow":454406344.48},{"reporting_period":"2024Q1","revenue":4842546924.23,"net_profit":1009266297.74,"operating_cashflow":650503647.23},{"reporting_period":"2024Q2","revenue":5956047261.52,"net_profit":1349154753.68,"operating_cashflow":317597872.72},{"reporting_period":"2024Q3","revenue":6514007634.400002,"net_profit":1394238118.73,"operating_cashflow":347764773.70000005},{"reporting_period":"2024Q4","revenue":6549557918.219997,"net_profit":1418826797.7000003,"operating_cashflow":1848716664.1999998},{"reporting_period":"2025Q1","revenue":6674176487.23,"net_profit":1582876128.67,"operating_cashflow":2164459570.16},{"reporting_period":"2025Q2","revenue":8114898350.57,"net_profit":2412239256.0299997,"operating_cashflow":1054003717.1400003},{"reporting_period":"2025Q3","revenue":10215726013.52,"net_profit":3136817052,"operating_cashflow":2236357940.13},{"reporting_period":"2025Q4","revenue":13235134789.349998,"net_profit":3665321863.750001,"operating_cashflow":5441304932.6},{"reporting_period":"2026Q1","revenue":19496398083.95,"net_profit":5734501526.83,"operating_cashflow":3367573676.62}];
+  const toYi = (value) => Number(value || 0) / 100000000;
+  const periods = rows.map((row) => row.reporting_period);
+  const labels = { revenue: '营业收入', net_profit: '净利润', operating_cashflow: '经营现金流' };
+  const palette = { revenue: '#6657c8', net_profit: '#c17843', operating_cashflow: '#8276d4' };
+  const axisLabel = { color: '#8190a0', fontFamily: 'IBM Plex Mono, Consolas, monospace', fontSize: 10 };
+  const commonGrid = { left: 55, right: 22, top: 42, bottom: 38, containLabel: false };
+  const charts = [];
+  const tooltip = {
+    trigger: 'axis',
+    backgroundColor: '#101d31',
+    borderWidth: 0,
+    textStyle: { color: '#fff', fontSize: 12 },
+    axisPointer: { type: 'line', lineStyle: { color: '#9a91e8', width: 1 } },
+    formatter(params) {
+      const title = params[0]?.axisValue || '';
+      return [title].concat(params.map((item) => item.marker + item.seriesName + '：' + Number(item.value).toFixed(2) + ' 亿元')).join('<br/>');
+    },
+  };
+  const lineEl = document.getElementById('financial-trend-chart');
+  const line = echarts.init(lineEl, null, { renderer: 'svg' });
+  line.setOption({
+    animation: false,
+    color: [palette.revenue, palette.net_profit],
+    grid: commonGrid,
+    legend: { top: 4, right: 10, itemWidth: 18, itemHeight: 3, textStyle: { color: '#526274', fontSize: 11 } },
+    tooltip,
+    xAxis: { type: 'category', data: periods, boundaryGap: false, axisLine: { lineStyle: { color: '#cbd3dc' } }, axisTick: { show: false }, axisLabel: { ...axisLabel, interval: (index) => index % 2 === 0 || index === periods.length - 1 } },
+    yAxis: { type: 'value', scale: true, splitNumber: 4, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { ...axisLabel, formatter: (value) => Number(value).toFixed(0) }, splitLine: { lineStyle: { color: '#e5e9ee', type: 'dashed' } } },
+    series: [
+      { name: labels.revenue, type: 'line', smooth: 0.25, showSymbol: false, data: rows.map((row) => toYi(row.revenue)), lineStyle: { width: 3 }, areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: '#6657c830' }, { offset: 1, color: '#6657c802' }]) }, markPoint: { symbol: 'circle', symbolSize: 9, itemStyle: { color: palette.revenue, borderColor: '#fff', borderWidth: 2 }, label: { show: true, position: 'top', color: '#1b2638', fontSize: 11, formatter: (params) => Number(params.value).toFixed(2) }, data: [{ coord: [periods.at(-1), toYi(rows.at(-1).revenue)], value: toYi(rows.at(-1).revenue) }] } },
+      { name: labels.net_profit, type: 'line', smooth: 0.25, showSymbol: false, data: rows.map((row) => toYi(row.net_profit)), lineStyle: { width: 2.5 }, markPoint: { symbol: 'circle', symbolSize: 8, itemStyle: { color: palette.net_profit, borderColor: '#fff', borderWidth: 2 }, label: { show: true, position: 'bottom', color: '#1b2638', fontSize: 11, formatter: (params) => Number(params.value).toFixed(2) }, data: [{ coord: [periods.at(-1), toYi(rows.at(-1).net_profit)], value: toYi(rows.at(-1).net_profit) }] } },
+    ],
+  });
+  charts.push(line);
+  const cashEl = document.getElementById('cashflow-chart');
+  const cash = echarts.init(cashEl, null, { renderer: 'svg' });
+  cash.setOption({
+    animation: false,
+    grid: { ...commonGrid, top: 25 },
+    tooltip: { ...tooltip, trigger: 'axis' },
+    xAxis: { type: 'category', data: periods, axisLine: { lineStyle: { color: '#cbd3dc' } }, axisTick: { show: false }, axisLabel: { ...axisLabel, interval: (index) => index % 2 === 0 || index === periods.length - 1 } },
+    yAxis: { type: 'value', min: 0, splitNumber: 3, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { ...axisLabel, formatter: (value) => Number(value).toFixed(0) }, splitLine: { lineStyle: { color: '#e5e9ee', type: 'dashed' } } },
+    series: [{ name: labels.operating_cashflow, type: 'bar', barMaxWidth: 28, data: rows.map((row) => toYi(row.operating_cashflow)), itemStyle: { color: palette.operating_cashflow, borderRadius: [3, 3, 0, 0] }, emphasis: { itemStyle: { color: '#6657c8' } } }],
+  });
+  charts.push(cash);
+  const resize = () => charts.forEach((chart) => chart.resize());
+  window.addEventListener('resize', resize);
+  window.addEventListener('beforeprint', () => { resize(); });
+})();
+</script>

@@ -48,6 +48,7 @@ const { title, items } = Astro.props;
 
   class StepsTimeline extends HTMLElement {
     connectedCallback() {
+      const itemsWrapper = this.querySelector(".items-wrapper");
       const wrapper = this.querySelector(".wrapper");
       const items = Array.from(this.querySelectorAll<HTMLElement>(".item"));
       let current = 0;
@@ -66,16 +67,6 @@ const { title, items } = Astro.props;
             current = index;
           }
         },
-      });
-
-      items.forEach((item, index) => {
-        item.addEventListener("click", () => {
-          if (index !== current) {
-            items[current].classList.remove("is-active");
-            items[index].classList.add("is-active");
-            current = index;
-          }
-        });
       });
     }
   }
@@ -180,25 +171,10 @@ const { title, items } = Astro.props;
   .items {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    max-width: 28rem;
+    max-width: 33rem;
     width: 100%;
     counter-reset: items;
-  }
-
-  .item {
-    position: relative;
-    cursor: pointer;
-    opacity: 0.35;
-    transition: opacity 0.25s var(--ease-out-cubic);
-
-    &:hover {
-      opacity: 0.65;
-    }
-
-    &.is-active {
-      opacity: 1;
-    }
+    max-width: 24rem;
   }
 
   .item-inner {
@@ -208,7 +184,6 @@ const { title, items } = Astro.props;
     gap: 0.5rem;
     padding: 1.5rem 1rem;
 
-    /* 原版左侧序号，右边框严丝合缝重叠在轴线上 */
     &::before {
       @extend %u-text;
       --fs: 0.9rem;
@@ -224,9 +199,7 @@ const { title, items } = Astro.props;
       text-align: right;
       top: 0;
       bottom: 0;
-      transition: color 0.2s var(--ease-in-out-cubic),
-                  opacity 0.2s var(--ease-in-out-cubic),
-                  border-color 0.2s var(--ease-in-out-cubic);
+      transition: all 0.2s var(--ease-in-out-cubic);
       border-right: 2px solid transparent;
       padding-right: 1.5rem;
       width: 5rem;
@@ -238,42 +211,20 @@ const { title, items } = Astro.props;
       }
     }
 
-    /* 聚焦态：左侧序号与滑条高亮亮起 */
     :global(.item.is-active &) {
       &::before {
         opacity: 1;
-        color: var(--color-brand-1);
-        --fw: 800;
         border-right-color: var(--color-brand-1);
       }
     }
   }
 
   .item-title {
-    --fs: 1.25rem;
+    --fs: 1.2rem;
     --fw: 500;
-    color: var(--color-text-alt);
-    margin: 0;
-    line-height: 1.35;
-    transition: color 0.25s var(--ease-out-cubic),
-                font-weight 0.25s var(--ease-out-cubic);
-
-    :global(.item.is-active &) {
-      --fw: 600;
-      color: var(--color-text);
-    }
   }
 
   .item-text {
     --fs: var(--font-size-xs);
-    line-height: 1.65;
-    color: var(--color-text-alt);
-    margin: 0;
-    transition: color 0.25s var(--ease-out-cubic);
-
-    :global(.item.is-active &) {
-      color: var(--color-text);
-      opacity: 0.95;
-    }
   }
 </style>

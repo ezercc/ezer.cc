@@ -1,9 +1,9 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import { getLangFromUrl, useTranslations } from "../i18n/utils";
-import { ui } from "../i18n/ui";
-import QuotaBanner from "../components/QuotaBanner.astro";
-import AnalysisRating from "../components/AnalysisRating.astro";
+import Layout from "../../layouts/Layout.astro";
+import { getLangFromUrl, useTranslations } from "../../i18n/utils";
+import { ui } from "../../i18n/ui";
+import QuotaBanner from "../../components/QuotaBanner.astro";
+import AnalysisRating from "../../components/AnalysisRating.astro";
 
 
 const lang = getLangFromUrl(Astro.url);
@@ -16,8 +16,8 @@ const translations = ui[lang];
 
 <Layout 
   title={t("check.title")}
-  description="深度红蓝对抗财报分析报告。分析公司财务指标、潜在风险点及投资建议，提供可视化数据与完整证据链。"
-  keywords="财报深度分析, 审计报告生成, 风险建议, 财务表现可视化"
+  description="Deep red-blue adversarial financial report analysis. Analyze financial indicators, detect potential risks, and receive investment recommendations with complete evidence."
+  keywords="financial deep analysis, audit report generation, investment risks, financial performance visualization"
 >
   <div class="check-page">
     <div class="u-container">
@@ -25,6 +25,8 @@ const translations = ui[lang];
       <div class="check-header">
         <h1 class="check-title" id="page-title">{t("check.title")}</h1>
       </div>
+
+
 
       <!-- Loading State -->
       <div class="loading-container" id="loading-container">
@@ -101,90 +103,81 @@ const translations = ui[lang];
 
       <!-- Results -->
       <div class="results-container hidden" id="results-container">
-        <!-- Stage 1: Dual-Column Stage (A & B Independent Containers) -->
-        <div class="stage-analysis-grid" id="stage-analysis-grid">
-          <!-- 独立容器 A: 数据归一化看板 (Sticky) -->
-          <div class="analysis-panel panel-a section-a hidden" id="panel-a">
-            <div class="panel-header">
-              <span class="panel-badge">A</span>
-              <span class="panel-title">{lang === 'zh' ? '数据归一化' : 'Data Normalization'}</span>
-            </div>
-            <div class="charts-grid" id="charts-a">
-              <div class="chart-item">
-                <div class="chart-label">{lang === 'zh' ? '营业收入' : 'Revenue'}</div>
-                <div class="chart-canvas-wrapper">
-                  <div id="chart-revenue" class="chart-canvas"></div>
-                </div>
-              </div>
-              <div class="chart-item">
-                <div class="chart-label">{lang === 'zh' ? '净利润' : 'Net Profit'}</div>
-                <div class="chart-canvas-wrapper">
-                  <div id="chart-profit" class="chart-canvas"></div>
-                </div>
-              </div>
-              <div class="chart-item">
-                <div class="chart-label">{lang === 'zh' ? '毛利率' : 'Gross Margin'}</div>
-                <div class="chart-canvas-wrapper">
-                  <div id="chart-margin" class="chart-canvas"></div>
-                </div>
-              </div>
-              <div class="chart-item">
-                <div class="chart-label">{lang === 'zh' ? '资产负债率' : 'Debt Ratio'}</div>
-                <div class="chart-canvas-wrapper">
-                  <div id="chart-debt" class="chart-canvas"></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- A 区域底部统一时间跨度调控滑块 (单个拉动轴直接调控四个图表) -->
-            <div class="timeline-controller" id="timeline-controller">
-              <div class="timeline-slider-wrapper">
-                <div id="chart-timeline-slider" class="timeline-slider-canvas"></div>
-              </div>
-            </div>
-          </div>
+        <!-- Thought Process (A, B, C) -->
+        <div class="thought-container" id="thought-container">
+          <button class="thought-header" id="thought-toggle" aria-expanded="true">
+            <span class="thought-icon"><i class="fa-solid fa-chart-simple"></i></span>
+            <span class="thought-title">{t("check.thought")}</span>
+            <span class="thought-arrow"></span>
+          </button>
           
-          <!-- 独立容器 B: 深度分析卡片流 -->
-          <div class="analysis-panel panel-b section-b" id="panel-b">
-            <div class="panel-header">
-              <span class="panel-badge">B</span>
-              <span class="panel-title">{lang === 'zh' ? '深度分析' : 'Analyzer'}</span>
-            </div>
-            <div class="scroll-wrapper-b">
-              <div class="text-output" id="text-b"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Stage 2: Full-Width Industry Information (I) -->
-        <div class="analysis-panel panel-i section-i" id="panel-i">
-          <div class="panel-header">
-            <span class="panel-badge">I</span>
-            <span class="panel-title">{t("check.industry")}</span>
-          </div>
-          <div class="industry-grid hidden">
-            <div class="wordcloud-container">
-              <div id="industry-wordcloud" class="wordcloud-canvas"></div>
-            </div>
-            <div class="news-display">
-              <div id="news-header" class="news-header hidden"></div>
-              <div id="news-placeholder" class="news-placeholder">
-                <div class="placeholder-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
-                <p>{t("check.industry_placeholder")}</p>
+          <div class="thought-content" id="thought-content">
+            <div class="thought-grid">
+              <!-- A: Structured Data -->
+              <div class="thought-section section-a hidden">
+                <div class="section-label">{lang === 'zh' ? '数据归一化 (A)' : 'Normalizer (A)'}</div>
+                <div class="charts-grid" id="charts-a">
+                  <div class="chart-item">
+                    <div class="chart-label">Revenue</div>
+                    <div class="chart-canvas-wrapper">
+                      <div id="chart-revenue" class="chart-canvas"></div>
+                    </div>
+                  </div>
+                  <div class="chart-item">
+                    <div class="chart-label">Net Profit</div>
+                    <div class="chart-canvas-wrapper">
+                      <div id="chart-profit" class="chart-canvas"></div>
+                    </div>
+                  </div>
+                  <div class="chart-item">
+                    <div class="chart-label">Gross Margin</div>
+                    <div class="chart-canvas-wrapper">
+                      <div id="chart-margin" class="chart-canvas"></div>
+                    </div>
+                  </div>
+                  <div class="chart-item">
+                    <div class="chart-label">Debt Ratio</div>
+                    <div class="chart-canvas-wrapper">
+                      <div id="chart-debt" class="chart-canvas"></div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div id="news-list" class="news-list hidden"></div>
-            </div>
-          </div>
-        </div>
+              
+              <!-- B: Analysis Text -->
+              <div class="thought-section section-b">
+                <div class="section-label">{lang === 'zh' ? '深度分析 (B)' : 'Analyzer (B)'}</div>
+                <div class="scroll-wrapper-b">
+                  <div class="text-output" id="text-b"></div>
+                </div>
+              </div>
 
-        <!-- Stage 3: Full-Width Auditor Text (C) -->
-        <div class="analysis-panel panel-c section-c" id="panel-c">
-          <div class="panel-header">
-            <span class="panel-badge">C</span>
-            <span class="panel-title">{lang === 'zh' ? '风险审计' : 'Risk Audit'}</span>
-          </div>
-          <div class="scroll-wrapper-b">
-            <div class="text-output" id="text-c"></div>
+              <!-- I: Industry Information -->
+              <div class="thought-section section-i">
+                <div class="section-label">{t("check.industry")} (I)</div>
+                <div class="industry-grid hidden">
+                  <div class="wordcloud-container">
+                    <div id="industry-wordcloud" class="wordcloud-canvas"></div>
+                  </div>
+                  <div class="news-display">
+                    <div id="news-header" class="news-header hidden"></div>
+                    <div id="news-placeholder" class="news-placeholder">
+                      <div class="placeholder-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                      <p>{t("check.industry_placeholder")}</p>
+                    </div>
+                    <div id="news-list" class="news-list hidden"></div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- C: Auditor Text -->
+              <div class="thought-section section-c">
+                <div class="section-label">{lang === 'zh' ? '风险审计 (C)' : 'Auditor (C)'}</div>
+                <div class="scroll-wrapper-b">
+                  <div class="text-output" id="text-c"></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -195,7 +188,7 @@ const translations = ui[lang];
             <div id="summary-text" class="text-output"></div>
             <div class="final-result-wrapper">
               <div id="final-result-text" class="final-result-output hidden"></div>
-              <AnalysisRating slug="" lang="zh" />
+              <AnalysisRating slug="" lang="en" />
             </div>
           </div>
         </div>
@@ -208,15 +201,8 @@ const translations = ui[lang];
 <style>
   .check-page {
     min-height: 100vh;
-    padding-top: 165px;
-    padding-bottom: 4rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding: 10vh 1rem 4rem;
     background: var(--color-bg);
-  }
-
-  :global(body:not(.has-survey-banner)) .check-page {
-    padding-top: 115px;
   }
 
   /* ── Header ── */
@@ -330,8 +316,7 @@ const translations = ui[lang];
     stroke: var(--color-brand-1);
   }
 
-  /* Auto-rotation of icons handled by animation or script? 
-     Let's use a CSS animation for simplicity if possible, or just a CSS stagger */
+  /* Auto-rotation of icons handled by animation */
   .s-shield { animation: state-cycle 9s infinite 0s; }
   .s-chart { animation: state-cycle 9s infinite 3s; }
   .s-search { animation: state-cycle 9s infinite 6s; }
@@ -556,176 +541,150 @@ const translations = ui[lang];
     transform: scale(1.04);
   }
 
-  /* ── Full Width Results Container & Screen Utilization ── */
-  .check-page .u-container {
-    max-width: 1720px;
-    width: min(96vw, 1720px);
-    margin: 0 auto;
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
-
   /* ── Results Container ── */
   .results-container {
-    max-width: 100%;
-    width: 100%;
+    max-width: 1200px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 1.8rem;
-    overflow: visible;
+    gap: 1.5rem;
   }
 
-  /* ── Stage 1: Dual-Column Stage (A & B Independent Containers) ── */
-  .stage-analysis-grid {
-    display: grid;
-    grid-template-columns: minmax(580px, 660px) 1fr;
-    gap: 2rem;
-    align-items: start;
+  /* ── Thought Process (Deep Thinking) ── */
+  .thought-container {
+    background: var(--color-surface);
+    border: 1px solid rgba(var(--rgb-brand-1), 0.15);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .thought-header {
     width: 100%;
-    overflow: visible;
-  }
-
-  /* ── Independent Panel Foundation ── */
-  .analysis-panel {
-    border-radius: 12px;
+    padding: 1rem 1.5rem;
     display: flex;
-    flex-direction: column;
+    align-items: center;
     gap: 1rem;
-    min-width: 0;
-    overflow: visible;
-  }
-
-  .panel-header {
-    display: flex;
-    align-items: center;
-    gap: 0.65rem;
-    padding-bottom: 0.8rem;
-    border-bottom: 1px solid rgba(var(--rgb-brand-1), 0.1);
-  }
-
-  :global([data-theme="dark"]) .panel-header {
-    border-bottom-color: rgba(255, 255, 255, 0.08);
-  }
-
-  .panel-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 6px;
-    background: rgba(var(--rgb-brand-1), 0.12);
-    color: var(--color-brand-1);
-    font-family: var(--font-mono, "SFMono-Regular", Consolas, monospace);
-    font-size: 0.78rem;
-    font-weight: 700;
-  }
-
-  .panel-title {
-    font-size: 0.88rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--color-text-alt);
-  }
-
-  /* ── Panel A: Sticky Financial Normalization Card ── */
-  .panel-a {
-    background: var(--color-surface, #ffffff);
-    border: 1px solid rgba(var(--rgb-brand-1), 0.14);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-    padding: 1rem 1rem 0.75rem;
-    gap: 0.75rem;
-    position: sticky;
-    top: 160px;
-    align-self: start;
-    z-index: 5;
-    transition: top 0.25s ease;
-  }
-
-  :global(body:not(.has-survey-banner)) .panel-a {
-    top: 110px;
-  }
-
-  :global(body.has-survey-banner.is-nav-small) .panel-a {
-    top: 125px;
-  }
-
-  :global(body:not(.has-survey-banner).is-nav-small) .panel-a {
-    top: 80px;
-  }
-
-  :global(body.is-nav-hidden) .panel-a {
-    top: 20px;
-  }
-
-  :global(body.has-survey-banner.is-nav-hidden) .panel-a {
-    top: 64px;
-  }
-
-  :global([data-theme="dark"]) .panel-a {
-    background: rgba(255, 255, 255, 0.02);
-    border-color: rgba(255, 255, 255, 0.08);
-    box-shadow: none;
-  }
-
-  /* ── Panel A Timeline Controller (Unified 4-Chart Zoom Slider) ── */
-  .timeline-controller {
-    margin-top: 0.75rem;
-    padding-top: 0.5rem;
-    border-top: 1px solid rgba(var(--rgb-brand-1), 0.1);
-  }
-
-  :global([data-theme="dark"]) .timeline-controller {
-    border-top-color: rgba(255, 255, 255, 0.08);
-  }
-
-  .timeline-slider-wrapper {
-    position: relative;
-    width: 100%;
-    height: 36px;
-  }
-
-  .timeline-slider-canvas {
-    width: 100%;
-    height: 100%;
-  }
-
-  /* ── Panel B: Discrete Cards Column ── */
-  .panel-b {
-    background: transparent;
+    background: rgba(var(--rgb-brand-1), 0.03);
     border: none;
-    box-shadow: none;
-    padding: 0;
+    border-bottom: 1px solid rgba(var(--rgb-brand-1), 0.1);
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s;
   }
 
-  .panel-b .panel-header {
-    margin-bottom: 0.6rem;
+  .thought-header:hover {
+    background: rgba(var(--rgb-brand-1), 0.06);
   }
 
-  .scroll-wrapper-b {
-    flex: 1;
-    overflow-y: visible;
+  .thought-icon {
+    font-size: 1.2rem;
+    filter: drop-shadow(0 0 8px rgba(var(--rgb-brand-1), 0.4));
   }
 
-  /* ── Panel I & Panel C (Full-Width Stages) ── */
-  .panel-i, .panel-c {
-    background: var(--color-surface, #ffffff);
-    border: 1px solid rgba(var(--rgb-brand-1), 0.14);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-    padding: 1.5rem;
+  .thought-title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-brand-1);
+    flex-grow: 1;
   }
 
-  :global([data-theme="dark"]) .panel-i,
-  :global([data-theme="dark"]) .panel-c {
-    background: rgba(255, 255, 255, 0.02);
-    border-color: rgba(255, 255, 255, 0.08);
-    box-shadow: none;
+  .thought-arrow {
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid var(--color-brand-1);
+    border-bottom: 2px solid var(--color-brand-1);
+    transform: rotate(-135deg);
+    transition: transform 0.3s;
+    margin-right: 0.5rem;
+  }
+
+  .thought-container.is-collapsed .thought-arrow {
+    transform: rotate(45deg);
+  }
+
+  .thought-container.is-collapsed .thought-content {
+    display: none;
   }
 
   .hidden {
     display: none !important;
+  }
+
+  .thought-content {
+    padding: 1.2rem;
+  }
+
+  .thought-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+  }
+
+  .thought-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    min-width: 0; /* Crucial for preventing grid item overflow */
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-alt);
+    opacity: 0.8;
+  }
+
+  .section-a {
+    grid-column: 1 / 2;
+    border-right: 1px solid rgba(var(--rgb-brand-1), 0.12);
+    padding-right: 1.2rem;
+  }
+
+  .section-b {
+    grid-column: 2 / 3;
+    padding-left: 0.2rem;
+    position: relative;
+    max-height: 0; /* Important: allow grid to define row height, then fill it */
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Special case: for Auditor (C), we want it in the same column as B or below it? 
+     User said "A B以A高度卡齐", C was originally full-width. 
+     I'll make C scrollable as well if it's below B or share the column.
+  */
+
+  .scroll-wrapper-b {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 0.8rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--rgb-brand-1), 0.2) transparent;
+  }
+
+  .scroll-wrapper-b::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scroll-wrapper-b::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scroll-wrapper-b::-webkit-scrollbar-thumb {
+    background: rgba(var(--rgb-brand-1), 0.2);
+    border-radius: 10px;
+  }
+
+  .section-c {
+      grid-column: 1 / 3;
+      border-top: 1px solid rgba(var(--rgb-brand-1), 0.15);
+      padding-top: 1.2rem;
+      margin-top: 0.5rem;
+      min-height: auto;
   }
 
   /* ── Section I (Industry) ── */
@@ -761,12 +720,17 @@ const translations = ui[lang];
 
   #industry-wordcloud {
     width: 100%;
-    max-width: 100%; 
+    max-width: 100%;
     height: 460px;
     transition: transform 0.3s ease;
     display: block;
   }
 
+  .chart-canvas-wrapper {
+    width: 100%;
+    height: 255px;
+    position: relative;
+  }
 
   .chart-canvas {
     width: 100%;
@@ -1359,24 +1323,14 @@ const translations = ui[lang];
     }
   }
 
-  @media (max-width: 900px) {
-    .stage-analysis-grid {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-    .panel-a {
-      position: static;
-      top: auto;
-    }
-  }
-
   @media (max-width: 640px) {
     .check-page {
       padding-top: 60px;
-      padding-left: 0.5rem;
-      padding-right: 0.5rem;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      overflow-x: hidden;
     }
-    .check-page .u-container {
+    .u-container {
       padding: 0 !important;
       margin: 0 !important;
       max-width: 100% !important;
@@ -1388,21 +1342,41 @@ const translations = ui[lang];
       margin: 0 !important;
       gap: 1rem;
     }
-    .stage-analysis-grid {
+    .thought-container {
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+      width: 100vw !important;
+    }
+    .thought-content {
+      padding: 0.75rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .thought-grid {
       grid-template-columns: 1fr;
-      gap: 1rem;
+      width: 100%;
     }
-    .panel-a {
-      position: static;
-      top: auto;
-      padding: 1rem;
+    .section-a, .section-b, .section-c {
+      grid-column: 1 / 2;
+      border-right: none;
+      padding-right: 0;
+      padding-left: 0;
+      width: 100%;
+      min-width: 0;
     }
-    .charts-grid {
-      grid-template-columns: 1fr;
-      gap: 0.8rem;
+    .section-b {
+      border-top: 1px solid rgba(var(--rgb-brand-1), 0.12);
+      padding-top: 1.2rem;
+      max-height: none;
+      min-height: auto;
     }
-    .chart-canvas-wrapper {
-      height: 180px;
+    .scroll-wrapper-b {
+      overflow-y: visible;
+      padding-right: 0;
+    }
+    .section-c {
+      max-height: none;
     }
     .col-title {
       margin-left: 0.8rem;
@@ -1424,22 +1398,23 @@ const translations = ui[lang];
 
   .charts-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.65rem;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 1rem;
   }
 
   .chart-item {
     background: var(--color-bg-alt);
-    border-radius: 8px;
-    padding: 0.55rem 0.6rem 0.4rem;
+    border-radius: 12px;
+    padding: 1rem;
     border: 1px solid rgba(var(--rgb-brand-1), 0.08);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     display: none; /* Changed from flex */
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.8rem;
     opacity: 0;
-    transform: translateY(6px);
-    transition: opacity 0.4s ease-out, transform 0.4s ease-out, border-color 0.2s ease, box-shadow 0.2s ease;
+    transform: translateY(10px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
   }
 
   .chart-item.is-visible {
@@ -1448,30 +1423,23 @@ const translations = ui[lang];
   }
 
   .chart-item:hover {
-    background: rgba(var(--rgb-brand-1), 0.04);
-    border-color: rgba(var(--rgb-brand-1), 0.22);
-    transform: translateY(-1px);
-    box-shadow: 0 3px 8px rgba(var(--rgb-brand-1), 0.06);
+    background: rgba(var(--rgb-brand-1), 0.05);
+    border-color: rgba(var(--rgb-brand-1), 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--rgb-brand-1), 0.08);
   }
 
   .chart-label {
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     font-weight: 600;
     color: var(--color-text-alt);
     text-align: center;
-    line-height: 1.2;
   }
 
   .chart-canvas-wrapper {
     position: relative;
-    height: 185px;
+    height: 280px;
     width: 100%;
-  }
-
-  @media (max-width: 500px) {
-    .charts-grid {
-      grid-template-columns: 1fr;
-    }
   }
 
   /* ── Data & Text Styles ── */
@@ -1547,12 +1515,12 @@ const translations = ui[lang];
     background: var(--color-surface, #ffffff);
     border: 1px solid rgba(var(--rgb-brand-1), 0.12);
     border-radius: 6px;
-    padding: 1.2rem 1.35rem;
-    margin-bottom: 1.2rem;
+    padding: 1.4rem 1.5rem;
+    margin-bottom: 1.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 1.1rem;
     animation: fadeIn 0.3s ease-out;
   }
 
@@ -1567,7 +1535,7 @@ const translations = ui[lang];
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    padding-bottom: 0.55rem;
+    padding-bottom: 0.85rem;
     border-bottom: 1px solid rgba(var(--rgb-brand-1), 0.08);
   }
 
@@ -1632,8 +1600,8 @@ const translations = ui[lang];
   /* Sources Footnote */
   .section-b :global(.card-sources) {
     border-top: 1px solid rgba(var(--rgb-brand-1), 0.08);
-    padding-top: 0.55rem;
-    margin-top: 0;
+    padding-top: 0.75rem;
+    margin-top: 0.25rem;
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
@@ -1820,8 +1788,8 @@ const translations = ui[lang];
   }
 </style>
 
-<script is:inline src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
-<script is:inline src="https://cdn.jsdelivr.net/npm/echarts-wordcloud@2/dist/echarts-wordcloud.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts-wordcloud@2/dist/echarts-wordcloud.min.js"></script>
 
 <script>
   // ── i18n strings passed from Astro ──
@@ -1876,8 +1844,7 @@ const translations = ui[lang];
   const progressLabel = document.getElementById('progress-label')!;
   const errorTextEl = document.getElementById('error-text')!;
 
-  const thoughtContainer = document.getElementById('thought-container');
-  const thoughtToggle = document.getElementById('thought-toggle');
+  const thoughtContainer = document.getElementById('thought-container')!;
   const textB = document.getElementById('text-b') as HTMLElement;
   const textC = document.getElementById('text-c') as HTMLElement;
   const summaryText = document.getElementById('summary-text')!;
@@ -1950,13 +1917,12 @@ const translations = ui[lang];
   summaryText.textContent = lang === 'zh' ? '正在等待分析完成...' : 'Waiting for analysis to complete...';
   summaryText.classList.add('is-placeholder');
 
-  // Toggle thought process (if present)
-  if (thoughtToggle && thoughtContainer) {
-    thoughtToggle.addEventListener('click', () => {
-      thoughtContainer.classList.toggle('is-collapsed');
-      thoughtToggle.setAttribute('aria-expanded', String(!thoughtContainer.classList.contains('is-collapsed')));
-    });
-  }
+  // Toggle thought process
+  const thoughtToggle = document.getElementById('thought-toggle')!;
+  thoughtToggle.addEventListener('click', () => {
+    thoughtContainer.classList.toggle('is-collapsed');
+    thoughtToggle.setAttribute('aria-expanded', String(!thoughtContainer.classList.contains('is-collapsed')));
+  });
 
   // ── Bi-Directional Linkage Manager ──
   class LinkageManager {
@@ -2314,6 +2280,7 @@ const translations = ui[lang];
           tagClass = 'tag-target';
         }
 
+        // Format period for display: if more than 5 quarters, abbreviate "2025Q1" -> "25Q1"
         const displayPeriod = nBars > 5 ? d.period.replace(/^20(\d{2})/, '$1') : d.period;
 
         barsSvg += `
@@ -2335,6 +2302,7 @@ const translations = ui[lang];
         const y2 = (targetCoord as any).y;
 
         const midX = (x1 + x2) / 2;
+        // Curved peak of quadratic bezier: lift above highest bar, clamp at minimum 16 to stay inside SVG
         const midY = Math.max(16, Math.min(y1, y2) - 22);
 
         const arcPath = `M ${x1} ${y1 - 8} Q ${midX} ${midY} ${x2} ${y2 - 8}`;
@@ -2485,7 +2453,7 @@ const translations = ui[lang];
       });
     }
 
-    // Method 1: Parse [[ref:revenue,period:2026Q1,compare_period:2025Q1,text:营业收入达45.2亿元]] syntax
+    // Method 1: Parse [[ref:revenue,period:2026Q1,compare_period:2025Q1,text:Revenue reached $45.2B]] syntax
     private parseTags(htmlStr: string): string {
       const tagRegex = /\[\[(?:ref|chart):([a-zA-Z_]+)(?:,period:([^,\]]+))?(?:,compare_period:([^,\]]+))?,text:([^\]]+)\]\]/g;
       return htmlStr.replace(tagRegex, (match, metric, period, comparePeriod, text) => {
@@ -2502,6 +2470,7 @@ const translations = ui[lang];
         const text = node.nodeValue;
         if (!text || text.trim().length === 0) return;
 
+        // Tokenize text into metric keywords, periods, and numeric value clusters
         const tokenRegex = /(营业总收入|主营业务收入|营业收入|营收|Revenue|扣除非经常性损益后归属于母公司股东的净利润|归属于母公司股东的净利润|扣非归母净利润|扣非净利润|归母净利润|净利润|Net Profit|销售毛利率|毛利率|Gross Margin|资产负债率|Debt Ratio|合同负债|研发|现金|固定资产|销量|生产量|ROA|ROE)|(20\d{2}(?:Q[1-4]|FY|一季报|二季报|三季报|年报|半年度)?)|((?:20\d{2}(?:Q[1-4]|FY|一季报|二季报|三季报|年报|半年度)?(?:的|年)?\s*)?(?:\d{1,3}(?:,\d{3})*(?:\.\d+)?|\d+(?:\.\d+)?)\s*(?:亿元|万元|亿|万|%|元))/gi;
 
         let activeChartId: string | null = null;
@@ -2529,7 +2498,7 @@ const translations = ui[lang];
             } else if (m.includes('debt') || m.includes('负债') || m.includes('资产负债')) {
               activeChartId = 'chart-debt';
             } else {
-              activeChartId = null;
+              activeChartId = null; // Non-Section-A metrics reset chartId so subsequent numbers aren't tagged!
             }
             newHtml += fullMatch;
           } else if (periodToken) {
@@ -2549,7 +2518,8 @@ const translations = ui[lang];
               if (periodAttr.includes('三季报')) periodAttr = periodAttr.replace('三季报', 'Q3');
               if (periodAttr.includes('年报')) periodAttr = periodAttr.replace('年报', 'FY');
 
-              const compMatch = fullMatch.match(/(?:相较于|对比|较|比)\s*(20\d{2}(?:Q[1-4]|FY|一季报|二季报|三季报|年报|半年度)?)/i);
+              // Check for comparative phrase like "vs 2025Q1" or "compared to 2025Q1"
+              const compMatch = fullMatch.match(/(?:vs|compared to|相较于|对比|较|比)\s*(20\d{2}(?:Q[1-4]|FY|一季报|二季报|三季报|年报|半年度)?)/i);
               let compareAttr = '';
               if (compMatch) {
                 compareAttr = compMatch[1];
@@ -2585,6 +2555,7 @@ const translations = ui[lang];
 
     parseAndBind(container: HTMLElement) {
       if (!container) return;
+
       if (container.innerHTML.includes('[[ref:') || container.innerHTML.includes('[[chart:')) {
         container.innerHTML = this.parseTags(container.innerHTML);
       } else {
@@ -2599,9 +2570,6 @@ const translations = ui[lang];
   class ChartManager {
     private charts: Record<string, any> = {};
     private chartDataStore: Record<string, { periods: string[]; data: any[] }> = {};
-    private timelineChart: any = null;
-    private isSyncingZoom = false;
-    private activePeriods: string[] = [];
 
     getChart(id: string) {
       return this.charts[id];
@@ -2677,7 +2645,7 @@ const translations = ui[lang];
               if (item.seriesIndex === 0) {
                 if (suffix === '%') displayVal = val + '%';
                 else if (Math.abs(val) >= 100000000) displayVal = (val / 100000000).toFixed(2) + (lang === 'zh' ? '亿' : 'B');
-                else if (Math.abs(val) >= 10000) displayVal = (val / 10000).toFixed(2) + (lang === 'zh' ? '万' : 'k');
+                else if (Math.abs(val) >= 10000) displayVal = (val / 1000).toFixed(0) + 'k';
                 else displayVal = val.toLocaleString() + suffix;
               } else {
                 displayVal = (val >= 0 ? '+' : '') + val + '%';
@@ -2691,10 +2659,10 @@ const translations = ui[lang];
           }
         },
         grid: {
-          left: 2,
-          right: 4,
-          bottom: 2,
-          top: 14,
+          left: '3%',
+          right: '4%',
+          bottom: periods.length > 6 ? 24 : 6,
+          top: '14%',
           containLabel: true
         },
         dataZoom: [
@@ -2702,9 +2670,31 @@ const translations = ui[lang];
             type: 'inside',
             start: 0,
             end: 100,
-            zoomOnMouseWheel: false,
-            moveOnMouseMove: false,
-            moveOnMouseWheel: false
+            zoomLock: false
+          },
+          {
+            type: 'slider',
+            show: periods.length > 6,
+            height: 14,
+            bottom: 2,
+            borderColor: 'transparent',
+            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.04)',
+            fillerColor: isDark ? 'rgba(124, 58, 237, 0.25)' : 'rgba(124, 58, 237, 0.15)',
+            handleStyle: {
+              color: '#7c3aed',
+              borderColor: '#7c3aed',
+              shadowBlur: 4,
+              shadowColor: 'rgba(124, 58, 237, 0.4)'
+            },
+            moveHandleStyle: {
+              color: '#7c3aed'
+            },
+            selectedDataBackground: {
+              lineStyle: { color: '#7c3aed', width: 1 },
+              areaStyle: { color: 'rgba(124, 58, 237, 0.2)' }
+            },
+            textStyle: { color: textColor, fontSize: 9 },
+            brushSelect: false
           }
         ],
         xAxis: {
@@ -2716,20 +2706,18 @@ const translations = ui[lang];
           axisLabel: {
             color: textColor,
             fontSize: 10,
-            interval: periods.length > 8 ? 'auto' : 0,
-            rotate: periods.length > 6 ? 24 : 0,
-            margin: 4
+            interval: 0,
+            rotate: periods.length > 6 ? 32 : 0,
+            margin: 8
           }
         },
         yAxis: [
           {
             type: 'value',
-            splitNumber: 3,
             splitLine: { lineStyle: { color: splitLineColor } },
             axisLabel: {
               color: textColor,
               fontSize: 10,
-              margin: 4,
               formatter: (value: number) => {
                 if (suffix === '%') return value + '%';
                 if (Math.abs(value) >= 100000000) {
@@ -2737,8 +2725,8 @@ const translations = ui[lang];
                   return (v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)) + (lang === 'zh' ? '亿' : 'B');
                 }
                 if (Math.abs(value) >= 10000) {
-                  const v = value / 10000;
-                  return (v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)) + (lang === 'zh' ? '万' : 'k');
+                  const v = value / 1000;
+                  return (v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)) + 'k';
                 }
                 return value;
               }
@@ -2746,8 +2734,12 @@ const translations = ui[lang];
           },
           {
             type: 'value',
-            show: false,
-            splitLine: { show: false }
+            splitLine: { show: false },
+            axisLabel: {
+              color: textColor,
+              fontSize: 10,
+              formatter: (value: number) => (value % 1 === 0 ? value.toFixed(0) : value.toFixed(1)) + '%'
+            }
           }
         ],
         series: [
@@ -2760,9 +2752,9 @@ const translations = ui[lang];
                 { offset: 0, color: 'rgba(124, 58, 237, 0.85)' },
                 { offset: 1, color: 'rgba(124, 58, 237, 0.25)' }
               ]),
-              borderRadius: [3, 3, 0, 0]
+              borderRadius: [4, 4, 0, 0]
             },
-            barMaxWidth: 20
+            barMaxWidth: 24
           },
           {
             name: growthLabel,
@@ -2771,9 +2763,9 @@ const translations = ui[lang];
             data: growthData,
             smooth: true,
             symbol: 'circle',
-            symbolSize: 4,
+            symbolSize: 6,
             itemStyle: { color: '#f59e0b' },
-            lineStyle: { width: 1.5, color: '#f59e0b' }
+            lineStyle: { width: 2, color: '#f59e0b' }
           }
         ]
       };
@@ -2791,178 +2783,6 @@ const translations = ui[lang];
       chart.on('mouseout', () => {
         linkageManager.clearTextHighlights();
       });
-
-      // Synchronize inside mousewheel/touch datazoom to timeline slider & sibling charts
-      chart.on('datazoom', (params: any) => {
-        if (this.isSyncingZoom) return;
-        this.isSyncingZoom = true;
-
-        let start = params.start;
-        let end = params.end;
-        if (start === undefined && params.batch && params.batch[0]) {
-          start = params.batch[0].start;
-          end = params.batch[0].end;
-        }
-
-        if (this.timelineChart && start !== undefined && end !== undefined) {
-          this.timelineChart.dispatchAction({
-            type: 'dataZoom',
-            start,
-            end
-          });
-        }
-
-        const rangeBadge = document.getElementById('timeline-range-badge');
-        if (rangeBadge && this.activePeriods.length > 0 && start !== undefined && end !== undefined) {
-          const total = this.activePeriods.length;
-          const sIdx = Math.max(0, Math.min(total - 1, Math.round((start / 100) * (total - 1))));
-          const eIdx = Math.max(0, Math.min(total - 1, Math.round((end / 100) * (total - 1))));
-          const count = eIdx - sIdx + 1;
-          const countSuffix = lang === 'zh' ? `(共 ${count} 期)` : `(${count} periods)`;
-          rangeBadge.textContent = `${this.activePeriods[sIdx]} - ${this.activePeriods[eIdx]} ${countSuffix}`;
-        }
-
-        const siblingIds = ['chart-revenue', 'chart-profit', 'chart-margin', 'chart-debt'].filter(cid => cid !== id);
-        siblingIds.forEach(cid => {
-          const sibling = this.charts[cid];
-          if (sibling && start !== undefined && end !== undefined) {
-            sibling.dispatchAction({
-              type: 'dataZoom',
-              start,
-              end
-            });
-          }
-        });
-
-        setTimeout(() => { this.isSyncingZoom = false; }, 20);
-      });
-    }
-
-    initTimelineController(periods: string[]) {
-      const el = document.getElementById('chart-timeline-slider');
-      if (!el || periods.length === 0) return;
-
-      this.activePeriods = periods;
-      const isDark = document.documentElement.classList.contains('dark');
-      const textColor = isDark ? '#94a3b8' : '#64748b';
-      const rangeBadge = document.getElementById('timeline-range-badge');
-
-      if (this.timelineChart) {
-        this.timelineChart.dispose();
-      }
-
-      // @ts-ignore
-      this.timelineChart = echarts.init(el, isDark ? 'dark' : null, { renderer: 'canvas' });
-
-      const updateBadge = (startPercent: number, endPercent: number) => {
-        if (!rangeBadge) return;
-        const total = periods.length;
-        const startIdx = Math.max(0, Math.min(total - 1, Math.round((startPercent / 100) * (total - 1))));
-        const endIdx = Math.max(0, Math.min(total - 1, Math.round((endPercent / 100) * (total - 1))));
-        const count = endIdx - startIdx + 1;
-        const countSuffix = lang === 'zh' ? `(共 ${count} 期)` : `(${count} periods)`;
-        rangeBadge.textContent = `${periods[startIdx]} - ${periods[endIdx]} ${countSuffix}`;
-      };
-
-      updateBadge(0, 100);
-
-      const option = {
-        backgroundColor: 'transparent',
-        grid: {
-          left: 10,
-          right: 10,
-          top: 0,
-          bottom: 0
-        },
-        xAxis: {
-          type: 'category',
-          data: periods,
-          show: false
-        },
-        yAxis: {
-          type: 'value',
-          show: false
-        },
-        series: [
-          {
-            type: 'line',
-            data: periods.map(() => 0),
-            show: false
-          }
-        ],
-        dataZoom: [
-          {
-            type: 'slider',
-            show: true,
-            xAxisIndex: 0,
-            height: 24,
-            top: 4,
-            left: 10,
-            right: 10,
-            start: 0,
-            end: 100,
-            fillerColor: isDark ? 'rgba(124, 58, 237, 0.28)' : 'rgba(124, 58, 237, 0.16)',
-            borderColor: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(124, 58, 237, 0.2)',
-            borderRadius: 6,
-            handleIcon: 'path://M-5,-10 h10 a3,3 0 0 1 3,3 v14 a3,3 0 0 1 -3,3 h-10 a3,3 0 0 1 -3,-3 v-14 a3,3 0 0 1 3,-3 z M-2,4 v-8 h1 v8 z M1,4 v-8 h1 v8 z',
-            handleSize: '110%',
-            handleStyle: {
-              color: '#7c3aed',
-              borderColor: '#ffffff',
-              borderWidth: 1.5,
-              shadowBlur: 4,
-              shadowColor: 'rgba(0, 0, 0, 0.2)'
-            },
-            moveHandleSize: 0,
-            textStyle: {
-              color: textColor,
-              fontSize: 10,
-              fontWeight: 600
-            },
-            brushSelect: false
-          }
-        ]
-      };
-
-      this.timelineChart.setOption(option);
-
-      // Single timeline slider directly controlling all 4 charts!
-      this.timelineChart.on('datazoom', (params: any) => {
-        if (this.isSyncingZoom) return;
-        this.isSyncingZoom = true;
-
-        let start = params.start;
-        let end = params.end;
-        if (start === undefined && params.batch && params.batch[0]) {
-          start = params.batch[0].start;
-          end = params.batch[0].end;
-        }
-
-        if (start !== undefined && end !== undefined) {
-          updateBadge(start, end);
-
-          const chartIds = ['chart-revenue', 'chart-profit', 'chart-margin', 'chart-debt'];
-          chartIds.forEach(cid => {
-            const chart = this.charts[cid];
-            if (chart) {
-              chart.dispatchAction({
-                type: 'dataZoom',
-                start,
-                end
-              });
-            }
-          });
-        }
-
-        setTimeout(() => { this.isSyncingZoom = false; }, 20);
-      });
-    }
-
-    resizeAll() {
-      Object.values(this.charts).forEach(c => c && typeof c.resize === 'function' && c.resize());
-      if (this.timelineChart && typeof this.timelineChart.resize === 'function') {
-        this.timelineChart.resize();
-      }
     }
   }
 
@@ -3041,9 +2861,6 @@ const translations = ui[lang];
   async function renderCharts(history: any[]) {
     if (!history || history.length === 0) return;
     
-    const sectionA = document.querySelector('.section-a');
-    if (sectionA) sectionA.classList.remove('hidden');
-
     // Sort to show chronological order
     const sorted = [...history].sort((a, b) => {
         return a.reporting_period.localeCompare(b.reporting_period);
@@ -3065,10 +2882,6 @@ const translations = ui[lang];
     for (const config of chartConfigs) {
       chartManager.setChartData(config.id, config.data);
     }
-
-    const periods = sorted.map(h => h.reporting_period);
-    // Initialize unified timeline zoom slider for all 4 charts
-    chartManager.initTimelineController(periods);
 
     for (const config of chartConfigs) {
       if (config.data.some(d => d.value !== null && d.value !== undefined)) {
@@ -3129,41 +2942,20 @@ const translations = ui[lang];
     }
   }
 
-  async function typeText(el: HTMLElement, text: string, _legacySpeed?: number) {
+  async function typeText(el: HTMLElement, text: string, speed = 20) {
     if (!el || !text) return;
-    const len = text.length;
-    let chunkSize = 1;
-    let delay = 14;
-
-    if (len < 100) {
-      chunkSize = 1;
-      delay = 14;
-    } else if (len <= 300) {
-      chunkSize = 2;
-      delay = 10;
-    } else {
-      chunkSize = 4;
-      delay = 10;
-    }
-
-    const scrollParent = el.closest('.scroll-wrapper-b') || el.closest('.text-output');
-    let i = 0;
-    while (i < len) {
-      const chunk = text.slice(i, i + chunkSize);
-      el.textContent += chunk;
-      i += chunkSize;
-
-      if (chunk.includes('\n') || chunk.includes('。') || chunk.includes('.')) {
-        if (scrollParent) {
-          scrollParent.scrollTo({ top: scrollParent.scrollHeight, behavior: 'smooth' });
-        }
+    const chars = text.split('');
+    for (const char of chars) {
+      el.textContent += char;
+      if (char === '\n' || char === '。' || char === '.') {
+        const scrollParent = el.closest('.scroll-wrapper-b') || el.closest('.text-output');
+        if (scrollParent) scrollParent.scrollTo({ top: scrollParent.scrollHeight, behavior: 'smooth' });
       }
-      await new Promise(r => setTimeout(r, delay));
+      await new Promise(r => setTimeout(r, speed));
     }
-
-    if (scrollParent) {
-      scrollParent.scrollTo({ top: scrollParent.scrollHeight, behavior: 'smooth' });
-    }
+    // Final scroll
+    const scrollParent = el.closest('.scroll-wrapper-b') || el.closest('.text-output');
+    if (scrollParent) scrollParent.scrollTo({ top: scrollParent.scrollHeight, behavior: 'smooth' });
 
     linkageParser.parseAndBind(el);
   }
@@ -3267,7 +3059,7 @@ const translations = ui[lang];
     }
 
     if ((p === 'A' || p === 'NORMALIZER') && (event === 'a_normalized' || event === 'data')) {
-      const d = data || item.data;
+      const d = data || item.data; // Handle if data is directly in item or nested
       if (!d) return;
       
       const { company, report, income_statement, balance_sheet, key_ratios, history_12q } = d;
@@ -3277,16 +3069,18 @@ const translations = ui[lang];
       }
 
       if (company) {
+        // Update Page Title dynamically
         const companyName = company.name || '';
         let periodText = company.reporting_period || '';
+        // Localize 'FY' to '年度' for Chinese
         if (lang === 'zh' && periodText.toLowerCase().includes('fy')) {
           periodText = periodText.replace(/fy/i, '年度');
         }
 
         if (companyName) {
-          const titleSuffix = lang === 'zh' ? '财报分析' : 'Financial Report Analysis';
-          pageTitleEl.textContent = `${companyName} (${periodText}) ${titleSuffix}`;
-          document.title = `${companyName} (${periodText}) ${titleSuffix} - 弈泽`;
+            const titleSuffix = lang === 'zh' ? '财报分析' : 'Financial Report Analysis';
+            pageTitleEl.textContent = `${companyName} (${periodText}) ${titleSuffix}`;
+            document.title = `${companyName} (${periodText}) ${titleSuffix} - Ezer`;
         }
       }
     }
@@ -3334,6 +3128,11 @@ const translations = ui[lang];
         const headerEl = document.createElement('div');
         headerEl.className = 'card-header';
 
+        const idTag = document.createElement('span');
+        idTag.className = 'card-id-tag';
+        idTag.textContent = cardId.toUpperCase().replace(/_/g, ' ');
+        headerEl.appendChild(idTag);
+
         const h3 = document.createElement('h3');
         h3.className = 'card-title';
         h3.textContent = titleText;
@@ -3341,12 +3140,21 @@ const translations = ui[lang];
 
         card.appendChild(headerEl);
         
+        // Skip typewriter animation for business_outlook or long text paragraphs
+        const skipAnimation = cardId === 'business_outlook' || (d.conclusion && d.conclusion.length > 150);
+        
         // ── 1. Executive Summary / Conclusion (Lead Paragraph) ──
         if (d.conclusion) {
           const conclusion = document.createElement('p');
           conclusion.className = 'conclusion';
           card.appendChild(conclusion);
-          await typeText(conclusion, d.conclusion);
+
+          if (skipAnimation) {
+            conclusion.textContent = d.conclusion;
+            linkageParser.parseAndBind(conclusion);
+          } else {
+            await typeText(conclusion, d.conclusion, 15);
+          }
         }
 
         // ── 2. Editorial Fields: Evidence, Cross-Checks, Counterpoints, Implication ──
@@ -3374,7 +3182,12 @@ const translations = ui[lang];
 
             card.appendChild(block);
 
-            await typeText(contentEl, valText);
+            if (skipAnimation) {
+              contentEl.textContent = valText;
+              linkageParser.parseAndBind(contentEl);
+            } else {
+              await typeText(contentEl, valText, 10);
+            }
           }
         }
 
@@ -3421,7 +3234,10 @@ const translations = ui[lang];
               }
 
               if (idx < uniqueRefs.length - 1) {
-                sourcesDiv.appendChild(document.createTextNode(' · '));
+                const sep = document.createElement('span');
+                sep.className = 'sources-sep';
+                sep.textContent = '·';
+                sourcesDiv.appendChild(sep);
               }
             });
 
@@ -3544,8 +3360,8 @@ const translations = ui[lang];
     placeholderC.start();
 
     for (const item of stream) {
-      await processEvent(item);
-      await new Promise(r => setTimeout(r, 100));
+      processEvent(item);
+      await new Promise(r => setTimeout(r, 200));
     }
 
     window.dispatchEvent(new CustomEvent('analysis-complete'));
@@ -3562,7 +3378,7 @@ const translations = ui[lang];
       apiParams.set('lang', lang);
 
       console.log('--- Initiating Audit (Locally checking cache first) ---');
-      
+
       let currentProgress = 5;
       const startTime = Date.now();
       const progressTimer = setInterval(() => {
@@ -3575,8 +3391,8 @@ const translations = ui[lang];
           currentProgress = 95;
         }
         const label = currentProgress < 50 
-          ? (lang === 'zh' ? '正在连接安全审计服务器...' : 'Connecting to audit server...')
-          : (lang === 'zh' ? '正在深度穿透财务数据...' : 'Deeply analyzing financial data...');
+          ? (lang === 'zh' ? 'Connecting to audit server...' : 'Connecting to audit server...')
+          : (lang === 'zh' ? 'Server deeply analyzing financial data...' : 'Server deeply analyzing financial data...');
         setProgress(Math.floor(currentProgress), label);
       }, 50);
 
@@ -3601,7 +3417,7 @@ const translations = ui[lang];
       // (A) Cache Hit Case: Process as a stream as before
       if (contentType && contentType.includes('application/x-ndjson')) {
         console.log('Cache Hit: Streaming from local API...');
-        cleanup(); 
+        cleanup();
         await handleResponseStream(localResp);
         return;
       }
@@ -3630,7 +3446,7 @@ const translations = ui[lang];
         let isSuccessfullyCompleted = false;
         let timeoutId = setTimeout(() => {
           controller.abort();
-          showError(lang === 'zh' ? '分析连接超时，请稍后刷新重试' : 'Connection timeout, please refresh later');
+          showError(isEn ? 'Connection timeout, please refresh later' : '分析连接超时，请稍后刷新重试');
         }, 300000);
 
         console.log('Connecting to direct stream:', streamUrl);
@@ -3644,7 +3460,7 @@ const translations = ui[lang];
             throw new Error(`Stream download failed: ${streamResp.status}`);
         }
         
-        cleanup(); 
+        cleanup();
         // Handle SSE stream using the pattern from public/examples/frontend_call_example_v1.md
         await handleResponseStream(
             streamResp, 
@@ -3661,7 +3477,7 @@ const translations = ui[lang];
                 clearTimeout(timeoutId);
                 timeoutId = setTimeout(() => {
                     controller.abort();
-                    showError(lang === 'zh' ? '报告生成超时，请稍后刷新重试' : 'Report generation timeout, please refresh later');
+                    showError(isEn ? 'Report generation timeout, please refresh later' : '报告生成超时，请稍后刷新重试');
                 }, 300000);
             }
         );
@@ -3814,7 +3630,9 @@ const translations = ui[lang];
   }
 
   window.addEventListener('resize', () => {
-    chartManager.resizeAll();
+    Object.values((chartManager as any)['charts'] || {}).forEach((chart: any) => {
+      if (chart && typeof chart.resize === 'function') chart.resize();
+    });
     if (wcChartInstance && typeof wcChartInstance.resize === 'function') {
       wcChartInstance.resize();
     }
@@ -3879,9 +3697,9 @@ const translations = ui[lang];
       item.className = 'news-item';
       item.style.animationDelay = `${index * 0.05}s`;
 
-      const linkHtml = url 
-        ? `<a href="${url}" target="_blank" rel="noreferrer" class="meta-pill source">${sourceDisplay}</a>`
-        : `<span class="meta-pill source">${sourceDisplay}</span>`;
+      const linkHtml = isUrlValid
+        ? `<a href="${url.trim()}" target="_blank" rel="noreferrer" class="meta-pill source">${sourceDisplay}</a>`
+        : `<span class="meta-pill source" style="cursor: not-allowed; opacity: 0.6;">${lang === 'zh' ? '行业资讯' : 'Industry News'}</span>`;
 
       item.innerHTML = `
         <span class="news-bullet">•</span>
@@ -3920,7 +3738,7 @@ const translations = ui[lang];
         const currentPct = Math.floor(startPct + (99 - startPct) * p);
         
         const labels = lang === 'zh' 
-          ? ['数据链路验证成功...', '正在构建归一化大模型...', '正在执行交叉审计穿透...', '财务诊断报告生成中...']
+          ? ['Link verified...', 'Building AI model...', 'Executing cross-audit...', 'Generating report...']
           : ['Link verified...', 'Building AI model...', 'Executing cross-audit...', 'Generating report...'];
         const labelIdx = Math.min(labels.length - 1, Math.floor(p * labels.length));
         
@@ -3934,8 +3752,6 @@ const translations = ui[lang];
 
     loadingEl.classList.add('hidden');
     resultsEl.classList.remove('hidden');
-    // Ensure all timers are truly gone when we show results
-    if (window.loadingInterval) clearInterval(window.loadingInterval);
 
     placeholderB.start();
     placeholderC.start();
