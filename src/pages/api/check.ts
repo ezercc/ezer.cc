@@ -3,9 +3,9 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { Redis } from '@upstash/redis';
 import { brotliDecompressSync } from 'zlib';
-import nvdaData from '../../data/nvda_oq_2026fy_en_result_latest.json';
-import zhongjiData from '../../data/innolight_300308_sz_2026q1_stream_with_i.frontend.json';
-import previewTestData from '../../data/zhongji_xuchuang_300308_2026q1_inline_ref_v1_8card.json';
+import nvdaData from '../../data/nvidia_nvda_2026fy_inline_ref_v1_8card_en.json';
+import zhongjiData from '../../data/zhongji_xuchuang_300308_2026q1_12q_8card_preview.json';
+
 
 import { createSign, randomUUID } from 'crypto';
 
@@ -427,7 +427,7 @@ export const GET: APIRoute = async ({ url, request }) => {
 
   // 1. Handle "No Parameters" or "Preview" case - Load sample data
   if (preview || (!code && !year && !period)) {
-    const previewData = lang === 'en' ? nvdaData.stream : previewTestData.stream;
+    const previewData = lang === 'en' ? nvdaData.stream : zhongjiData.stream;
     return createDelayedStream(previewData);
   }
 

@@ -1675,27 +1675,15 @@ const translations = ui[lang];
   }
 
   /* ── Audit Items (Section C) ── */
-  .audit-item {
-    padding: 1rem;
-    border-radius: 10px;
-    margin-bottom: 1rem;
+  .section-c :global(.audit-item) {
+    margin-bottom: 1.2rem;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.45rem;
     animation: slideIn 0.4s ease-out;
   }
 
-  .audit-item.challenge {
-    background: rgba(239, 68, 68, 0.05);
-    border: 1px solid rgba(239, 68, 68, 0.2);
-  }
-
-  .audit-item.resolved {
-    background: rgba(34, 197, 94, 0.05);
-    border: 1px solid rgba(34, 197, 94, 0.2);
-  }
-
-  .audit-icon-text {
+  .section-c :global(.audit-icon-text) {
     display: flex;
     align-items: center;
     gap: 0.6rem;
@@ -1703,23 +1691,23 @@ const translations = ui[lang];
     font-size: 0.95rem;
   }
 
-  .audit-item.challenge .audit-icon-text { color: #ef4444; }
-  .audit-item.resolved .audit-icon-text { color: #22c55e; }
+  .section-c :global(.audit-item.challenge .audit-icon-text) { color: #ef4444; }
+  .section-c :global(.audit-item.resolved .audit-icon-text) { color: #22c55e; }
 
-  .audit-content {
+  .section-c :global(.audit-content) {
     font-size: 0.9rem;
     line-height: 1.6;
     color: var(--color-text);
   }
 
-  .audit-meta {
+  .section-c :global(.audit-meta) {
     font-size: 0.75rem;
     color: var(--color-text-alt);
     margin-top: 0.3rem;
   }
 
-  /* ── Progress Updates ── */
-  .progress-update {
+  /* ── Progress Updates (Used in Section B and Section C) ── */
+  .analysis-panel :global(.progress-update) {
     font-size: 0.85rem;
     color: var(--color-text-alt);
     font-style: italic;
@@ -3779,7 +3767,7 @@ const translations = ui[lang];
         top: 'center',
         width: '95%',
         height: '95%',
-        sizeRange: [14, 60],
+        sizeRange: [14, 80],
         rotationRange: [0, 0],
         gridSize: 10,
         drawOutOfBound: false,

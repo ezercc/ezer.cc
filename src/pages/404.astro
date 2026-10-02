@@ -1,0 +1,28 @@
+---
+import Layout from "../layouts/Layout.astro";
+import NotFoundView from "../components/NotFoundView.astro";
+import { useTranslations } from "../i18n/utils";
+
+const lang = "zh";
+const t = useTranslations(lang);
+---
+
+<Layout
+  title={t("404.title")}
+  description={t("404.desc")}
+>
+  <script is:inline>
+    (function() {
+      try {
+        if (typeof window !== 'undefined') {
+          var p = window.location.pathname;
+          // If the not-found request originated within the /en/ tree, route to English 404
+          if (p.startsWith('/en/') && !p.startsWith('/en/404')) {
+            window.location.replace('/en/404/' + window.location.search);
+          }
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <NotFoundView lang="zh" />
+</Layout>
