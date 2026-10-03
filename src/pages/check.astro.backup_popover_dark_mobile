@@ -1,9 +1,9 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import { getLangFromUrl, useTranslations } from "../../i18n/utils";
-import { ui } from "../../i18n/ui";
-import QuotaBanner from "../../components/QuotaBanner.astro";
-import AnalysisRating from "../../components/AnalysisRating.astro";
+import Layout from "../layouts/Layout.astro";
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import { ui } from "../i18n/ui";
+import QuotaBanner from "../components/QuotaBanner.astro";
+import AnalysisRating from "../components/AnalysisRating.astro";
 
 
 const lang = getLangFromUrl(Astro.url);
@@ -16,8 +16,8 @@ const translations = ui[lang];
 
 <Layout 
   title={t("check.title")}
-  description="Deep red-blue adversarial financial report analysis. Analyze financial indicators, detect potential risks, and receive investment recommendations with complete evidence."
-  keywords="financial deep analysis, audit report generation, investment risks, financial performance visualization"
+  description="深度红蓝对抗财报分析报告。分析公司财务指标、潜在风险点及投资建议，提供可视化数据与完整证据链。"
+  keywords="财报深度分析, 审计报告生成, 风险建议, 财务表现可视化"
 >
   <div class="check-page">
     <div class="u-container">
@@ -25,8 +25,6 @@ const translations = ui[lang];
       <div class="check-header">
         <h1 class="check-title" id="page-title">{t("check.title")}</h1>
       </div>
-
-
 
       <!-- Loading State -->
       <div class="loading-container" id="loading-container">
@@ -105,7 +103,7 @@ const translations = ui[lang];
       <div class="results-container hidden" id="results-container">
         <!-- Stage 1: Dual-Column Stage (A & B Independent Containers) -->
         <div class="stage-analysis-grid" id="stage-analysis-grid">
-          <!-- Independent Container A: Data Normalization (Sticky) -->
+          <!-- 独立容器 A: 数据归一化看板 (Sticky) -->
           <div class="analysis-panel panel-a section-a hidden" id="panel-a">
             <div class="panel-header">
               <span class="panel-badge">A</span>
@@ -138,7 +136,7 @@ const translations = ui[lang];
               </div>
             </div>
 
-            <!-- Area A Bottom Unified Timeline Zoom Slider (1 slider controls all 4 charts) -->
+            <!-- A 区域底部统一时间跨度调控滑块 (单个拉动轴直接调控四个图表) -->
             <div class="timeline-controller" id="timeline-controller">
               <div class="timeline-slider-wrapper">
                 <div id="chart-timeline-slider" class="timeline-slider-canvas"></div>
@@ -146,7 +144,7 @@ const translations = ui[lang];
             </div>
           </div>
           
-          <!-- Independent Container B: Analysis Cards Stream -->
+          <!-- 独立容器 B: 深度分析卡片流 -->
           <div class="analysis-panel panel-b section-b" id="panel-b">
             <div class="panel-header">
               <span class="panel-badge">B</span>
@@ -197,7 +195,7 @@ const translations = ui[lang];
             <div id="summary-text" class="text-output"></div>
             <div class="final-result-wrapper">
               <div id="final-result-text" class="final-result-output hidden"></div>
-              <AnalysisRating slug="" lang="en" />
+              <AnalysisRating slug="" lang="zh" />
             </div>
           </div>
         </div>
@@ -332,7 +330,8 @@ const translations = ui[lang];
     stroke: var(--color-brand-1);
   }
 
-  /* Auto-rotation of icons handled by animation */
+  /* Auto-rotation of icons handled by animation or script? 
+     Let's use a CSS animation for simplicity if possible, or just a CSS stagger */
   .s-shield { animation: state-cycle 9s infinite 0s; }
   .s-chart { animation: state-cycle 9s infinite 3s; }
   .s-search { animation: state-cycle 9s infinite 6s; }
@@ -762,7 +761,7 @@ const translations = ui[lang];
 
   #industry-wordcloud {
     width: 100%;
-    max-width: 100%;
+    max-width: 100%; 
     height: 460px;
     transition: transform 0.3s ease;
     display: block;
@@ -822,11 +821,10 @@ const translations = ui[lang];
     font-family: inherit;
   }
 
-  :global([data-theme="dark"] .chart-data-popover),
   :global(.dark .chart-data-popover) {
-    background: #181d28;
-    border-color: rgba(255, 255, 255, 0.12);
-    box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.06);
+    background: #1e293b;
+    border-color: rgba(148, 163, 184, 0.2);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
     color: #f1f5f9;
   }
 
@@ -844,9 +842,8 @@ const translations = ui[lang];
     border-bottom: 1px solid rgba(var(--rgb-brand-1), 0.1);
   }
 
-  :global([data-theme="dark"] .chart-data-popover .popover-header),
   :global(.dark .chart-data-popover .popover-header) {
-    border-bottom-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(148, 163, 184, 0.15);
   }
 
   :global(.chart-data-popover .popover-title) {
@@ -858,11 +855,6 @@ const translations = ui[lang];
     color: var(--color-brand-1, #7c3aed);
   }
 
-  :global([data-theme="dark"] .chart-data-popover .popover-title),
-  :global(.dark .chart-data-popover .popover-title) {
-    color: #c4b5fd;
-  }
-
   :global(.chart-data-popover .popover-badge) {
     font-size: 10px;
     padding: 2px 6px;
@@ -870,12 +862,6 @@ const translations = ui[lang];
     background: rgba(var(--rgb-brand-1), 0.1);
     color: var(--color-brand-1, #7c3aed);
     font-weight: 600;
-  }
-
-  :global([data-theme="dark"] .chart-data-popover .popover-badge),
-  :global(.dark .chart-data-popover .popover-badge) {
-    background: rgba(139, 92, 246, 0.2);
-    color: #ddd6fe;
   }
 
   :global(.chart-data-popover .popover-comparison-summary) {
@@ -889,10 +875,9 @@ const translations = ui[lang];
     justify-content: space-between;
   }
 
-  :global([data-theme="dark"] .chart-data-popover .popover-comparison-summary),
   :global(.dark .chart-data-popover .popover-comparison-summary) {
-    background: rgba(124, 58, 237, 0.18);
-    border-color: rgba(139, 92, 246, 0.3);
+    background: rgba(124, 58, 237, 0.15);
+    border-color: rgba(124, 58, 237, 0.25);
   }
 
   :global(.chart-data-popover .comparison-delta) {
@@ -931,9 +916,8 @@ const translations = ui[lang];
     font-weight: 600;
   }
 
-  :global([data-theme="dark"] .chart-data-popover .popover-row.is-focus),
   :global(.dark .chart-data-popover .popover-row.is-focus) {
-    background: rgba(124, 58, 237, 0.25);
+    background: rgba(124, 58, 237, 0.2);
   }
 
   :global(.chart-data-popover .row-period) {
@@ -944,17 +928,12 @@ const translations = ui[lang];
     gap: 4px;
     white-space: nowrap;
   }
-  :global([data-theme="dark"] .chart-data-popover .row-period),
   :global(.dark .chart-data-popover .row-period) {
     color: #94a3b8;
   }
   :global(.chart-data-popover .popover-row.is-focus .row-period) {
     color: var(--color-brand-1, #7c3aed);
     font-weight: 600;
-  }
-  :global([data-theme="dark"] .chart-data-popover .popover-row.is-focus .row-period),
-  :global(.dark .chart-data-popover .popover-row.is-focus .row-period) {
-    color: #c4b5fd;
   }
 
   :global(.chart-data-popover .row-bar-container) {
@@ -964,7 +943,6 @@ const translations = ui[lang];
     overflow: hidden;
     position: relative;
   }
-  :global([data-theme="dark"] .chart-data-popover .row-bar-container),
   :global(.dark .chart-data-popover .row-bar-container) {
     background: rgba(148, 163, 184, 0.15);
   }
@@ -992,7 +970,6 @@ const translations = ui[lang];
     background: #e2e8f0;
     color: #475569;
   }
-  :global([data-theme="dark"] .chart-data-popover .row-tag.tag-base),
   :global(.dark .chart-data-popover .row-tag.tag-base) {
     background: #334155;
     color: #cbd5e1;
@@ -1002,30 +979,22 @@ const translations = ui[lang];
     color: var(--color-brand-1, #7c3aed);
     font-weight: 600;
   }
-  :global([data-theme="dark"] .chart-data-popover .row-tag.tag-target),
-  :global(.dark .chart-data-popover .row-tag.tag-target) {
-    background: rgba(139, 92, 246, 0.3);
-    color: #ddd6fe;
-  }
 
   :global(.chart-data-popover .popover-chart-wrapper) {
     width: 100%;
     margin-top: 2px;
     display: flex;
     justify-content: center;
-    overflow: hidden;
   }
 
   :global(.chart-data-popover .popover-bar-svg) {
     display: block;
     overflow: visible;
-    max-width: 100%;
   }
 
   :global(.chart-data-popover .svg-axis-line) {
     stroke: rgba(148, 163, 184, 0.25);
   }
-  :global([data-theme="dark"] .chart-data-popover .svg-axis-line),
   :global(.dark .chart-data-popover .svg-axis-line) {
     stroke: rgba(148, 163, 184, 0.2);
   }
@@ -1036,21 +1005,18 @@ const translations = ui[lang];
   :global(.chart-data-popover .svg-bar.bar-normal) {
     fill: #e2e8f0;
   }
-  :global([data-theme="dark"] .chart-data-popover .svg-bar.bar-normal),
   :global(.dark .chart-data-popover .svg-bar.bar-normal) {
     fill: #334155;
   }
   :global(.chart-data-popover .svg-bar.bar-base) {
     fill: #94a3b8;
   }
-  :global([data-theme="dark"] .chart-data-popover .svg-bar.bar-base),
   :global(.dark .chart-data-popover .svg-bar.bar-base) {
     fill: #64748b;
   }
   :global(.chart-data-popover .svg-bar.bar-target) {
     fill: var(--color-brand-1, #7c3aed);
   }
-  :global([data-theme="dark"] .chart-data-popover .svg-bar.bar-target),
   :global(.dark .chart-data-popover .svg-bar.bar-target) {
     fill: #a78bfa;
   }
@@ -1061,7 +1027,6 @@ const translations = ui[lang];
     fill: #64748b;
     font-variant-numeric: tabular-nums;
   }
-  :global([data-theme="dark"] .chart-data-popover .svg-val-text),
   :global(.dark .chart-data-popover .svg-val-text) {
     fill: #94a3b8;
   }
@@ -1069,7 +1034,6 @@ const translations = ui[lang];
     fill: #475569;
     font-weight: 600;
   }
-  :global([data-theme="dark"] .chart-data-popover .svg-val-text.val-base),
   :global(.dark .chart-data-popover .svg-val-text.val-base) {
     fill: #cbd5e1;
   }
@@ -1077,7 +1041,6 @@ const translations = ui[lang];
     fill: var(--color-brand-1, #7c3aed);
     font-weight: 700;
   }
-  :global([data-theme="dark"] .chart-data-popover .svg-val-text.val-target),
   :global(.dark .chart-data-popover .svg-val-text.val-target) {
     fill: #c4b5fd;
   }
@@ -1087,7 +1050,6 @@ const translations = ui[lang];
     font-weight: 500;
     fill: #64748b;
   }
-  :global([data-theme="dark"] .chart-data-popover .svg-period-text),
   :global(.dark .chart-data-popover .svg-period-text) {
     fill: #94a3b8;
   }
@@ -1099,14 +1061,12 @@ const translations = ui[lang];
   :global(.chart-data-popover .svg-subtag-text.tag-base) {
     fill: #64748b;
   }
-  :global([data-theme="dark"] .chart-data-popover .svg-subtag-text.tag-base),
   :global(.dark .chart-data-popover .svg-subtag-text.tag-base) {
     fill: #94a3b8;
   }
   :global(.chart-data-popover .svg-subtag-text.tag-target) {
     fill: var(--color-brand-1, #7c3aed);
   }
-  :global([data-theme="dark"] .chart-data-popover .svg-subtag-text.tag-target),
   :global(.dark .chart-data-popover .svg-subtag-text.tag-target) {
     fill: #c4b5fd;
   }
@@ -1115,7 +1075,6 @@ const translations = ui[lang];
     font-size: 10px;
     color: #64748b;
   }
-  :global([data-theme="dark"] .chart-data-popover .summary-range),
   :global(.dark .chart-data-popover .summary-range) {
     color: #94a3b8;
   }
@@ -1125,7 +1084,6 @@ const translations = ui[lang];
     font-weight: 600;
     color: #1e293b;
   }
-  :global([data-theme="dark"] .chart-data-popover .summary-diff),
   :global(.dark .chart-data-popover .summary-diff) {
     color: #f1f5f9;
   }
@@ -1135,8 +1093,8 @@ const translations = ui[lang];
     border: none;
     cursor: pointer;
     color: #94a3b8;
-    padding: 3px 6px;
-    font-size: 12px;
+    padding: 2px 4px;
+    font-size: 11px;
     border-radius: 4px;
     line-height: 1;
     margin-left: 6px;
@@ -1146,60 +1104,20 @@ const translations = ui[lang];
     color: #1e293b;
     background: rgba(0, 0, 0, 0.06);
   }
-  :global([data-theme="dark"] .chart-data-popover .popover-close-btn:hover),
   :global(.dark .chart-data-popover .popover-close-btn:hover) {
     color: #f8fafc;
     background: rgba(255, 255, 255, 0.12);
   }
 
   :global(.chart-data-popover .popover-fallback-box) {
-    padding: 4px 2px 2px;
+    padding: 6px 2px 2px;
     font-size: 11px;
     color: #475569;
     line-height: 1.5;
   }
-  :global([data-theme="dark"] .chart-data-popover .popover-fallback-box),
   :global(.dark .chart-data-popover .popover-fallback-box) {
     color: #94a3b8;
   }
-
-  :global(.chart-data-popover .popover-metric-detail) {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 8px 10px;
-    background: rgba(var(--rgb-brand-1), 0.05);
-    border: 1px solid rgba(var(--rgb-brand-1), 0.12);
-    border-radius: 6px;
-    margin: 6px 0;
-  }
-  :global([data-theme="dark"] .chart-data-popover .popover-metric-detail),
-  :global(.dark .chart-data-popover .popover-metric-detail) {
-    background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(255, 255, 255, 0.08);
-  }
-  :global(.chart-data-popover .metric-detail-row) {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 11px;
-  }
-  :global(.chart-data-popover .metric-detail-label) {
-    color: #64748b;
-  }
-  :global([data-theme="dark"] .chart-data-popover .metric-detail-label),
-  :global(.dark .chart-data-popover .metric-detail-label) {
-    color: #94a3b8;
-  }
-  :global(.chart-data-popover .metric-detail-val) {
-    font-weight: 600;
-    color: var(--color-brand-1, #7c3aed);
-  }
-  :global([data-theme="dark"] .chart-data-popover .metric-detail-val),
-  :global(.dark .chart-data-popover .metric-detail-val) {
-    color: #c4b5fd;
-  }
-
   :global(.chart-data-popover .fallback-text-snippet) {
     background: rgba(var(--rgb-brand-1), 0.06);
     border-left: 2px solid var(--color-brand-1, #7c3aed);
@@ -1210,10 +1128,8 @@ const translations = ui[lang];
     color: #1e293b;
     word-break: break-all;
   }
-  :global([data-theme="dark"] .chart-data-popover .fallback-text-snippet),
   :global(.dark .chart-data-popover .fallback-text-snippet) {
     background: rgba(124, 58, 237, 0.15);
-    border-left-color: #8b5cf6;
     color: #f1f5f9;
   }
   :global(.chart-data-popover .fallback-tip) {
@@ -1223,50 +1139,6 @@ const translations = ui[lang];
     display: flex;
     align-items: center;
     gap: 4px;
-  }
-
-  /* Mobile adaptation for quotation micro-card and mention tags */
-  @media (max-width: 640px) {
-    :global(.chart-mention-tag) {
-      padding: 1px 4px;
-      border-radius: 4px;
-      background: rgba(var(--rgb-brand-1), 0.08);
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: rgba(var(--rgb-brand-1), 0.2);
-    }
-    :global([data-theme="dark"] .chart-mention-tag),
-    :global(.dark .chart-mention-tag) {
-      background: rgba(139, 92, 246, 0.15);
-    }
-
-    :global(.chart-data-popover) {
-      position: fixed !important;
-      left: 12px !important;
-      right: 12px !important;
-      bottom: 16px !important;
-      top: auto !important;
-      width: auto !important;
-      max-width: calc(100vw - 24px) !important;
-      transform: translateY(16px) !important;
-      border-radius: 12px !important;
-      padding: 14px 16px !important;
-      box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(var(--rgb-brand-1), 0.2) !important;
-    }
-    :global([data-theme="dark"] .chart-data-popover),
-    :global(.dark .chart-data-popover) {
-      box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
-    }
-    :global(.chart-data-popover.is-visible) {
-      transform: translateY(0) !important;
-    }
-    :global(.chart-data-popover .popover-close-btn) {
-      display: inline-flex !important;
-      align-items: center;
-      justify-content: center;
-      width: 24px;
-      height: 24px;
-      font-size: 13px;
-    }
   }
 
   .news-display {
@@ -1993,6 +1865,7 @@ const translations = ui[lang];
   const errorTextEl = document.getElementById('error-text')!;
 
   const thoughtContainer = document.getElementById('thought-container');
+  const thoughtToggle = document.getElementById('thought-toggle');
   const textB = document.getElementById('text-b') as HTMLElement;
   const textC = document.getElementById('text-c') as HTMLElement;
   const summaryText = document.getElementById('summary-text')!;
@@ -2066,7 +1939,6 @@ const translations = ui[lang];
   summaryText.classList.add('is-placeholder');
 
   // Toggle thought process (if present)
-  const thoughtToggle = document.getElementById('thought-toggle');
   if (thoughtToggle && thoughtContainer) {
     thoughtToggle.addEventListener('click', () => {
       thoughtContainer.classList.toggle('is-collapsed');
@@ -2228,7 +2100,9 @@ const translations = ui[lang];
         this.hideTimer = null;
       }
 
-      this.isPinned = pin;
+      if (pin) {
+        this.isPinned = true;
+      }
       this.currentTargetEl = targetEl;
 
       const dataStore = chartManager.getChartData(chartId);
@@ -2236,35 +2110,32 @@ const translations = ui[lang];
       let metricTitle = '';
       let metricUnit = '';
       let metricIcon = 'fa-chart-column';
-      const lowerChartId = (chartId || '').toLowerCase();
-
-      if (lowerChartId.includes('revenue') || lowerChartId.includes('营收') || lowerChartId.includes('收入')) {
+      if (chartId.includes('revenue')) {
         metricTitle = lang === 'zh' ? '营业收入' : 'Revenue';
         metricUnit = lang === 'zh' ? '亿元' : 'B';
         metricIcon = 'fa-chart-column';
-      } else if (lowerChartId.includes('profit') || lowerChartId.includes('净利润') || lowerChartId.includes('利润')) {
+      } else if (chartId.includes('profit')) {
         metricTitle = lang === 'zh' ? '净利润' : 'Net Profit';
         metricUnit = lang === 'zh' ? '亿元' : 'B';
         metricIcon = 'fa-coins';
-      } else if (lowerChartId.includes('margin') || lowerChartId.includes('毛利')) {
+      } else if (chartId.includes('margin')) {
         metricTitle = lang === 'zh' ? '毛利率' : 'Gross Margin';
         metricUnit = '%';
         metricIcon = 'fa-percent';
-      } else if (lowerChartId.includes('debt') || lowerChartId.includes('负债') || lowerChartId.includes('liability')) {
+      } else if (chartId.includes('debt')) {
         metricTitle = lang === 'zh' ? '资产负债率' : 'Debt Ratio';
         metricUnit = '%';
         metricIcon = 'fa-scale-balanced';
-      } else if (lowerChartId.includes('rd') || lowerChartId.includes('研发')) {
+      } else if (chartId.includes('rd') || chartId.includes('研发')) {
         metricTitle = lang === 'zh' ? '研发投入' : 'R&D Investment';
         metricUnit = lang === 'zh' ? '亿元' : 'B';
         metricIcon = 'fa-microchip';
-      } else if (lowerChartId.includes('cash') || lowerChartId.includes('现金')) {
+      } else if (chartId.includes('cash') || chartId.includes('现金')) {
         metricTitle = lang === 'zh' ? '现金流指标' : 'Cash Flow';
         metricUnit = lang === 'zh' ? '亿元' : 'B';
         metricIcon = 'fa-money-bill-wave';
       } else {
-        const rawMetric = targetEl.getAttribute('data-metric') || '';
-        metricTitle = rawMetric || (lang === 'zh' ? '专题财务指标' : 'Financial Metric');
+        metricTitle = lang === 'zh' ? '专题财务指标' : 'Financial Metric';
         metricUnit = '';
         metricIcon = 'fa-chart-line';
       }
@@ -2277,8 +2148,7 @@ const translations = ui[lang];
         return Number(val).toLocaleString();
       };
 
-      const isMobile = window.innerWidth <= 640;
-      const closeBtnHtml = (this.isPinned || isMobile) ? `
+      const closeBtnHtml = this.isPinned ? `
         <button class="popover-close-btn" aria-label="Close" onclick="window.chartDataPopover?.hide(true)">
           <i class="fa-solid fa-xmark"></i>
         </button>
@@ -2287,7 +2157,7 @@ const translations = ui[lang];
       // Graceful fallback if dataStore is not available yet or metric has no direct chart
       if (!dataStore || !dataStore.data || dataStore.data.length === 0) {
         const snippetText = targetEl.textContent ? targetEl.textContent.trim() : '';
-        const targetPeriod = period || (lang === 'zh' ? '披露期数据' : 'Period Data');
+        const targetPeriod = period || (lang === 'zh' ? '专项数据' : 'Specific Data');
 
         this.popoverEl.innerHTML = `
           <div class="popover-header">
@@ -2301,16 +2171,6 @@ const translations = ui[lang];
             </div>
           </div>
           <div class="popover-fallback-box">
-            <div class="popover-metric-detail">
-              <div class="metric-detail-row">
-                <span class="metric-detail-label">${lang === 'zh' ? '核验科目' : 'Audited Metric'}</span>
-                <span class="metric-detail-val">${metricTitle}</span>
-              </div>
-              <div class="metric-detail-row">
-                <span class="metric-detail-label">${lang === 'zh' ? '报告期' : 'Period'}</span>
-                <span class="metric-detail-val">${targetPeriod}</span>
-              </div>
-            </div>
             <div class="fallback-text-snippet">“${snippetText}”</div>
             <div class="fallback-tip">
               <i class="fa-solid fa-circle-check" style="color:#10b981;"></i>
@@ -2322,18 +2182,6 @@ const translations = ui[lang];
         this.popoverEl.classList.add('is-visible');
         return;
       }
-
-      const findPeriodIdx = (pQuery: string) => {
-        let idx = dataStore.periods.findIndex(p => p.includes(pQuery) || pQuery.includes(p));
-        if (idx !== -1) return idx;
-        if (/FY|年报/i.test(pQuery)) {
-          const year = pQuery.match(/\d{4}/)?.[0];
-          if (year) {
-            idx = dataStore.periods.findIndex(p => p.includes(`${year}Q4`) || p.startsWith(year));
-          }
-        }
-        return idx;
-      };
 
       const isCompareMode = !!(comparePeriod && comparePeriod !== period);
       let headerSubtitle = '';
@@ -2349,8 +2197,8 @@ const translations = ui[lang];
       let deltaSign = '';
 
       if (isCompareMode) {
-        idxStart = findPeriodIdx(comparePeriod!);
-        idxEnd = period ? findPeriodIdx(period) : dataStore.periods.length - 1;
+        idxStart = dataStore.periods.findIndex(p => p.includes(comparePeriod!) || comparePeriod!.includes(p));
+        idxEnd = period ? dataStore.periods.findIndex(p => p.includes(period) || period.includes(p)) : dataStore.periods.length - 1;
 
         if (idxStart === -1) idxStart = 0;
         if (idxEnd === -1) idxEnd = dataStore.periods.length - 1;
@@ -2380,7 +2228,7 @@ const translations = ui[lang];
         `;
       } else {
         if (period) {
-          targetIdx = findPeriodIdx(period);
+          targetIdx = dataStore.periods.findIndex(p => p.includes(period) || period.includes(p));
         }
         if (targetIdx === -1) targetIdx = dataStore.periods.length - 1;
 
@@ -2419,18 +2267,14 @@ const translations = ui[lang];
       let baseCoord: { x: number; y: number } | null = null;
       let targetCoord: { x: number; y: number } | null = null;
 
-      const periodStartRef = dataStore.periods[idxStart];
-      const periodEndRef = dataStore.periods[idxEnd];
-
       sliceData.forEach((d, idx) => {
-        if (!d) return;
         const cx = nBars > 1 ? padLeft + idx * step : svgW / 2;
         const val = d.value || 0;
         const barH = Math.max(5, Math.round((Math.abs(val) / maxValInSlice) * maxBarH));
         const barY = axisY - barH;
 
-        const isBase = isCompareMode && !!(periodStartRef && d.period && (d.period.includes(periodStartRef) || periodStartRef.includes(d.period)));
-        const isTarget = isCompareMode && !!(periodEndRef && d.period && (d.period.includes(periodEndRef) || periodEndRef.includes(d.period)));
+        const isBase = isCompareMode && (d.period.includes(dataStore.periods[idxStart]) || dataStore.periods[idxStart].includes(d.period));
+        const isTarget = isCompareMode && (d.period.includes(dataStore.periods[idxEnd]) || dataStore.periods[idxEnd].includes(d.period));
         const isSingleFocus = !isCompareMode && ((startIdx + idx) === targetIdx);
 
         if (isBase) baseCoord = { x: cx, y: barY };
@@ -2458,7 +2302,6 @@ const translations = ui[lang];
           tagClass = 'tag-target';
         }
 
-        // Format period for display: if more than 5 quarters, abbreviate "2025Q1" -> "25Q1"
         const displayPeriod = nBars > 5 ? d.period.replace(/^20(\d{2})/, '$1') : d.period;
 
         barsSvg += `
@@ -2480,7 +2323,6 @@ const translations = ui[lang];
         const y2 = (targetCoord as any).y;
 
         const midX = (x1 + x2) / 2;
-        // Curved peak of quadratic bezier: lift above highest bar, clamp at minimum 16 to stay inside SVG
         const midY = Math.max(16, Math.min(y1, y2) - 22);
 
         const arcPath = `M ${x1} ${y1 - 8} Q ${midX} ${midY} ${x2} ${y2 - 8}`;
@@ -2533,13 +2375,6 @@ const translations = ui[lang];
 
     private reposition() {
       if (!this.popoverEl || !this.currentTargetEl) return;
-      if (window.innerWidth <= 640) {
-        // Mobile fixed bottom-sheet layout handled via CSS
-        this.popoverEl.style.left = '';
-        this.popoverEl.style.top = '';
-        return;
-      }
-
       const rect = this.currentTargetEl.getBoundingClientRect();
       const popoverWidth = 320;
       const margin = 8;
@@ -2574,7 +2409,7 @@ const translations = ui[lang];
             this.currentTargetEl = null;
           }
         }
-      }, 200);
+      }, 150);
     }
   }
 
@@ -2588,7 +2423,7 @@ const translations = ui[lang];
     }
 
     private normalizeMetricToChartId(metric: string): string {
-      const m = (metric || '').toLowerCase().trim();
+      const m = metric.toLowerCase();
       if (m.includes('revenue') || m.includes('营收') || m.includes('收入')) return 'chart-revenue';
       if (m.includes('profit') || m.includes('净利润') || m.includes('利润')) return 'chart-profit';
       if (m.includes('margin') || m.includes('毛利')) return 'chart-margin';
@@ -2597,11 +2432,8 @@ const translations = ui[lang];
     }
 
     private setupGlobalDelegation() {
-      // Event Delegation using W3C PointerEvents: hardware-level pointerType discrimination
-      document.addEventListener('pointerover', (e: PointerEvent) => {
-        // Exclude touch taps completely from hover mechanics
-        if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
-
+      // Event Delegation for hover and click interactions
+      document.addEventListener('mouseover', (e) => {
         const target = (e.target as HTMLElement).closest('.chart-mention-tag') as HTMLElement;
         if (!target) return;
         const chartId = target.getAttribute('data-chart-id');
@@ -2613,9 +2445,7 @@ const translations = ui[lang];
         }
       });
 
-      document.addEventListener('pointerout', (e: PointerEvent) => {
-        if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
-
+      document.addEventListener('mouseout', (e) => {
         const target = (e.target as HTMLElement).closest('.chart-mention-tag') as HTMLElement;
         if (!target) return;
         const related = e.relatedTarget as HTMLElement;
@@ -2643,43 +2473,14 @@ const translations = ui[lang];
       });
     }
 
-    // Method 1: Parse [[ref:revenue,period:2026Q1,compare_period:2025Q1,text:Revenue reached $45.2B]] syntax
+    // Method 1: Parse [[ref:revenue,period:2026Q1,compare_period:2025Q1,text:营业收入达45.2亿元]] syntax
     private parseTags(htmlStr: string): string {
-      const tagBlockRegex = /\[\[(?:ref|chart):([^\]]+)\]\]/g;
-      return htmlStr.replace(tagBlockRegex, (match, content) => {
-        let metric = '';
-        let period = '';
-        let comparePeriod = '';
-        let text = '';
-
-        const parts = content.split(/,(?=(?:[a-zA-Z_]+:))/);
-        for (let i = 0; i < parts.length; i++) {
-          const part = parts[i].trim();
-          if (i === 0 && !part.includes(':')) {
-            metric = part;
-            continue;
-          }
-          const colonIdx = part.indexOf(':');
-          if (colonIdx === -1) {
-            if (!metric) metric = part;
-            continue;
-          }
-          const key = part.slice(0, colonIdx).trim().toLowerCase();
-          const val = part.slice(colonIdx + 1).trim();
-          if (key === 'ref' || key === 'chart' || key === 'metric') metric = val;
-          else if (key === 'period') period = val;
-          else if (key === 'compare_period' || key === 'compare') comparePeriod = val;
-          else if (key === 'text') text = val;
-        }
-
-        if (!text) {
-          const textMatch = content.match(/text:([^,\]]+)/);
-          if (textMatch) text = textMatch[1].trim();
-        }
-        if (!text) text = metric || (lang === 'zh' ? '数据核验' : 'Data Audit');
-
+      const tagRegex = /\[\[(?:ref|chart):([a-zA-Z_]+)(?:,period:([^,\]]+))?(?:,compare_period:([^,\]]+))?,text:([^\]]+)\]\]/g;
+      return htmlStr.replace(tagRegex, (match, metric, period, comparePeriod, text) => {
         const chartId = this.normalizeMetricToChartId(metric);
-        return `<span class="chart-mention-tag" data-chart-id="${chartId}" data-period="${period}" data-compare-period="${comparePeriod}" tabindex="0" role="button">${text}</span>`;
+        const periodAttr = period ? period.trim() : '';
+        const compareAttr = comparePeriod ? comparePeriod.trim() : '';
+        return `<span class="chart-mention-tag" data-chart-id="${chartId}" data-period="${periodAttr}" data-compare-period="${compareAttr}" tabindex="0" role="button">${text}</span>`;
       });
     }
 
@@ -2689,7 +2490,6 @@ const translations = ui[lang];
         const text = node.nodeValue;
         if (!text || text.trim().length === 0) return;
 
-        // Tokenize text into metric keywords, periods, and numeric value clusters
         const tokenRegex = /(营业总收入|主营业务收入|营业收入|营收|Revenue|扣除非经常性损益后归属于母公司股东的净利润|归属于母公司股东的净利润|扣非归母净利润|扣非净利润|归母净利润|净利润|Net Profit|销售毛利率|毛利率|Gross Margin|资产负债率|Debt Ratio|合同负债|研发|现金|固定资产|销量|生产量|ROA|ROE)|(20\d{2}(?:Q[1-4]|FY|一季报|二季报|三季报|年报|半年度)?)|((?:20\d{2}(?:Q[1-4]|FY|一季报|二季报|三季报|年报|半年度)?(?:的|年)?\s*)?(?:\d{1,3}(?:,\d{3})*(?:\.\d+)?|\d+(?:\.\d+)?)\s*(?:亿元|万元|亿|万|%|元))/gi;
 
         let activeChartId: string | null = null;
@@ -2717,7 +2517,7 @@ const translations = ui[lang];
             } else if (m.includes('debt') || m.includes('负债') || m.includes('资产负债')) {
               activeChartId = 'chart-debt';
             } else {
-              activeChartId = null; // Non-Section-A metrics reset chartId so subsequent numbers aren't tagged!
+              activeChartId = null;
             }
             newHtml += fullMatch;
           } else if (periodToken) {
@@ -2737,8 +2537,7 @@ const translations = ui[lang];
               if (periodAttr.includes('三季报')) periodAttr = periodAttr.replace('三季报', 'Q3');
               if (periodAttr.includes('年报')) periodAttr = periodAttr.replace('年报', 'FY');
 
-              // Check for comparative phrase like "vs 2025Q1" or "compared to 2025Q1"
-              const compMatch = fullMatch.match(/(?:vs|compared to|相较于|对比|较|比)\s*(20\d{2}(?:Q[1-4]|FY|一季报|二季报|三季报|年报|半年度)?)/i);
+              const compMatch = fullMatch.match(/(?:相较于|对比|较|比)\s*(20\d{2}(?:Q[1-4]|FY|一季报|二季报|三季报|年报|半年度)?)/i);
               let compareAttr = '';
               if (compMatch) {
                 compareAttr = compMatch[1];
@@ -2774,11 +2573,11 @@ const translations = ui[lang];
 
     parseAndBind(container: HTMLElement) {
       if (!container) return;
-
       if (container.innerHTML.includes('[[ref:') || container.innerHTML.includes('[[chart:')) {
         container.innerHTML = this.parseTags(container.innerHTML);
+      } else {
+        this.parseFallback(container);
       }
-      this.parseFallback(container);
     }
   }
 
@@ -2840,7 +2639,7 @@ const translations = ui[lang];
         return isRate ? (prev === 0 ? 0 : Number((((curr - prev) / Math.abs(prev)) * 100).toFixed(2))) : Number((curr - prev).toFixed(2));
       });
 
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark' || document.documentElement.classList.contains('dark');
+      const isDark = document.documentElement.classList.contains('dark');
       const textColor = isDark ? '#94a3b8' : '#64748b';
       const splitLineColor = isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(100, 116, 139, 0.1)';
       const growthLabel = lang === 'zh' ? (isRate ? '环比增长率' : '环比增长量') : (isRate ? 'Growth Rate' : 'Growth Amt');
@@ -2866,7 +2665,7 @@ const translations = ui[lang];
               if (item.seriesIndex === 0) {
                 if (suffix === '%') displayVal = val + '%';
                 else if (Math.abs(val) >= 100000000) displayVal = (val / 100000000).toFixed(2) + (lang === 'zh' ? '亿' : 'B');
-                else if (Math.abs(val) >= 10000) displayVal = (val / 1000).toFixed(0) + 'k';
+                else if (Math.abs(val) >= 10000) displayVal = (val / 10000).toFixed(2) + (lang === 'zh' ? '万' : 'k');
                 else displayVal = val.toLocaleString() + suffix;
               } else {
                 displayVal = (val >= 0 ? '+' : '') + val + '%';
@@ -2926,8 +2725,8 @@ const translations = ui[lang];
                   return (v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)) + (lang === 'zh' ? '亿' : 'B');
                 }
                 if (Math.abs(value) >= 10000) {
-                  const v = value / 1000;
-                  return (v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)) + 'k';
+                  const v = value / 10000;
+                  return (v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)) + (lang === 'zh' ? '万' : 'k');
                 }
                 return value;
               }
@@ -3032,7 +2831,7 @@ const translations = ui[lang];
       if (!el || periods.length === 0) return;
 
       this.activePeriods = periods;
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark' || document.documentElement.classList.contains('dark');
+      const isDark = document.documentElement.classList.contains('dark');
       const textColor = isDark ? '#94a3b8' : '#64748b';
       const rangeBadge = document.getElementById('timeline-range-badge');
 
@@ -3456,7 +3255,7 @@ const translations = ui[lang];
     }
 
     if ((p === 'A' || p === 'NORMALIZER') && (event === 'a_normalized' || event === 'data')) {
-      const d = data || item.data; // Handle if data is directly in item or nested
+      const d = data || item.data;
       if (!d) return;
       
       const { company, report, income_statement, balance_sheet, key_ratios, history_12q } = d;
@@ -3466,18 +3265,16 @@ const translations = ui[lang];
       }
 
       if (company) {
-        // Update Page Title dynamically
         const companyName = company.name || '';
         let periodText = company.reporting_period || '';
-        // Localize 'FY' to '年度' for Chinese
         if (lang === 'zh' && periodText.toLowerCase().includes('fy')) {
           periodText = periodText.replace(/fy/i, '年度');
         }
 
         if (companyName) {
-            const titleSuffix = lang === 'zh' ? '财报分析' : 'Financial Report Analysis';
-            pageTitleEl.textContent = `${companyName} (${periodText}) ${titleSuffix}`;
-            document.title = `${companyName} (${periodText}) ${titleSuffix} - Ezer`;
+          const titleSuffix = lang === 'zh' ? '财报分析' : 'Financial Report Analysis';
+          pageTitleEl.textContent = `${companyName} (${periodText}) ${titleSuffix}`;
+          document.title = `${companyName} (${periodText}) ${titleSuffix} - 弈泽`;
         }
       }
     }
@@ -3612,10 +3409,7 @@ const translations = ui[lang];
               }
 
               if (idx < uniqueRefs.length - 1) {
-                const sep = document.createElement('span');
-                sep.className = 'sources-sep';
-                sep.textContent = '·';
-                sourcesDiv.appendChild(sep);
+                sourcesDiv.appendChild(document.createTextNode(' · '));
               }
             });
 
@@ -3756,7 +3550,7 @@ const translations = ui[lang];
       apiParams.set('lang', lang);
 
       console.log('--- Initiating Audit (Locally checking cache first) ---');
-
+      
       let currentProgress = 5;
       const startTime = Date.now();
       const progressTimer = setInterval(() => {
@@ -3769,8 +3563,8 @@ const translations = ui[lang];
           currentProgress = 95;
         }
         const label = currentProgress < 50 
-          ? (lang === 'zh' ? 'Connecting to audit server...' : 'Connecting to audit server...')
-          : (lang === 'zh' ? 'Server deeply analyzing financial data...' : 'Server deeply analyzing financial data...');
+          ? (lang === 'zh' ? '正在连接安全审计服务器...' : 'Connecting to audit server...')
+          : (lang === 'zh' ? '正在深度穿透财务数据...' : 'Deeply analyzing financial data...');
         setProgress(Math.floor(currentProgress), label);
       }, 50);
 
@@ -3795,7 +3589,7 @@ const translations = ui[lang];
       // (A) Cache Hit Case: Process as a stream as before
       if (contentType && contentType.includes('application/x-ndjson')) {
         console.log('Cache Hit: Streaming from local API...');
-        cleanup();
+        cleanup(); 
         await handleResponseStream(localResp);
         return;
       }
@@ -3824,7 +3618,7 @@ const translations = ui[lang];
         let isSuccessfullyCompleted = false;
         let timeoutId = setTimeout(() => {
           controller.abort();
-          showError(isEn ? 'Connection timeout, please refresh later' : '分析连接超时，请稍后刷新重试');
+          showError(lang === 'zh' ? '分析连接超时，请稍后刷新重试' : 'Connection timeout, please refresh later');
         }, 300000);
 
         console.log('Connecting to direct stream:', streamUrl);
@@ -3838,7 +3632,7 @@ const translations = ui[lang];
             throw new Error(`Stream download failed: ${streamResp.status}`);
         }
         
-        cleanup();
+        cleanup(); 
         // Handle SSE stream using the pattern from public/examples/frontend_call_example_v1.md
         await handleResponseStream(
             streamResp, 
@@ -3855,7 +3649,7 @@ const translations = ui[lang];
                 clearTimeout(timeoutId);
                 timeoutId = setTimeout(() => {
                     controller.abort();
-                    showError(isEn ? 'Report generation timeout, please refresh later' : '报告生成超时，请稍后刷新重试');
+                    showError(lang === 'zh' ? '报告生成超时，请稍后刷新重试' : 'Report generation timeout, please refresh later');
                 }, 300000);
             }
         );
@@ -3947,7 +3741,7 @@ const translations = ui[lang];
       return { name, value };
     });
 
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark' || document.documentElement.classList.contains('dark');
+    const isDark = document.documentElement.classList.contains('dark');
     // @ts-ignore
     wcChartInstance = echarts.init(el, isDark ? 'dark' : null);
 
@@ -4073,9 +3867,9 @@ const translations = ui[lang];
       item.className = 'news-item';
       item.style.animationDelay = `${index * 0.05}s`;
 
-      const linkHtml = isUrlValid
-        ? `<a href="${url.trim()}" target="_blank" rel="noreferrer" class="meta-pill source">${sourceDisplay}</a>`
-        : `<span class="meta-pill source" style="cursor: not-allowed; opacity: 0.6;">${lang === 'zh' ? '行业资讯' : 'Industry News'}</span>`;
+      const linkHtml = url 
+        ? `<a href="${url}" target="_blank" rel="noreferrer" class="meta-pill source">${sourceDisplay}</a>`
+        : `<span class="meta-pill source">${sourceDisplay}</span>`;
 
       item.innerHTML = `
         <span class="news-bullet">•</span>
@@ -4114,7 +3908,7 @@ const translations = ui[lang];
         const currentPct = Math.floor(startPct + (99 - startPct) * p);
         
         const labels = lang === 'zh' 
-          ? ['Link verified...', 'Building AI model...', 'Executing cross-audit...', 'Generating report...']
+          ? ['数据链路验证成功...', '正在构建归一化大模型...', '正在执行交叉审计穿透...', '财务诊断报告生成中...']
           : ['Link verified...', 'Building AI model...', 'Executing cross-audit...', 'Generating report...'];
         const labelIdx = Math.min(labels.length - 1, Math.floor(p * labels.length));
         
@@ -4128,6 +3922,8 @@ const translations = ui[lang];
 
     loadingEl.classList.add('hidden');
     resultsEl.classList.remove('hidden');
+    // Ensure all timers are truly gone when we show results
+    if (window.loadingInterval) clearInterval(window.loadingInterval);
 
     placeholderB.start();
     placeholderC.start();
