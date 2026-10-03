@@ -3941,9 +3941,17 @@ const translations = ui[lang];
    * Render Industry WordCloud with ECharts WordCloud
    */
   let wcChartInstance: any = null;
+  let lastWcList: any[] = [];
+  let lastNewsMap: Map<string, any> = new Map();
+  let lastWcWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
+
   function renderWordCloud(list: any[], newsMap: Map<string, any>) {
     const el = document.getElementById('industry-wordcloud');
     if (!el) return;
+
+    lastWcList = list;
+    lastNewsMap = newsMap;
+    lastWcWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
 
     if (wcChartInstance) {
       wcChartInstance.dispose();
@@ -3960,6 +3968,9 @@ const translations = ui[lang];
     wcChartInstance = echarts.init(el, isDark ? 'dark' : null);
 
     const colors = ['#967041', '#2f804e', '#7649c0', '#b22f2f', '#4d70ce', '#98487f', '#7c3aed', '#059669'];
+
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+    const sizeRange: [number, number] = isMobile ? [12, 48] : [14, 80];
 
     const option = {
       backgroundColor: 'transparent',
@@ -3981,7 +3992,7 @@ const translations = ui[lang];
         top: 'center',
         width: '95%',
         height: '95%',
-        sizeRange: [14, 80],
+        sizeRange: sizeRange,
         rotationRange: [0, 0],
         gridSize: 10,
         drawOutOfBound: false,
@@ -4018,7 +4029,16 @@ const translations = ui[lang];
   window.addEventListener('resize', () => {
     chartManager.resizeAll();
     if (wcChartInstance && typeof wcChartInstance.resize === 'function') {
-      wcChartInstance.resize();
+      const currentWidth = window.innerWidth;
+      const crossedBreakpoint = 
+        (lastWcWidth <= 768 && currentWidth > 768) || 
+        (lastWcWidth > 768 && currentWidth <= 768);
+      if (crossedBreakpoint && lastWcList.length > 0) {
+        lastWcWidth = currentWidth;
+        renderWordCloud(lastWcList, lastNewsMap);
+      } else {
+        wcChartInstance.resize();
+      }
     }
   });
 
