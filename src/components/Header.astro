@@ -318,8 +318,15 @@ const { logoUrl, logoAlt, link1, link2, links } = Astro.props;
     }
 
     @media (--mq-phone) {
+      gap: 0.35rem;
+
       :global(.btn) {
-        display: none !important;
+        display: inline-flex;
+      }
+
+      :global(.btn > span > span) {
+        padding: 0 0.65rem;
+        font-size: 0.75rem;
       }
     }
   }
@@ -358,7 +365,8 @@ const { logoUrl, logoAlt, link1, link2, links } = Astro.props;
     }
 
     @media (--mq-phone) {
-      display: none !important;
+      padding: 0 0.65rem;
+      font-size: 0.75rem;
     }
   }
 

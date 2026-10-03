@@ -208,15 +208,20 @@ const translations = ui[lang];
 <style>
   .check-page {
     min-height: 100vh;
-    padding-top: 165px;
+    padding-top: calc(var(--survey-banner-height, 0px) + 120px);
     padding-bottom: 4rem;
     padding-left: 1rem;
     padding-right: 1rem;
     background: var(--color-bg);
+    transition: padding-top 0.3s var(--ease-out-cubic);
   }
 
   :global(body:not(.has-survey-banner)) .check-page {
     padding-top: 115px;
+  }
+
+  :global(body.has-survey-banner) .check-page {
+    padding-top: calc(var(--survey-banner-height, 44px) + 115px);
   }
 
   /* ── Header ── */
@@ -1499,9 +1504,12 @@ const translations = ui[lang];
 
   @media (max-width: 640px) {
     .check-page {
-      padding-top: 60px;
+      padding-top: calc(var(--survey-banner-height, 0px) + 75px);
       padding-left: 0.5rem;
       padding-right: 0.5rem;
+    }
+    :global(body.has-survey-banner) .check-page {
+      padding-top: calc(var(--survey-banner-height, 44px) + 75px);
     }
     .check-page .u-container {
       padding: 0 !important;
