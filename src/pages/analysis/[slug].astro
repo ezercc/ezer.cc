@@ -2,8 +2,8 @@
 import Layout from "../../layouts/Layout.astro";
 import { Redis } from '@upstash/redis';
 import { brotliDecompressSync } from 'zlib';
-import nvdaData from "../../data/nvda_oq_2026fy_en_result_latest.json";
-import zhongjiData from "../../data/zhongji_300308_sz_2026q1_zh_result_latest.json";
+import nvdaData from "../../data/nvidia_nvda_2026fy_inline_ref_v1_8card_en.json";
+import zhongjiData from "../../data/zhongji_xuchuang_300308_2026q1_12q_8card_preview.json";
 
 /**
  * Helper to decompress Brotli data from a Base64 string
@@ -39,9 +39,9 @@ const kv = (kvRestUrl && kvRestToken) ? new Redis({ url: kvRestUrl, token: kvRes
 
 if (slug === 'preview') {
   data = lang === 'en' ? nvdaData.stream : zhongjiData.stream;
-  code = "601899.SH";
-  year = "2024";
-  period = "FY";
+  code = lang === 'en' ? "NVDA.OQ" : "300308.SZ";
+  year = "2026";
+  period = lang === 'en' ? "FY" : "Q1";
 } else {
   const parts = slug?.split('-') || [];
   if (parts.length < 3) return new Response(null, { status: 404 });

@@ -76,6 +76,7 @@ const { logoUrl, logoAlt, link1, link2, links } = Astro.props;
 <style>
   sy-head {
     --br: 1.5rem;
+    --header-btn-h: 2.5rem;
 
     display: block;
     position: fixed;
@@ -97,6 +98,10 @@ const { logoUrl, logoAlt, link1, link2, links } = Astro.props;
 
     @media (--mq-tablet-sm) {
       --br: 1rem;
+    }
+
+    @media (--mq-phone) {
+      --header-btn-h: 2.1rem;
     }
 
     &::before,
@@ -126,15 +131,15 @@ const { logoUrl, logoAlt, link1, link2, links } = Astro.props;
   }
 
   .inner {
-    padding: 1rem 0;
+    padding: 0.75rem 0;
     transition: padding 0.3s var(--ease-out-cubic);
 
     :global(body.is-nav-small) & {
-      padding: 0.4rem 0;
+      padding: 0.35rem 0;
     }
 
     @media (--mq-phone) {
-      padding: 0.6rem 0;
+      padding: 0.5rem 0;
     }
   }
 
@@ -157,7 +162,7 @@ const { logoUrl, logoAlt, link1, link2, links } = Astro.props;
 
     svg {
       width: auto;
-      height: 2.5rem;
+      height: 2.15rem;
       transition: filter 0.3s ease;
     }
   }
@@ -188,20 +193,8 @@ const { logoUrl, logoAlt, link1, link2, links } = Astro.props;
       transition: clip-path 0.5s var(--ease-out-expo);
 
       :global(body:not(.is-nav-opened)) & {
-        clip-path: inset(0 0 100%);
-        pointer-events: none;
-      }
-
-      :global(body.is-nav-small:not(.is-nav-opened)) & {
-        clip-path: inset(
-          0 0 calc(100% - 3.75rem) round 0 0 var(--br) var(--br)
-        );
-      }
-    }
-
-    @media (--mq-phone) {
-      :global(body.is-nav-small:not(.is-nav-opened)) & {
-        clip-path: inset(0 0 calc(100% - 3.375rem) round 0 0 1rem 1rem);
+        clip-path: inset(0 0 100%) !important;
+        pointer-events: none !important;
       }
     }
 
@@ -288,6 +281,54 @@ const { logoUrl, logoAlt, link1, link2, links } = Astro.props;
     @media (--mq-tablet) {
       gap: 0.5rem;
     }
+
+    /* 移动端菜单打开时，隐藏右上角其他按钮，只保留关闭 X 按钮，彻底杜绝误触 */
+    :global(body.is-nav-opened) & {
+      :global(.language-switcher),
+      :global(#theme-toggle),
+      :global(.btn),
+      .login {
+        display: none !important;
+      }
+    }
+
+    :global(.btn) {
+      height: var(--header-btn-h, 2.5rem);
+      display: inline-flex;
+      align-items: stretch;
+      box-sizing: border-box;
+      flex-shrink: 0;
+    }
+
+    :global(.btn > span) {
+      display: flex;
+      height: 100%;
+      width: 100%;
+    }
+
+    :global(.btn > span > span) {
+      height: 100%;
+      padding: 0 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    @media (--mq-phone) {
+      gap: 0.35rem;
+
+      :global(.btn) {
+        display: inline-flex;
+      }
+
+      :global(.btn > span > span) {
+        padding: 0 0.65rem;
+        font-size: 0.75rem;
+      }
+    }
   }
 
   .signup {
@@ -300,17 +341,22 @@ const { logoUrl, logoAlt, link1, link2, links } = Astro.props;
     @extend %u-text;
     --fs: var(--font-size-xs);
     --fw: 600;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    padding: 0.8rem 1.2rem;
+    justify-content: center;
+    height: var(--header-btn-h, 2.5rem);
+    box-sizing: border-box;
+    padding: 0 1.25rem;
     border-radius: 100px;
     background: transparent;
     color: var(--color-text);
     border: 2px solid var(--color-brand-1);
     cursor: pointer;
     transition: all 0.3s var(--ease-out-expo);
-    line-height: 1.2;
+    line-height: 1;
     text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
 
     &:hover,
     &:focus {
@@ -319,21 +365,25 @@ const { logoUrl, logoAlt, link1, link2, links } = Astro.props;
     }
 
     @media (--mq-phone) {
-      display: none;
+      padding: 0 0.65rem;
+      font-size: 0.75rem;
     }
   }
 
   .toggle {
     border: none;
     background: none;
-    padding: 0;
+    padding: 0.5rem;
+    margin: -0.5rem;
     cursor: pointer;
-    align-self: normal;
+    align-self: center;
     align-items: center;
+    justify-content: center;
     display: none;
-    z-index: 2;
+    z-index: 10;
     color: var(--color-brand-1);
     transition: color 0.3s var(--ease-out-expo);
+    touch-action: manipulation;
 
     :global(.has-no-bg &) {
       color: var(--color-brand-3);
@@ -409,7 +459,16 @@ const { logoUrl, logoAlt, link1, link2, links } = Astro.props;
 
       addScrollObserver(this);
 
-      this.toggleEl.addEventListener("click", this.toggleNav);
+      this.toggleEl?.addEventListener("click", this.toggleNav);
+
+      const menu = this.querySelector(".menu");
+      if (menu) {
+        menu.addEventListener("click", (e) => {
+          if ((e.target as HTMLElement).closest("a")) {
+            document.body.classList.remove("is-nav-opened");
+          }
+        });
+      }
 
       // addResizeObserver(this);
 

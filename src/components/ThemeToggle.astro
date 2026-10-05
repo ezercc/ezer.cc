@@ -24,11 +24,12 @@
 <style>
   .theme-toggle {
     @extend %u-text;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 2.8rem;
-    height: 2.8rem;
+    width: var(--header-btn-h, 2.5rem);
+    height: var(--header-btn-h, 2.5rem);
+    box-sizing: border-box;
     border-radius: 50%;
     background: var(--color-brand-3);
     color: var(--color-text);
@@ -36,6 +37,7 @@
     cursor: pointer;
     transition: all 0.3s var(--ease-out-expo);
     padding: 0;
+    flex-shrink: 0;
   }
 
   .theme-toggle:hover {
@@ -44,10 +46,34 @@
     color: var(--color-brand-1);
   }
 
+  :global([data-theme="dark"]) .theme-toggle {
+    background: transparent;
+    border-color: transparent;
+    color: var(--color-text);
+  }
+
+  :global([data-theme="dark"]) .theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--color-brand-1);
+    color: var(--color-brand-1);
+  }
+
   .icon {
-    width: 1.2rem;
-    height: 1.2rem;
+    width: 1.15rem;
+    height: 1.15rem;
     transition: transform 0.3s var(--ease-out-expo), opacity 0.3s var(--ease-out-expo), display 0s;
+  }
+
+  @media (--mq-phone) {
+    .theme-toggle {
+      width: var(--header-btn-h, 2.1rem);
+      height: var(--header-btn-h, 2.1rem);
+    }
+
+    .icon {
+      width: 1.05rem;
+      height: 1.05rem;
+    }
   }
 
   /* Default (Light Mode): Show Moon, Hide Sun */

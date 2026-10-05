@@ -22,7 +22,7 @@ The free experience is generally available when an account is created, a user si
 EzerLab offers paid digital services. Before purchase, Stripe Checkout displays the applicable price, currency, billing interval, applicable taxes, renewal status, and available payment methods.
 
 - Card plans offered monthly, quarterly, or annually are automatically renewing subscriptions billed for the interval shown at purchase until cancelled.
-- Alipay quarterly and annual plans offered on the Chinese-language page are one-time prepaid purchases and do not automatically renew.
+- Alipay monthly, quarterly, and annual plans offered on the Chinese-language page are one-time prepaid purchases and do not automatically renew.
 - After an Alipay one-time purchase expires, you may make a new purchase if you wish to continue using paid Services.
 - Plans, prices, available payment methods, and availability by region may change. The final checkout and order-confirmation information controls for a particular purchase.
 

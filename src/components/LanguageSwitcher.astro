@@ -48,21 +48,40 @@ const options = languages.map(l => ({
     @extend %u-text;
     --fs: var(--font-size-xs);
     --fw: 600;
-    display: flex;
+    display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
-    padding: 0.8rem 1.2rem;
+    height: var(--header-btn-h, 2.5rem);
+    box-sizing: border-box;
+    padding: 0 1.2rem;
     border-radius: 100px;
     background: var(--color-brand-3);
     color: var(--color-text);
     border: 2px solid var(--color-brand-3);
     cursor: pointer;
     transition: all 0.3s var(--ease-out-expo);
-    line-height: 1.2;
+    line-height: 1;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
-  .lang-toggle:hover {
+  .lang-toggle:hover,
+  .language-switcher.is-open .lang-toggle {
     background: var(--color-white);
+    border-color: var(--color-brand-1);
+    color: var(--color-brand-1);
+  }
+
+  :global([data-theme="dark"]) .lang-toggle {
+    background: transparent;
+    border-color: transparent;
+    color: var(--color-text);
+  }
+
+  :global([data-theme="dark"]) .lang-toggle:hover,
+  :global([data-theme="dark"]) .language-switcher.is-open .lang-toggle {
+    background: rgba(255, 255, 255, 0.1);
     border-color: var(--color-brand-1);
     color: var(--color-brand-1);
   }
@@ -70,6 +89,9 @@ const options = languages.map(l => ({
   .icon {
     font-size: 1.1rem;
     line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .arrow {
@@ -150,8 +172,9 @@ const options = languages.map(l => ({
       display: none;
     }
     .lang-toggle {
-      padding: 0.5rem 0.5rem;
-      gap: 0.2rem;
+      height: var(--header-btn-h, 2.1rem);
+      padding: 0 0.65rem;
+      gap: 0.25rem;
     }
     .dropdown {
       right: -0.5rem;
@@ -160,7 +183,8 @@ const options = languages.map(l => ({
 
   @media (--mq-tablet) {
     .lang-toggle {
-      padding: 0.6rem 0.8rem;
+      height: var(--header-btn-h, 2.4rem);
+      padding: 0 0.85rem;
     }
   }
 </style>
@@ -177,10 +201,15 @@ const options = languages.map(l => ({
       toggle.setAttribute('aria-expanded', expanded.toString());
     });
 
-    // Close when clicking outside
-    document.addEventListener('click', () => {
-      switcher.classList.remove('is-open');
-      toggle.setAttribute('aria-expanded', 'false');
-    });
+    const closeDropdown = (e: Event) => {
+      if (!switcher.contains(e.target as Node)) {
+        switcher.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    };
+
+    // Close when clicking or touching outside
+    document.addEventListener('click', closeDropdown);
+    document.addEventListener('touchstart', closeDropdown, { passive: true });
   }
 </script>

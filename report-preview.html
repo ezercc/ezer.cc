@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>中际旭创 2026Q1 财务深度研究报告</title>
+<style>
+  :root {
+    --navy: #101d31;
+    --navy-deep: #0a1320;
+    --ink: #1b2638;
+    --slate: #526274;
+    --faint: #8d9aaa;
+    --line: #dce2e9;
+    --line-subtle: #edf1f5;
+    --paper: #ffffff;
+    --ground: #eaedf2;
+    --accent: #6657c8;
+    --accent-soft: #f3f1fd;
+    --accent-border: #dedbf9;
+    --wash: #f8fafc;
+    --alert-bg: #fff9f6;
+    --alert-border: #f8dbcb;
+    --alert-text: #c17843;
+    --success-bg: #eaf4ed;
+    --success-text: #20713b;
+    --serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", Georgia, serif;
+    --sans: "Noto Sans SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--ground); }
+  body {
+    margin: 0;
+    color: var(--ink);
+    background: var(--ground);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 顶部操作条 (打印自动隐藏) */
+  .viewer {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    color: #fff;
+    background: var(--navy);
+    box-shadow: 0 4px 16px rgba(16, 29, 49, 0.25);
+    font: 600 11px var(--mono);
+    letter-spacing: .08em;
+  }
+  .viewer-left { display: flex; align-items: center; gap: 12px; }
+  .viewer-pill {
+    padding: 3px 7px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 3px;
+    font-size: 10px;
+    color: #bfb9ff;
+  }
+  .viewer button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    font: inherit;
+    font-size: 11px;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .viewer button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+
+  main {
+    display: grid;
+    gap: 28px;
+    padding: 32px 16px 64px;
+  }
+
+  /* ==================== A4 尺寸单页硬性锁定 (7页饱满版面) ==================== */
+  .report-page {
+    position: relative;
+    width: min(100%, 840px);
+    height: 1188px;
+    max-height: 1188px;
+    margin: auto;
+    padding: 44px 56px 40px;
+    overflow: hidden;
+    background: var(--paper);
+    box-shadow: 0 12px 36px rgba(36, 54, 74, 0.12);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  /* 封面 */
+  .cover {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 68px 64px 56px;
+    color: #fff;
+    background: var(--navy);
+  }
+  .cover::before {
+    content: "";
+    position: absolute;
+    width: 540px;
+    height: 540px;
+    top: 110px;
+    right: -240px;
+    border: 1px solid rgba(189, 183, 255, 0.35);
+    border-radius: 50%;
+    box-shadow: 0 0 0 46px rgba(189, 183, 255, 0.06), 0 0 0 100px rgba(189, 183, 255, 0.04);
+  }
+  .cover::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 190px;
+    background: linear-gradient(115deg, rgba(102, 87, 200, 0.7) 0%, rgba(102, 87, 200, 0) 65%);
+    clip-path: polygon(0 55%, 100% 0, 100% 100%, 0 100%);
+  }
+  .cover-top, .cover-body, .cover-bottom { position: relative; z-index: 2; }
+  .cover-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font: 700 11px var(--mono);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+  }
+  .cover-series {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #bfb9ff;
+  }
+  .cover-series::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    background: #bfb9ff;
+    border-radius: 50%;
+  }
+  .cover-body { margin-top: 110px; }
+  .cover-body h1 {
+    max-width: 640px;
+    margin: 0;
+    font: 700 64px/1.08 var(--serif);
+    letter-spacing: -.05em;
+  }
+  .cover-body h1 span {
+    display: block;
+    margin-top: 12px;
+    color: #c9c4ff;
+    font-size: 50px;
+  }
+  .cover-ticker {
+    margin: 26px 0 0;
+    color: #c8d0db;
+    font: 600 18px var(--mono);
+    letter-spacing: .1em;
+  }
+  .cover-meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 620px;
+    margin-top: 72px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.22);
+  }
+  .cover-meta span {
+    display: block;
+    color: #9cb0c6;
+    font: 600 10px var(--mono);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  .cover-meta strong {
+    display: block;
+    margin-top: 6px;
+    color: #fff;
+    font-size: 15px;
+  }
+  .cover-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 32px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.22);
+  }
+  .cover-bottom p {
+    max-width: 480px;
+    margin: 0;
+    color: #b5c3d2;
+    font-size: 11.5px;
+    line-height: 1.7;
+  }
+  .cover-mark {
+    color: #fff;
+    font: 800 16px var(--mono);
+    letter-spacing: .12em;
+    text-align: right;
+  }
+  .cover-mark b { color: #c9c4ff; }
+
+  /* 页眉与页脚 */
+  .running-head {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+    color: var(--faint);
+    font: 600 10px var(--mono);
+    letter-spacing: .06em;
+    flex-shrink: 0;
+  }
+  .head-brand { color: var(--ink); font-weight: 700; }
+  .head-subject { text-align: center; color: var(--slate); font-weight: 500; }
+  .head-period { text-align: right; }
+  .running-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid var(--line-subtle);
+    color: var(--faint);
+    font: 500 10px var(--mono);
+    flex-shrink: 0;
+  }
+
+  /* 页面主要内容容器 */
+  .page-main-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 14px 0 10px;
+    overflow: hidden;
+  }
+
+  .section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font: 700 10.5px var(--mono);
+    letter-spacing: .12em;
+  }
+  .section-num { color: var(--accent); }
+  .section-divider { color: var(--faint); }
+  .section-theme { color: var(--slate); }
+  h2.page-title {
+    margin: 4px 0 0;
+    font: 700 26px/1.2 var(--serif);
+    letter-spacing: -.03em;
+    color: var(--ink);
+  }
+
+  /* ==================== 02 执行摘要核心页 ==================== */
+  .exec-summary-box {
+    margin-top: 12px;
+    padding: 16px 20px;
+    border: 1px solid var(--accent-border);
+    border-left: 5px solid var(--accent);
+    border-radius: 4px;
+    background: var(--accent-soft);
+  }
+  .exec-summary-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .exec-summary-head strong {
+    color: var(--accent);
+    font: 800 12px var(--sans);
+    letter-spacing: .04em;
+  }
+  .exec-summary-box p {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.68;
+    color: var(--navy);
+    font-weight: 500;
+  }
+
+  /* 终审裁定与合规看板 */
+  .audit-verdict-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 14px;
+  }
+  .verdict-card {
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--wash);
+  }
+  .verdict-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .verdict-header strong {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink);
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .verdict-desc {
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: var(--slate);
+  }
+
+  /* 4大 KPI 药丸看板 */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .kpi-card {
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: #fff;
+    text-align: left;
+  }
+  .kpi-label {
+    display: block;
+    color: var(--faint);
+    font: 600 9.5px var(--mono);
+    letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+  .kpi-val {
+    display: block;
+    margin-top: 4px;
+    color: var(--navy);
+    font: 700 15px var(--mono);
+  }
+
+  /* 底稿证据溯源 */
+  .source-refs-box {
+    margin-top: 14px;
+    padding: 12px 16px;
+    border: 1px dashed var(--line);
+    border-radius: 4px;
+    background: #fafbfc;
+  }
+  .source-refs-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--slate);
+    font: 700 10.5px var(--mono);
+    letter-spacing: .06em;
+  }
+  .source-refs-list {
+    margin: 6px 0 0;
+    padding-left: 18px;
+    color: var(--slate);
+    font-size: 11.5px;
+    line-height: 1.6;
+  }
+
+  /* 简要目录条目 */
+  .toc-compact-box {
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-top: 2px solid var(--ink);
+    background: var(--wash);
+  }
+  .toc-compact-title {
+    color: var(--ink);
+    font: 700 11px var(--mono);
+    letter-spacing: .08em;
+    margin-bottom: 8px;
+  }
+  .toc-compact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 20px;
+    row-gap: 5px;
+    font: 11.5px var(--mono);
+    color: var(--slate);
+  }
+  .toc-compact-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 0;
+    border-bottom: 1px dotted var(--line);
+  }
+  .toc-compact-item span:first-child { color: var(--ink); }
+
+  /* ==================== 03 财务数据概览与图表走势 ==================== */
+  .overview-split {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    height: 100%;
+    justify-content: space-between;
+  }
+  .metric-table-compact {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+  .metric-table-compact th {
+    padding: 7px 10px;
+    background: var(--wash);
+    color: var(--slate);
+    border-top: 1px solid var(--line);
+    border-bottom: 2px solid var(--line);
+    text-align: left;
+    font: 700 9.5px var(--mono);
+  }
+  .metric-table-compact th:last-child, .metric-table-compact td:last-child { text-align: right; }
+  .metric-table-compact td {
+    padding: 6.5px 10px;
+    border-bottom: 1px solid var(--line-subtle);
+  }
+  .metric-table-compact td:last-child {
+    font: 700 12.5px var(--mono);
+    color: var(--navy);
+  }
+  .metric-table-compact tbody tr:nth-child(even) { background: #fafbfc; }
+
+  .gap-box-compact {
+    padding: 8px 12px;
+    border-left: 3px solid var(--alert-text);
+    background: var(--alert-bg);
+    border-radius: 0 4px 4px 0;
+    font-size: 11.5px;
+    color: #8c4e20;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  /* 图表网格 (上下叠放) */
+  .charts-compact-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .chart-box {
+    margin: 0;
+    padding: 0 0 6px;
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+  }
+  .chart-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 6px 0 4px;
+  }
+  .chart-title-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .chart-number {
+    color: var(--accent);
+    font: 800 10px var(--mono);
+  }
+  .chart-head strong {
+    color: var(--ink);
+    font: 700 12.5px var(--sans);
+  }
+  .chart-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .chart-legend {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--slate);
+    font: 600 10.5px var(--sans);
+  }
+  .legend-item i {
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+  }
+  .chart-unit {
+    color: var(--faint);
+    font: 9.5px var(--mono);
+  }
+  .line-chart, .bar-chart {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* ==================== 04~06 双专题复合页版面 (彻底消除空白) ==================== */
+  .dual-topic-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+    justify-content: space-between;
+  }
+  .topic-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 14px 18px 12px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(16, 29, 49, 0.03);
+  }
+  .topic-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line-subtle);
+  }
+  .topic-title-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .topic-badge {
+    padding: 2px 6px;
+    background: var(--navy);
+    color: #fff;
+    border-radius: 3px;
+    font: 700 9.5px var(--mono);
+    letter-spacing: .06em;
+  }
+  .topic-title {
+    margin: 0;
+    font: 700 16.5px var(--serif);
+    color: var(--ink);
+  }
+  .topic-en {
+    color: var(--faint);
+    font: 600 9px var(--mono);
+    letter-spacing: .06em;
+  }
+
+  /* 单专题结论框 */
+  .topic-lead {
+    margin: 8px 0;
+    padding: 9px 12px;
+    border-left: 3.5px solid var(--accent);
+    border-radius: 0 3px 3px 0;
+    background: var(--accent-soft);
+  }
+  .topic-lead-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+  .topic-label-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--accent);
+    font: 700 10.5px var(--sans);
+  }
+  .topic-lead-en {
+    color: #8c82d4;
+    font: 600 8.5px var(--mono);
+  }
+  .topic-lead p {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 13.5px;
+    line-height: 1.58;
+    color: var(--navy);
+    font-weight: 500;
+  }
+
+  /* 单专题四格明细网格 */
+  .topic-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 2px;
+  }
+  .grid-cell {
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: var(--wash);
+  }
+  .cell-head {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--slate);
+    font: 700 10px var(--sans);
+    margin-bottom: 4px;
+  }
+  .grid-cell p {
+    margin: 0;
+    font-size: 11.5px;
+    line-height: 1.62;
+    color: #2b3a4e;
+  }
+  .grid-cell--alert {
+    background: var(--alert-bg);
+    border-color: var(--alert-border);
+  }
+  .grid-cell--alert .cell-head { color: var(--alert-text); }
+  .grid-cell--insight {
+    background: #f4f8f5;
+    border-color: #d1e7d8;
+  }
+  .grid-cell--insight .cell-head { color: #20713b; }
+
+  /* 07 资产 + 审计复核 */
+  .audit-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    height: 100%;
+    justify-content: space-between;
+  }
+  .audit-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .field {
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: var(--wash);
+  }
+  .field-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+  .field-label-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .field-label {
+    color: var(--ink);
+    font: 700 10.5px var(--sans);
+  }
+  .field p {
+    margin: 0;
+    font-size: 11.5px;
+    line-height: 1.62;
+    color: #2b3a4e;
+  }
+  .field--audit-challenge {
+    background: var(--alert-bg);
+    border-color: var(--alert-border);
+  }
+  .badge {
+    display: inline-block;
+    padding: 1.5px 6px;
+    border-radius: 3px;
+    font: 700 9px var(--mono);
+  }
+  .badge--low { background: #eaf4ed; color: #2e7d48; border: 1px solid #c9e4d0; }
+  .badge--verified { background: #eef1f8; color: #3c5488; border: 1px solid #d3dbe9; }
+  .badge--pass { background: #eaf4ed; color: #1e7039; border: 1px solid #bce1c7; font-size: 10.5px; padding: 2px 8px; }
+
+  /* 图标标准尺寸 */
+  .sec-icon {
+    width: 13px;
+    height: 13px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .sec-icon--alert { color: var(--alert-text); }
+  .sec-icon--insight { color: #20713b; }
+  .sec-icon--pass { color: #1e7039; }
+
+  /* ==================== 打印专用规则 (A4 锁定、强制底色、零空页) ==================== */
+  @media print {
+    *, *::before, *::after {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+    html, body {
+      width: 210mm;
+      background: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    .viewer {
+      display: none !important;
+    }
+    main {
+      display: block;
+      padding: 0;
+      margin: 0;
+    }
+    .report-page {
+      width: 210mm;
+      height: 297mm;
+      max-height: 297mm;
+      margin: 0;
+      padding: 14mm 16mm 12mm;
+      box-sizing: border-box;
+      overflow: hidden;
+      page-break-after: always;
+      break-after: page;
+      box-shadow: none;
+    }
+    .cover {
+      width: 210mm;
+      height: 297mm;
+      padding: 22mm 18mm 18mm;
+    }
+    .report-page:last-child {
+      page-break-after: auto;
+      break-after: auto;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .report-page {
+      height: auto;
+      max-height: none;
+      padding: 30px 16px;
+    }
+    .cover-body h1 { font-size: 38px; }
+    .cover-body h1 span { font-size: 28px; }
+    .topic-grid, .audit-verdict-grid, .kpi-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="viewer">
+  <div class="viewer-left">
+    <span>EZER FINANCIAL RESEARCH</span>
+    <span class="viewer-pill">A4 PRE-PRESS · 7 PAGES</span>
+  </div>
+  <button type="button" onclick="window.print()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+    打印 / 导出 PDF
+  </button>
+</div>
+
+<main>
+  <!-- ==================== P01: 封面 ==================== -->
+  <section class="report-page cover" data-page="01">
+    <div class="cover-top">
+      <span class="cover-series">Financial Research · Equity</span>
+      <span>2026Q1</span>
+    </div>
+    <div class="cover-body">
+      <h1>中际旭创<span>财务深度研究报告</span></h1>
+      <p class="cover-ticker">300308.SZ</p>
+      <div class="cover-meta">
+        <div><span>Company</span><strong>中际旭创</strong></div>
+        <div><span>Ticker</span><strong>300308.SZ</strong></div>
+        <div><span>Reporting Period</span><strong>2026Q1</strong></div>
+      </div>
+    </div>
+    <div class="cover-bottom">
+      <p>中际旭创 · 300308.SZ · 2026Q1<br>本报告由 EZER 投研系统自动生成，基于官方披露财报归一化数据、多维交叉校验与审计核查模型。</p>
+      <div class="cover-mark"><b>·</b> EZER RESEARCH</div>
+    </div>
+  </section>
+
+  <!-- ==================== P02: 执行摘要与全案研报结论 (补全缺失的核心结论) ==================== -->
+  <section class="report-page" data-page="02">
+    <header class="running-head">
+      <span class="head-brand">中际旭创 · 300308.SZ</span>
+      <span class="head-subject">深度研究报告 · 执行摘要与全案研判结论</span>
+      <span class="head-period">2026Q1</span>
+    </header>
+
+    <div class="page-main-body">
+      <div>
+        <div class="section-badge">
+          <span class="section-num">EXECUTIVE SUMMARY</span>
+          <span class="section-divider">/</span>
+          <span class="section-theme">全案终审研判</span>
+        </div>
+        <h2 class="page-title">综合研究结论与审计裁定</h2>
+
+        <!-- 全局核心结论 (final_summary.summary) -->
+        <div class="exec-summary-box">
+          <div class="exec-summary-head">
+            <strong>EXECUTIVE CONCLUSION · 核心战略研判结论</strong>
+            <span class="badge badge--pass"><svg class="sec-icon sec-icon--pass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg> VERDICT: PASS</span>
+          </div>
+          <p>中际旭创在2026年一季度展现了极强的业绩爆发力，作为全球光模块龙头，充分享受了AI算力基础设施建设的红利。 公司正处于高端产品放量带来的业绩红利期，技术领先与规模效应构筑了深厚护城河，建议关注1.6T等下一代产品的迭代进度及行业需求持续性。</p>
+        </div>
+
+        <!-- 4大核心 KPI 药丸看板 -->
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <span class="kpi-label">营业收入 (Q1)</span>
+            <span class="kpi-val">194.96 亿</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">归母净利润 (Q1)</span>
+            <span class="kpi-val">57.35 亿</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">经营现金流净额</span>
+            <span class="kpi-val">33.68 亿</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">期末总资产</span>
+            <span class="kpi-val">565.81 亿</span>
+          </div>
+        </div>
+
+        <!-- 终审合规与底稿溯源 -->
+        <div class="audit-verdict-grid">
+          <div class="verdict-card">
+            <div class="verdict-header">
+              <strong><svg class="sec-icon sec-icon--pass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg> 审计核查模型裁定</strong>
+              <span class="badge badge--verified">AUDIT PASS</span>
+            </div>
+            <p class="verdict-desc">
+              核查引擎：<strong>c_plus_retriever_compat</strong><br>
+              核查范围：结论确认与修订<br>
+              核查状态：全维度交叉验证通过，主要财务事实与披露附注勾稽一致。
+            </p>
+          </div>
+
+          <div class="verdict-card">
+            <div class="verdict-header">
+              <strong><svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg> 核心底稿勾稽证据链</strong>
+              <span class="badge badge--verified">SOURCES</span>
+            </div>
+            <p class="verdict-desc">
+              • <strong>现金流量表</strong>：2026年一季度公司购建固定资产、无形资产和其他长期资产支付的现金高达19.29亿元。<br>• <strong>主营构成分析表</strong>：2025年国外地区业务毛利率为44.64%，显著高于中国大陆地区的17.04%。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 研报章节导读索引 -->
+      <div class="toc-compact-box">
+        <div class="toc-compact-title">REPORT SECTIONS &amp; PAGE INDEX · 研报篇章索引</div>
+        <div class="toc-compact-grid">
+          <div class="toc-compact-item"><span>03 主要财务数据概览与 12 季度走势</span><span>PAGE 03</span></div>
+          <div class="toc-compact-item"><span>04 盈利能力分析 ＆ 业务结构与市场分布</span><span>PAGE 04</span></div>
+          <div class="toc-compact-item"><span>05 现金流与营运质量 ＆ 研发投入与技术壁垒</span><span>PAGE 05</span></div>
+          <div class="toc-compact-item"><span>06 负债结构与偿债能力 ＆ 历史增长趋势</span><span>PAGE 06</span></div>
+          <div class="toc-compact-item"><span>07 资产构成分析 ＆ 审计挑战质询与复核结论</span><span>PAGE 07</span></div>
+          <div class="toc-compact-item"><span>08 免责声明与知识产权提示</span><span>COVER</span></div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="running-foot">
+      <span>EZER RESEARCH · 研报内部复核版</span>
+      <span>PAGE 02 / 07</span>
+    </footer>
+  </section>
+
+  <!-- ==================== P03: 财务数据概览与走势总览 (上下复合，饱满无空白) ==================== -->
+  <section class="report-page" data-page="03">
+    <header class="running-head">
+      <span class="head-brand">中际旭创 · 300308.SZ</span>
+      <span class="head-subject">深度研究报告 · 财务数据概览与历史走势</span>
+      <span class="head-period">2026Q1</span>
+    </header>
+
+    <div class="page-main-body">
+      <div class="overview-split">
+        <!-- 上部：数据表与缺口提示 -->
+        <div>
+          <div class="section-badge">
+            <span class="section-num">OVERVIEW</span>
+            <span class="section-divider">/</span>
+            <span class="section-theme">归一化核心财务指标</span>
+          </div>
+          <h2 class="page-title" style="margin-bottom:8px;">主要财务数据概览</h2>
+
+          <table class="metric-table-compact">
+            <thead>
+              <tr><th>财务指标项目</th><th>报告期金额 (CNY)</th></tr>
+            </thead>
+            <tbody>
+              
+                <tr><td>营业收入</td><td>¥19,496,398,083.95</td></tr>
+              
+                <tr><td>净利润</td><td>¥5,734,501,526.83</td></tr>
+              
+                <tr><td>期末现金及现金等价物</td><td>¥12,176,254,035.58</td></tr>
+              
+                <tr><td>经营现金流</td><td>¥3,367,573,676.62</td></tr>
+              
+                <tr><td>投资活动现金流量净额</td><td>-¥1,947,791,652.29</td></tr>
+              
+                <tr><td>总资产</td><td>¥56,580,677,310.74</td></tr>
+              
+                <tr><td>总负债</td><td>¥18,465,774,898.96</td></tr>
+              
+            </tbody>
+          </table>
+
+          <div class="gap-box-compact">
+            <svg class="sec-icon sec-icon--alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span><strong>数据披露缺口与审慎限制：</strong>总资产收益率ROA缺失</span>
+          </div>
+        </div>
+
+        <!-- 下部：双图表走势 -->
+        <div class="charts-compact-stack">
+          
+    <figure class="chart-box">
+      <figcaption class="chart-head">
+        <div class="chart-title-wrap">
+          <span class="chart-number">FIG 01</span>
+          <strong>营业收入与净利润走势</strong>
+        </div>
+        <div class="chart-meta">
+          <div class="chart-legend">
+            <span class="legend-item"><i style="background:#6657c8;"></i>营业收入</span>
+            <span class="legend-item"><i style="background:#c17843;"></i>净利润</span>
+          </div>
+          <span class="chart-unit">单位：亿元</span>
+        </div>
+      </figcaption>
+      <svg class="line-chart" viewBox="0 0 700 230" role="img" aria-label="营业收入与净利润趋势，单位亿元">
+        <g class="chart-grid">
+      <line x1="52" x2="670" y1="32.0" y2="32.0" stroke="#e5e9ee" stroke-dasharray="3 3" stroke-width="1"/>
+      <text x="44" y="35.5" text-anchor="end" fill="#8d9aaa" font-size="9.5" font-family="var(--mono)">200</text>
+    
+      <line x1="52" x2="670" y1="72.0" y2="72.0" stroke="#e5e9ee" stroke-dasharray="3 3" stroke-width="1"/>
+      <text x="44" y="75.5" text-anchor="end" fill="#8d9aaa" font-size="9.5" font-family="var(--mono)">150</text>
+    
+      <line x1="52" x2="670" y1="112.0" y2="112.0" stroke="#e5e9ee" stroke-dasharray="3 3" stroke-width="1"/>
+      <text x="44" y="115.5" text-anchor="end" fill="#8d9aaa" font-size="9.5" font-family="var(--mono)">100</text>
+    
+      <line x1="52" x2="670" y1="152.0" y2="152.0" stroke="#e5e9ee" stroke-dasharray="3 3" stroke-width="1"/>
+      <text x="44" y="155.5" text-anchor="end" fill="#8d9aaa" font-size="9.5" font-family="var(--mono)">50</text>
+    
+      <line x1="52" x2="670" y1="192.0" y2="192.0" stroke="#e5e9ee" stroke-dasharray="3 3" stroke-width="1"/>
+      <text x="44" y="195.5" text-anchor="end" fill="#8d9aaa" font-size="9.5" font-family="var(--mono)">0</text>
+    </g>
+        <line x1="52" x2="670" y1="192" y2="192" stroke="#cbd3dc" stroke-width="1"/>
+        
+    <defs>
+      <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#6657c8" stop-opacity="0.18"/>
+        <stop offset="100%" stop-color="#6657c8" stop-opacity="0.01"/>
+      </linearGradient>
+    </defs>
+    <path d="M52.0,192 L52.0,167.8 L113.8,162.5 L175.6,153.3 L237.4,144.4 L299.2,139.9 L361.0,139.6 L422.8,138.6 L484.6,127.1 L546.4,110.3 L608.2,86.1 L670.0,36.0 L670.0,192 Z" fill="url(#revGrad)"/>
+  
+        <polyline points="52.0,167.8 113.8,162.5 175.6,153.3 237.4,144.4 299.2,139.9 361.0,139.6 422.8,138.6 484.6,127.1 546.4,110.3 608.2,86.1 670.0,36.0" fill="none" stroke="#6657c8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="52.0" cy="167.8" r="2.5" fill="#6657c8" stroke="#fff" stroke-width="1"/><circle cx="113.8" cy="162.5" r="2.5" fill="#6657c8" stroke="#fff" stroke-width="1"/><circle cx="175.6" cy="153.3" r="2.5" fill="#6657c8" stroke="#fff" stroke-width="1"/><circle cx="237.4" cy="144.4" r="2.5" fill="#6657c8" stroke="#fff" stroke-width="1"/><circle cx="299.2" cy="139.9" r="2.5" fill="#6657c8" stroke="#fff" stroke-width="1"/><circle cx="361.0" cy="139.6" r="2.5" fill="#6657c8" stroke="#fff" stroke-width="1"/><circle cx="422.8" cy="138.6" r="2.5" fill="#6657c8" stroke="#fff" stroke-width="1"/><circle cx="484.6" cy="127.1" r="2.5" fill="#6657c8" stroke="#fff" stroke-width="1"/><circle cx="546.4" cy="110.3" r="2.5" fill="#6657c8" stroke="#fff" stroke-width="1"/><circle cx="608.2" cy="86.1" r="2.5" fill="#6657c8" stroke="#fff" stroke-width="1"/><circle cx="670.0" cy="36.0" r="4" fill="#6657c8" stroke="#fff" stroke-width="1.8"/><polyline points="52.0,186.5 113.8,185.0 175.6,183.9 237.4,181.2 299.2,180.8 361.0,180.6 422.8,179.3 484.6,172.7 546.4,166.9 608.2,162.7 670.0,146.1" fill="none" stroke="#c17843" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/><circle cx="52.0" cy="186.5" r="2.5" fill="#c17843" stroke="#fff" stroke-width="1"/><circle cx="113.8" cy="185.0" r="2.5" fill="#c17843" stroke="#fff" stroke-width="1"/><circle cx="175.6" cy="183.9" r="2.5" fill="#c17843" stroke="#fff" stroke-width="1"/><circle cx="237.4" cy="181.2" r="2.5" fill="#c17843" stroke="#fff" stroke-width="1"/><circle cx="299.2" cy="180.8" r="2.5" fill="#c17843" stroke="#fff" stroke-width="1"/><circle cx="361.0" cy="180.6" r="2.5" fill="#c17843" stroke="#fff" stroke-width="1"/><circle cx="422.8" cy="179.3" r="2.5" fill="#c17843" stroke="#fff" stroke-width="1"/><circle cx="484.6" cy="172.7" r="2.5" fill="#c17843" stroke="#fff" stroke-width="1"/><circle cx="546.4" cy="166.9" r="2.5" fill="#c17843" stroke="#fff" stroke-width="1"/><circle cx="608.2" cy="162.7" r="2.5" fill="#c17843" stroke="#fff" stroke-width="1"/><circle cx="670.0" cy="146.1" r="4" fill="#c17843" stroke="#fff" stroke-width="1.8"/>
+        
+    <g transform="translate(600.0, 10.0)">
+      <rect width="66" height="18" rx="3" fill="#101d31" filter="drop-shadow(0 2px 4px rgba(16,29,49,0.12))"/>
+      <text x="33" y="13" text-anchor="middle" fill="#fff" font-size="9.5" font-family="var(--mono)" font-weight="700">194.96亿</text>
+    </g>
+    <g transform="translate(600.0, 156.1)">
+      <rect width="66" height="18" rx="3" fill="#f0effb" stroke="#c17843" stroke-width="1"/>
+      <text x="33" y="13" text-anchor="middle" fill="#c17843" font-size="9.5" font-family="var(--mono)" font-weight="700">57.35亿</text>
+    </g>
+  
+        <g class="chart-x-labels"><text x="52.0" y="218" text-anchor="middle" fill="#8d9aaa" font-size="9.5" font-family="var(--mono)">2023Q3</text><text x="175.6" y="218" text-anchor="middle" fill="#8d9aaa" font-size="9.5" font-family="var(--mono)">2024Q1</text><text x="299.2" y="218" text-anchor="middle" fill="#8d9aaa" font-size="9.5" font-family="var(--mono)">2024Q3</text><text x="422.8" y="218" text-anchor="middle" fill="#8d9aaa" font-size="9.5" font-family="var(--mono)">2025Q1</text><text x="546.4" y="218" text-anchor="middle" fill="#8d9aaa" font-size="9.5" font-family="var(--mono)">2025Q3</text><text x="670.0" y="218" text-anchor="middle" fill="#8d9aaa" font-size="9.5" font-family="var(--mono)">2026Q1</text></g>
+      </svg>
+    </figure>
+  
+          
+    <figure class="chart-box">
+      <figcaption class="chart-head">
+        <div class="chart-title-wrap">
+          <span class="chart-number">FIG 02</span>
+          <strong>经营活动产生的现金流量净额</strong>
+        </div>
+        <div class="chart-meta">
+          <div class="chart-legend">
+            <span class="legend-item"><i style="background:#6657c8;"></i>经营活动现金净额</span>
+          </div>
+          <span class="chart-unit">单位：亿元</span>
+        </div>
+      </figcaption>
+      <svg class="bar-chart" viewBox="0 0 700 210" role="img" aria-label="经营现金流趋势，单位亿元">
+        <g class="chart-grid">
+      <line x1="52" x2="670" y1="28.0" y2="28.0" stroke="#e5e9ee" stroke-dasharray="3 3" stroke-width="1"/>
+      <text x="44" y="31.5" text-anchor="end" fill="#8d9aaa" font-size="9.5" font-family="var(--mono)">60</text>
+    
+      <line x1="52" x2="670" y1="76.0" y2="76.0" stroke="#e5e9ee" stroke-dasharray="3 3" stroke-width="1"/>
+      <text x="44" y="79.5" text-anchor="end" fill="#8d9aaa" font-size="9.5" font-family="var(--mono)">40</text>
+    
+      <line x1="52" x2="670" y1="124.0" y2="124.0" stroke="#e5e9ee" stroke-dasharray="3 3" stroke-width="1"/>
+      <text x="44" y="127.5" text-anchor="end" fill="#8d9aaa" font-size="9.5" font-family="var(--mono)">20</text>
+    
+      <line x1="52" x2="670" y1="172.0" y2="172.0" stroke="#e5e9ee" stroke-dasharray="3 3" stroke-width="1"/>
+      <text x="44" y="175.5" text-anchor="end" fill="#8d9aaa" font-size="9.5" font-family="var(--mono)">0</text>
+    </g>
+        <line x1="52" x2="670" y1="172.0" y2="172.0" stroke="#cbd3dc" stroke-width="1.2"/>
+        
+      <rect x="65.5" y="165.1" width="29.2" height="6.9" rx="2" fill="#8f84db"/>
+      <text x="80.1" y="161.1" text-anchor="middle" fill="#8d9aaa" font-size="9" font-family="var(--mono)" font-weight="500">2.87</text>
+      <text x="80.1" y="198" text-anchor="middle" fill="#8d9aaa" font-size="9.5" font-family="var(--mono)">2023Q3</text>
+    
+      <rect x="121.7" y="161.1" width="29.2" height="10.9" rx="2" fill="#8f84db"/>
+      
+      
+    
+      <rect x="177.8" y="156.4" width="29.2" height="15.6" rx="2" fill="#8f84db"/>
+      <text x="192.5" y="152.4" text-anchor="middle" fill="#8d9aaa" font-size="9" font-family="var(--mono)" font-weight="500">6.51</text>
+      <text x="192.5" y="198" text-anchor="middle" fill="#8d9aaa" font-size="9.5" font-family="var(--mono)">2024Q1</text>
+    
+      <rect x="234.0" y="164.4" width="29.2" height="7.6" rx="2" fill="#8f84db"/>
+      
+      
+    
+      <rect x="290.2" y="163.7" width="29.2" height="8.3" rx="2" fill="#8f84db"/>
+      <text x="304.8" y="159.7" text-anchor="middle" fill="#8d9aaa" font-size="9" font-family="var(--mono)" font-weight="500">3.48</text>
+      <text x="304.8" y="198" text-anchor="middle" fill="#8d9aaa" font-size="9.5" font-family="var(--mono)">2024Q3</text>
+    
+      <rect x="346.4" y="127.6" width="29.2" height="44.4" rx="2" fill="#8f84db"/>
+      
+      
+    
+      <rect x="402.6" y="120.1" width="29.2" height="51.9" rx="2" fill="#8f84db"/>
+      <text x="417.2" y="116.1" text-anchor="middle" fill="#8d9aaa" font-size="9" font-family="var(--mono)" font-weight="500">21.64</text>
+      <text x="417.2" y="198" text-anchor="middle" fill="#8d9aaa" font-size="9.5" font-family="var(--mono)">2025Q1</text>
+    
+      <rect x="458.8" y="146.7" width="29.2" height="25.3" rx="2" fill="#8f84db"/>
+      
+      
+    
+      <rect x="514.9" y="118.3" width="29.2" height="53.7" rx="2" fill="#8f84db"/>
+      <text x="529.5" y="114.3" text-anchor="middle" fill="#8d9aaa" font-size="9" font-family="var(--mono)" font-weight="500">22.36</text>
+      <text x="529.5" y="198" text-anchor="middle" fill="#8d9aaa" font-size="9.5" font-family="var(--mono)">2025Q3</text>
+    
+      <rect x="571.1" y="41.4" width="29.2" height="130.6" rx="2" fill="#8f84db"/>
+      
+      
+    
+      <rect x="627.3" y="91.2" width="29.2" height="80.8" rx="2" fill="#6657c8"/>
+      <text x="641.9" y="87.2" text-anchor="middle" fill="#101d31" font-size="9" font-family="var(--mono)" font-weight="700">33.68</text>
+      <text x="641.9" y="198" text-anchor="middle" fill="#8d9aaa" font-size="9.5" font-family="var(--mono)">2026Q1</text>
+    
+      </svg>
+    </figure>
+  
+        </div>
+      </div>
+    </div>
+
+    <footer class="running-foot">
+      <span>EZER RESEARCH · 研报内部复核版</span>
+      <span>PAGE 03 / 07</span>
+    </footer>
+  </section>
+
+  <!-- ==================== P04: 专题 01 (盈利能力) ＋ 专题 02 (业务结构) ==================== -->
+  <section class="report-page" data-page="04">
+    <header class="running-head">
+      <span class="head-brand">中际旭创 · 300308.SZ</span>
+      <span class="head-subject">深度研究报告 · 盈利能力与业务结构研判</span>
+      <span class="head-period">2026Q1</span>
+    </header>
+
+    <div class="page-main-body">
+      <div class="dual-topic-layout">
+        
+  <article class="topic-card">
+    <div class="topic-header">
+      <div class="topic-title-wrap">
+        <span class="topic-badge">PART 01</span>
+        <h3 class="topic-title">盈利能力分析</h3>
+      </div>
+      <span class="topic-en">FINANCIAL ANALYSIS · THEME 01</span>
+    </div>
+
+    <!-- 结论 -->
+    <div class="topic-lead">
+      <div class="topic-lead-header">
+        <div class="topic-label-wrap">
+          <svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <strong>核心研判结论</strong>
+        </div>
+        <span class="topic-lead-en">EXECUTIVE CONCLUSION</span>
+      </div>
+      <p>中际旭创在2026年第一季度实现了爆发式增长，单季营业收入与净利润均创历史新高，体现了AI算力需求下高端光模块市场的强劲动能。</p>
+    </div>
+
+    <!-- 四格明细 -->
+    <div class="topic-grid">
+      <div class="grid-cell">
+        <div class="cell-head"><svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>事实与依据</span></div>
+        <p>根据2026一季报，公司实现营业总收入19,496,398,083.95元，归属于母公司股东的净利润为5,734,501,526.83元。对比2025年报披露的2025Q4单季收入（约132.35亿元）和净利润（约36.65亿元），环比增长显著。</p>
+      </div>
+      <div class="grid-cell">
+        <div class="cell-head"><svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>交叉验证</span></div>
+        <p>2026一季报中扣除非经常性损益后归属于母公司股东的净利润为5,717,748,340.78元，与归母净利润高度接近，显示盈利质量极高。</p>
+      </div>
+      <div class="grid-cell grid-cell--alert">
+        <div class="cell-head"><svg class="sec-icon sec-icon--alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>反向观点与风险</span></div>
+        <p>虽然利润总额巨大，但2026Q1单季的销售毛利率数据在原始DTO中缺失，需结合历史趋势（2025年报为42.04%）观察高毛利产品占比是否持续提升。</p>
+      </div>
+      <div class="grid-cell grid-cell--insight">
+        <div class="cell-head"><svg class="sec-icon sec-icon--insight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span>投资启示</span></div>
+        <p>公司已进入业绩兑现的高速期，需关注未来季度毛利率是否受行业竞争或降价压力影响而出现波动。</p>
+      </div>
+    </div>
+  </article>
+
+        
+  <article class="topic-card">
+    <div class="topic-header">
+      <div class="topic-title-wrap">
+        <span class="topic-badge">PART 02</span>
+        <h3 class="topic-title">业务结构与市场分布</h3>
+      </div>
+      <span class="topic-en">FINANCIAL ANALYSIS · THEME 02</span>
+    </div>
+
+    <!-- 结论 -->
+    <div class="topic-lead">
+      <div class="topic-lead-header">
+        <div class="topic-label-wrap">
+          <svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <strong>核心研判结论</strong>
+        </div>
+        <span class="topic-lead-en">EXECUTIVE CONCLUSION</span>
+      </div>
+      <p>公司高度依赖光通信收发模块业务，且海外市场是其核心收入来源，具有极强的全球竞争力。</p>
+    </div>
+
+    <!-- 四格明细 -->
+    <div class="topic-grid">
+      <div class="grid-cell">
+        <div class="cell-head"><svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>事实与依据</span></div>
+        <p>2025年报主营构成分析显示，光通信收发模块收入达37,456,518,745.90元，占比97.95%，毛利率42.61%。国外地区收入占比达90.58%，毛利率44.64%，显著高于中国大陆的17.04%。</p>
+      </div>
+      <div class="grid-cell">
+        <div class="cell-head"><svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>交叉验证</span></div>
+        <p>2025年报显示光通信收发模块销量为2109万只，生产量为2376万只，产销率维持在较高水平。</p>
+      </div>
+      <div class="grid-cell grid-cell--alert">
+        <div class="cell-head"><svg class="sec-icon sec-icon--alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>反向观点与风险</span></div>
+        <p>极高的海外收入占比（超90%）使公司面临潜在的贸易政策风险及汇率波动风险。</p>
+      </div>
+      <div class="grid-cell grid-cell--insight">
+        <div class="cell-head"><svg class="sec-icon sec-icon--insight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span>投资启示</span></div>
+        <p>中际旭创是典型的AI算力出海龙头，其估值逻辑与全球云厂商资本开支高度绑定。</p>
+      </div>
+    </div>
+  </article>
+
+      </div>
+    </div>
+
+    <footer class="running-foot">
+      <span>EZER RESEARCH · 研报内部复核版</span>
+      <span>PAGE 04 / 07</span>
+    </footer>
+  </section>
+
+  <!-- ==================== P05: 专题 03 (现金流营运) ＋ 专题 04 (研发壁垒) ==================== -->
+  <section class="report-page" data-page="05">
+    <header class="running-head">
+      <span class="head-brand">中际旭创 · 300308.SZ</span>
+      <span class="head-subject">深度研究报告 · 现金流营运与研发技术壁垒</span>
+      <span class="head-period">2026Q1</span>
+    </header>
+
+    <div class="page-main-body">
+      <div class="dual-topic-layout">
+        
+  <article class="topic-card">
+    <div class="topic-header">
+      <div class="topic-title-wrap">
+        <span class="topic-badge">PART 03</span>
+        <h3 class="topic-title">现金流与营运质量</h3>
+      </div>
+      <span class="topic-en">FINANCIAL ANALYSIS · THEME 03</span>
+    </div>
+
+    <!-- 结论 -->
+    <div class="topic-lead">
+      <div class="topic-lead-header">
+        <div class="topic-label-wrap">
+          <svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <strong>核心研判结论</strong>
+        </div>
+        <span class="topic-lead-en">EXECUTIVE CONCLUSION</span>
+      </div>
+      <p>2026年一季度经营活动现金流表现稳健，但由于大规模资本开支，整体现金净增加额受限。</p>
+    </div>
+
+    <!-- 四格明细 -->
+    <div class="topic-grid">
+      <div class="grid-cell">
+        <div class="cell-head"><svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>事实与依据</span></div>
+        <p>2026一季报显示，经营活动产生的现金流量净额为3,367,573,676.62元。同期购建固定资产、无形资产和其他长期资产支付的现金高达1,929,199,282.88元。</p>
+      </div>
+      <div class="grid-cell">
+        <div class="cell-head"><svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>交叉验证</span></div>
+        <p>2026一季报期末现金及现金等价物余额为12,176,254,035.58元，现金储备充足。</p>
+      </div>
+      <div class="grid-cell grid-cell--alert">
+        <div class="cell-head"><svg class="sec-icon sec-icon--alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>反向观点与风险</span></div>
+        <p>2026Q1经营现金流净额（33.68亿元）低于同期归母净利润（57.35亿元），需关注应收账款回款周期或存货备货占用的影响。</p>
+      </div>
+      <div class="grid-cell grid-cell--insight">
+        <div class="cell-head"><svg class="sec-icon sec-icon--insight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span>投资启示</span></div>
+        <p>大规模的资本开支预示着公司仍在积极扩产以应对旺盛订单，短期现金流压力可控，长期产能释放将支撑业绩。</p>
+      </div>
+    </div>
+  </article>
+
+        
+  <article class="topic-card">
+    <div class="topic-header">
+      <div class="topic-title-wrap">
+        <span class="topic-badge">PART 04</span>
+        <h3 class="topic-title">研发投入与技术壁垒</h3>
+      </div>
+      <span class="topic-en">FINANCIAL ANALYSIS · THEME 04</span>
+    </div>
+
+    <!-- 结论 -->
+    <div class="topic-lead">
+      <div class="topic-lead-header">
+        <div class="topic-label-wrap">
+          <svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <strong>核心研判结论</strong>
+        </div>
+        <span class="topic-lead-en">EXECUTIVE CONCLUSION</span>
+      </div>
+      <p>公司维持高强度的研发投入，研发人员占比近两成，为高端产品迭代提供技术支撑。</p>
+    </div>
+
+    <!-- 四格明细 -->
+    <div class="topic-grid">
+      <div class="grid-cell">
+        <div class="cell-head"><svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>事实与依据</span></div>
+        <p>2025年报显示，研发支出合计1,675,931,098.18元，研发人员数量2169人，占比18.66%。研发投入占营业收入比例为4.38%。</p>
+      </div>
+      <div class="grid-cell">
+        <div class="cell-head"><svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>交叉验证</span></div>
+        <p>资本化研发支出占研发投入比例仅为3.62%，显示研发会计处理非常稳健，利润含金量高。</p>
+      </div>
+      <div class="grid-cell grid-cell--alert">
+        <div class="cell-head"><svg class="sec-icon sec-icon--alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>反向观点与风险</span></div>
+        <p>随着光模块向1.6T及更高速率演进，研发投入的绝对值可能进一步攀升，对利润率构成一定压力。</p>
+      </div>
+      <div class="grid-cell grid-cell--insight">
+        <div class="cell-head"><svg class="sec-icon sec-icon--insight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span>投资启示</span></div>
+        <p>低资本化率意味着未来的折旧摊销压力较小，技术领先优势是维持高毛利的关键。</p>
+      </div>
+    </div>
+  </article>
+
+      </div>
+    </div>
+
+    <footer class="running-foot">
+      <span>EZER RESEARCH · 研报内部复核版</span>
+      <span>PAGE 05 / 07</span>
+    </footer>
+  </section>
+
+  <!-- ==================== P06: 专题 05 (负债结构) ＋ 专题 06 (历史增长) ==================== -->
+  <section class="report-page" data-page="06">
+    <header class="running-head">
+      <span class="head-brand">中际旭创 · 300308.SZ</span>
+      <span class="head-subject">深度研究报告 · 负债杠杆与历史增长斜率</span>
+      <span class="head-period">2026Q1</span>
+    </header>
+
+    <div class="page-main-body">
+      <div class="dual-topic-layout">
+        
+  <article class="topic-card">
+    <div class="topic-header">
+      <div class="topic-title-wrap">
+        <span class="topic-badge">PART 05</span>
+        <h3 class="topic-title">负债结构与偿债能力</h3>
+      </div>
+      <span class="topic-en">FINANCIAL ANALYSIS · THEME 05</span>
+    </div>
+
+    <!-- 结论 -->
+    <div class="topic-lead">
+      <div class="topic-lead-header">
+        <div class="topic-label-wrap">
+          <svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <strong>核心研判结论</strong>
+        </div>
+        <span class="topic-lead-en">EXECUTIVE CONCLUSION</span>
+      </div>
+      <p>公司财务结构稳健，资产负债率长期维持在较低水平，财务风险较小。</p>
+    </div>
+
+    <!-- 四格明细 -->
+    <div class="topic-grid">
+      <div class="grid-cell">
+        <div class="cell-head"><svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>事实与依据</span></div>
+        <p>根据历史12季度数据，资产负债率从2023Q3的25.91%小幅波动至2025年报的30.18%。2026一季报显示负债合计为18,465,774,898.96元，资产总计为56,580,677,310.74元。</p>
+      </div>
+      <div class="grid-cell">
+        <div class="cell-head"><svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>交叉验证</span></div>
+        <p>2026一季报中流动负债合计16,302,769,791.49元，占总负债比例较高，主要为经营性负债。</p>
+      </div>
+      <div class="grid-cell grid-cell--alert">
+        <div class="cell-head"><svg class="sec-icon sec-icon--alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>反向观点与风险</span></div>
+        <p>2026Q1合同负债仅为45,593,201.52元，相对于近200亿的单季营收规模，预收款项占比极低，显示行业普遍采用信用账期模式。</p>
+      </div>
+      <div class="grid-cell grid-cell--insight">
+        <div class="cell-head"><svg class="sec-icon sec-icon--insight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span>投资启示</span></div>
+        <p>低杠杆经营为公司未来的融资扩产留下了充足空间，财务安全性极高。</p>
+      </div>
+    </div>
+  </article>
+
+        
+  <article class="topic-card">
+    <div class="topic-header">
+      <div class="topic-title-wrap">
+        <span class="topic-badge">PART 06</span>
+        <h3 class="topic-title">历史增长趋势分析</h3>
+      </div>
+      <span class="topic-en">FINANCIAL ANALYSIS · THEME 06</span>
+    </div>
+
+    <!-- 结论 -->
+    <div class="topic-lead">
+      <div class="topic-lead-header">
+        <div class="topic-label-wrap">
+          <svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <strong>核心研判结论</strong>
+        </div>
+        <span class="topic-lead-en">EXECUTIVE CONCLUSION</span>
+      </div>
+      <p>公司经历了从2023年开始的阶梯式增长，2025年起进入斜率更陡峭的爆发期。</p>
+    </div>
+
+    <!-- 四格明细 -->
+    <div class="topic-grid">
+      <div class="grid-cell">
+        <div class="cell-head"><svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>事实与依据</span></div>
+        <p>营业总收入从2023Q1的18.37亿元增长至2025Q1的66.74亿元，再到2026Q1的194.96亿元，呈现指数级增长态势。</p>
+      </div>
+      <div class="grid-cell">
+        <div class="cell-head"><svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>交叉验证</span></div>
+        <p>归母净利润同步从2023Q1的2.50亿元飙升至2026Q1的57.35亿元。</p>
+      </div>
+      <div class="grid-cell grid-cell--alert">
+        <div class="cell-head"><svg class="sec-icon sec-icon--alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>反向观点与风险</span></div>
+        <p>历史高基数下，未来维持翻倍增长的难度加大，需关注行业需求见顶风险。</p>
+      </div>
+      <div class="grid-cell grid-cell--insight">
+        <div class="cell-head"><svg class="sec-icon sec-icon--insight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span>投资启示</span></div>
+        <p>业绩增长斜率已达历史高位，市场预期可能已充分计入，需警惕增速放缓带来的估值修正。</p>
+      </div>
+    </div>
+  </article>
+
+      </div>
+    </div>
+
+    <footer class="running-foot">
+      <span>EZER RESEARCH · 研报内部复核版</span>
+      <span>PAGE 06 / 07</span>
+    </footer>
+  </section>
+
+  <!-- ==================== P07: 专题 07 (资产构成) ＋ 审计复核记录 ==================== -->
+  <section class="report-page" data-page="07">
+    <header class="running-head">
+      <span class="head-brand">中际旭创 · 300308.SZ</span>
+      <span class="head-subject">深度研究报告 · 资产构成与审计挑战复核</span>
+      <span class="head-period">2026Q1</span>
+    </header>
+
+    <div class="page-main-body">
+      <div class="audit-layout">
+        <!-- 上半部：专题 07 资产构成 -->
+        
+  <article class="topic-card">
+    <div class="topic-header">
+      <div class="topic-title-wrap">
+        <span class="topic-badge">PART 07</span>
+        <h3 class="topic-title">资产构成分析</h3>
+      </div>
+      <span class="topic-en">FINANCIAL ANALYSIS · THEME 07</span>
+    </div>
+
+    <!-- 结论 -->
+    <div class="topic-lead">
+      <div class="topic-lead-header">
+        <div class="topic-label-wrap">
+          <svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <strong>核心研判结论</strong>
+        </div>
+        <span class="topic-lead-en">EXECUTIVE CONCLUSION</span>
+      </div>
+      <p>公司资产结构以流动资产为主，体现了轻资产组装与高周转的经营特点。</p>
+    </div>
+
+    <!-- 四格明细 -->
+    <div class="topic-grid">
+      <div class="grid-cell">
+        <div class="cell-head"><svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>事实与依据</span></div>
+        <p>2026一季报显示，流动资产合计40,125,459,627.71元，占资产总计（565.81亿元）的70.9%。固定资产为7,907,322,983.19元。</p>
+      </div>
+      <div class="grid-cell">
+        <div class="cell-head"><svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>交叉验证</span></div>
+        <p>2025年报显示光通信模块库存量为521万只，相对于2109万只的年销量，库存水平处于合理区间。</p>
+      </div>
+      <div class="grid-cell grid-cell--alert">
+        <div class="cell-head"><svg class="sec-icon sec-icon--alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>反向观点与风险</span></div>
+        <p>随着自建产能增加，固定资产规模正在快速扩张（2026Q1单季资本开支近20亿），资产结构正逐渐变重。</p>
+      </div>
+      <div class="grid-cell grid-cell--insight">
+        <div class="cell-head"><svg class="sec-icon sec-icon--insight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span>投资启示</span></div>
+        <p>关注产能利用率指标，若需求不及预期，高额的固定资产折旧将对利润产生较大反噬。</p>
+      </div>
+    </div>
+  </article>
+
+
+        <!-- 下半部：审计挑战与复核记录 -->
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between;">
+          <div class="section-badge" style="margin-top:4px;">
+            <span class="section-num">AUDIT LOG</span>
+            <span class="section-divider">/</span>
+            <span class="section-theme">质询挑战与核查决议</span>
+          </div>
+          <div class="audit-stack" style="margin-top:4px;">
+            
+      <section class="field field--audit-challenge">
+        <div class="field-header">
+          <div class="field-label-wrap">
+            <svg class="sec-icon sec-icon--alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span class="field-label">审计挑战 · 历史增长趋势分析</span>
+          </div>
+          <span class="badge badge--low">RISK: LOW</span>
+        </div>
+        <p>原结论：营业总收入从2023Q1的18.37亿元增长至2025Q1的66.74亿元... 修正为：营业总收入从2024Q1的48.43亿元增长至2025Q1的66.74亿元，再到2026Q1的194.96亿元。。原因：根据近12季度历史序列，2024Q1收入为48.43亿元，原结论中引用的18.37亿元可能为更早年份数据，需修正以匹配当前数据窗口。</p>
+      </section>
+    
+    <section class="field field--audit-resolved">
+      <div class="field-header">
+        <div class="field-label-wrap">
+          <svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <span class="field-label">复核结论 · 盈利能力分析</span>
+        </div>
+        <span class="badge badge--verified">VERIFIED</span>
+      </div>
+      <p>2026年一季度营业收入（194.96亿元）与归母净利润（57.35亿元）数据准确，环比2025年第四季度增长趋势符合财务序列事实。</p>
+    </section>
+  
+    <section class="field field--audit-resolved">
+      <div class="field-header">
+        <div class="field-label-wrap">
+          <svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <span class="field-label">复核结论 · 业务结构与市场分布</span>
+        </div>
+        <span class="badge badge--verified">VERIFIED</span>
+      </div>
+      <p>业务结构数据与2025年报主营构成分析一致，光通信收发模块占比及海外收入占比（90.58%）均有原始数据支撑。</p>
+    </section>
+  
+    <section class="field field--audit-resolved">
+      <div class="field-header">
+        <div class="field-label-wrap">
+          <svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <span class="field-label">复核结论 · 研发投入与技术壁垒</span>
+        </div>
+        <span class="badge badge--verified">VERIFIED</span>
+      </div>
+      <p>研发投入金额、人员占比及极低的资本化率（3.62%）均与原始数据表述一致，体现了稳健的会计处理。</p>
+    </section>
+  
+    <section class="field field--audit-resolved">
+      <div class="field-header">
+        <div class="field-label-wrap">
+          <svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <span class="field-label">复核结论 · 负债结构与偿债能力</span>
+        </div>
+        <span class="badge badge--verified">VERIFIED</span>
+      </div>
+      <p>2026年一季度末的总资产与总负债数据准确，合同负债（4559万元）极低的观察符合行业信用账期特征。</p>
+    </section>
+  
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="running-foot">
+      <span>EZER RESEARCH · 研报内部复核版</span>
+      <span>PAGE 07 / 07</span>
+    </footer>
+  </section>
+</main>
+</body>
+</html>

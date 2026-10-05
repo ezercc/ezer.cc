@@ -9,6 +9,6 @@ export const premiumPlan = {
     "https://msufgvqofnihylcnxyac.supabase.co/functions/v1/create-stripe-checkout",
   paymentMethods: {
     card: { supportedPlans: ["monthly", "quarterly", "annual"] },
-    alipay: { supportedPlans: ["quarterly", "annual"] },
+    alipay: { supportedPlans: ["monthly", "quarterly", "annual"] },
   },
 } as const;

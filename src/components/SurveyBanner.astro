@@ -55,8 +55,8 @@ const t = useTranslations(lang);
     background: linear-gradient(90deg, #ede9fe 0%, #e0e7ff 50%, #f3e8ff 100%);
     color: #1e1b4b;
     border-bottom: 1px solid rgba(139, 92, 246, 0.2);
-    backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease, opacity 0.3s ease;
   }
@@ -211,7 +211,7 @@ const t = useTranslations(lang);
       }
 
       const params = new URLSearchParams(window.location.search);
-      const isMock = params.get("mock_survey") === "true" || params.get("preview") === "true";
+      const isMock = params.get("mock_survey") === "true";
 
       // If user manually closed it before and not in mock mode, do not display
       if (!isMock && localStorage.getItem("ezer_survey_banner_closed") === "true") {
@@ -227,8 +227,8 @@ const t = useTranslations(lang);
         if (window.auth && typeof window.auth.getSession === "function") {
           session = await window.auth.getSession();
         } else {
-          for (let i = 0; i < 10; i++) {
-            await new Promise((r) => setTimeout(r, 50));
+          for (let i = 0; i < 20; i++) {
+            await new Promise((r) => setTimeout(r, 100));
             if (window.auth && typeof window.auth.getSession === "function") {
               session = await window.auth.getSession();
               break;
@@ -239,7 +239,9 @@ const t = useTranslations(lang);
         console.error("SurveyBanner: auth session check failed", e);
       }
 
-      if (isMock || session) {
+      const isLoggedIn = Boolean(session && session.user);
+
+      if (isMock || isLoggedIn) {
         banner.classList.remove("hidden");
         document.body.classList.add("has-survey-banner");
         updateBannerHeight();

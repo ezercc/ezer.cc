@@ -17,6 +17,42 @@ export interface ChangelogItem {
 
 export const changelogData: ChangelogItem[] = [
   {
+    version: "v1.4.0",
+    date: "2026-09-28",
+    zh: {
+      title: "首页审计工作流流程图重塑，分析页双栏布局与数据悬浮微卡片上线",
+      features: [
+        "全新首页审计工作流流程图：全景呈现结构化数据接入、材料编排、分析模型生成、审计模型红蓝对抗挑战到 Verifier 质量把关的工业级审计流水线，支持时序动态重播与高清全景架构图展开。",
+        "全新财务数据悬浮微卡片：正文核心财务指标新增交互浮层，光标悬停即显数值详情与历史同期对比，支持点击固定（Pin）、视口边缘自适应吸附及图表双向联动高亮。"
+      ],
+      improvements: [
+        "重构分析页面双栏布局架构：采用左侧 Sticky 标准化财务看板（走势图表与行业词云随屏吸附）与右侧流式章节分析卡深度协同的版面设计，大幅提升研读图文比对效率。",
+        "优化报告排版与暗黑模式视效：调优长篇分析文本行距字阶与图表对比度，全站导航吸顶与毛玻璃层次更加通透自然。",
+        "规范证据链全透明可追溯呈现：统一各卡片证据锚点样式，确保关键财务判断逐行绑定原文证据与计算逻辑。"
+      ],
+      fixes: [
+        "优化移动端与多分辨率屏幕下的图表自适应排版，修复特定宽度下的图表容器溢出问题。",
+        "优化光标快速划过指标标签时悬浮卡片的隐藏与状态管理，消除偶现定位残留。"
+      ]
+    },
+    en: {
+      title: "Audit Workflow Diagram, Dual-Panel Analysis Layout & Floating Financial Micro-Cards",
+      features: [
+        "All-New Interactive Audit Workflow Diagram: Visualized the multi-stage engineering pipeline across data ingestion, dossier orchestration, red-blue adversarial challenge, and verifier quality assurance, featuring sequence replay and high-res modal view.",
+        "Floating Financial Micro-Cards: Interactive metric tags throughout report text now reveal floating data cards on hover, showing instant figures, YoY/QoQ comparisons, pin-to-stay mode, and bidirectional chart highlighting without losing reading context."
+      ],
+      improvements: [
+        "Restructured Dual-Panel Analysis Layout: Upgraded report architecture with a sticky left panel (normalized trend charts and word cloud) and a sequential stream of chapterized audit cards on the right for seamless comparative analysis.",
+        "Refined Typography & Dark Mode Contrast: Polished text line-height, hierarchy, and chart color palettes across long-form reports to minimize visual fatigue during deep research.",
+        "Standardized Open Evidence Traceability: Unified source evidence anchors to ensure all critical audit deductions remain visibly bound line-by-line to original disclosures."
+      ],
+      fixes: [
+        "Fixed responsive chart container overflows across mobile viewports and varying screen resolutions.",
+        "Improved popover state management and hover cleanup to prevent lingering tooltips during rapid cursor traversal."
+      ]
+    }
+  },
+  {
     version: "v1.3.0",
     date: "2026-08-14",
     zh: {

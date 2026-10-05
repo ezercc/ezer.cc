@@ -1,0 +1,261 @@
+---
+import Button from "./Button.astro";
+import { useTranslations } from "../i18n/utils";
+
+interface Props {
+  lang: "zh" | "en";
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const homeUrl = lang === "zh" ? "/" : "/en/";
+const searchUrl = lang === "zh" ? "/search/" : "/en/search/";
+---
+
+<div class="page-404-container">
+  <!-- Visual Background Grid Elements -->
+  <div class="p404-bg-grid" aria-hidden="true">
+    <div class="p404-grid-lines"></div>
+  </div>
+
+  <div class="p404-inner">
+    <!-- Hero Stage with Big Number & Reticle -->
+    <div class="p404-stage">
+      <div class="p404-reticle" aria-hidden="true">
+        <svg viewBox="0 0 200 200" class="p404-reticle-svg">
+          <circle cx="100" cy="100" r="92" class="p404-reticle-ring p404-ring-outer" />
+          <circle cx="100" cy="100" r="68" class="p404-reticle-ring p404-ring-mid" />
+          <circle cx="100" cy="100" r="44" class="p404-reticle-ring p404-ring-inner" />
+          <line x1="100" y1="4" x2="100" y2="28" class="p404-reticle-tick" />
+          <line x1="100" y1="172" x2="100" y2="196" class="p404-reticle-tick" />
+          <line x1="4" y1="100" x2="28" y2="100" class="p404-reticle-tick" />
+          <line x1="172" y1="100" x2="196" y2="100" class="p404-reticle-tick" />
+          <line x1="92" y1="100" x2="108" y2="100" class="p404-crosshair" />
+          <line x1="100" y1="92" x2="100" y2="108" class="p404-crosshair" />
+        </svg>
+      </div>
+      <div class="p404-num" aria-hidden="true">404</div>
+    </div>
+
+    <!-- Editorial Headings -->
+    <div class="p404-copy">
+      <h1 class="p404-title">{t("404.title")}</h1>
+      <p class="p404-desc">{t("404.desc")}</p>
+    </div>
+
+    <!-- Primary Actions (Medium Size) -->
+    <div class="p404-actions">
+      <Button
+        title={t("404.back_home")}
+        url={homeUrl}
+        arrow={true}
+        size="md"
+        revealable={false}
+      />
+      <Button
+        title={t("404.search_report")}
+        url={searchUrl}
+        color="primary-alt"
+        size="md"
+        revealable={false}
+      />
+    </div>
+  </div>
+</div>
+
+<style>
+  .page-404-container {
+    position: relative;
+    min-height: calc(100vh - 14rem);
+    padding: 6rem var(--container-offset) 7rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    color: var(--color-text);
+  }
+
+  /* Subtle background grid pattern mimicking audit matrix */
+  .page-404-container .p404-bg-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.55;
+    background-image: 
+      radial-gradient(circle at center, rgba(var(--rgb-brand-1), 0.08) 0%, transparent 70%),
+      linear-gradient(to right, rgba(var(--rgb-text-alt), 0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(var(--rgb-text-alt), 0.07) 1px, transparent 1px);
+    background-size: 100% 100%, 48px 48px, 48px 48px;
+    mask-image: radial-gradient(ellipse at center, black 35%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 35%, transparent 75%);
+  }
+
+  .page-404-container .p404-inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 48rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* Stage with big 404 & Reticle */
+  .page-404-container .p404-stage {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 1.5rem;
+  }
+
+  .page-404-container .p404-reticle {
+    position: absolute;
+    width: 270px;
+    height: 270px;
+    pointer-events: none;
+    opacity: 0.28;
+    z-index: 1;
+    transform-origin: center;
+    animation: p404RotateReticle 60s linear infinite;
+  }
+
+  @keyframes p404RotateReticle {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .page-404-container .p404-reticle-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .page-404-container .p404-reticle-ring {
+    fill: none;
+    stroke: var(--color-brand-1);
+    stroke-width: 1;
+  }
+
+  .page-404-container .p404-ring-outer {
+    stroke-dasharray: 4 6;
+  }
+
+  .page-404-container .p404-ring-mid {
+    stroke-dasharray: 2 4;
+  }
+
+  .page-404-container .p404-ring-inner {
+    stroke-dasharray: 8 4;
+  }
+
+  .page-404-container .p404-reticle-tick {
+    stroke: var(--color-brand-1);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+  }
+
+  .page-404-container .p404-crosshair {
+    stroke: var(--color-brand-1);
+    stroke-width: 1.2;
+    stroke-linecap: round;
+  }
+
+  .page-404-container .p404-num {
+    position: relative;
+    z-index: 2;
+    font-family: 'Roboto Slab', 'Noto Serif SC', serif;
+    font-size: clamp(6.5rem, 16vw, 11rem);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    color: var(--color-text);
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    user-select: none;
+  }
+
+  /* Copy styling */
+  .page-404-container .p404-copy {
+    margin-bottom: 2.25rem;
+    max-width: 38rem;
+  }
+
+  .page-404-container .p404-title {
+    font-family: 'Roboto Slab', 'Noto Serif SC', serif;
+    font-weight: 400;
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+    margin: 0 0 1rem 0;
+  }
+
+  .page-404-container .p404-desc {
+    font-family: 'Roboto', 'Noto Sans SC', 'PingFang SC', sans-serif;
+    font-size: var(--font-size-md);
+    line-height: 1.65;
+    color: var(--color-text-alt);
+    margin: 0 auto;
+    max-width: 34rem;
+  }
+
+  /* Actions */
+  .page-404-container .p404-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.85rem;
+  }
+
+  /* Responsive Rules */
+  @media (max-width: 768px) {
+    .page-404-container {
+      padding: 4.5rem var(--container-offset) 5rem;
+    }
+
+    .page-404-container .p404-reticle {
+      width: 210px;
+      height: 210px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .page-404-container .p404-actions {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .page-404-container .p404-actions :global(.btn) {
+      width: 100%;
+      text-align: center;
+    }
+
+    .page-404-container .p404-actions :global(.btn > span > span) {
+      justify-content: center;
+    }
+  }
+</style>
+
+<style is:global>
+  /* Strict parent-constrained styling to pierce Astro child component */
+  .page-404-container .p404-actions .btn > span > span {
+    min-height: 3.875em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  .page-404-container .p404-actions .btn > span > span:first-child {
+    height: 100%;
+  }
+</style>
