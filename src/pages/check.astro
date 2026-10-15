@@ -2913,8 +2913,11 @@ const translations = ui[lang];
               } else {
                 displayVal = (val >= 0 ? '+' : '') + val + '%';
               }
+              const markerColor = typeof item.color === 'string'
+                ? item.color
+                : (item.color?.colorStops?.[0]?.color || 'rgba(124, 58, 237, 0.85)');
               res += `<div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
-                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background-color:${item.color};"></span>
+                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background-color:${markerColor};"></span>
                 <span>${item.seriesName}: <b>${displayVal}</b></span>
               </div>`;
             });
@@ -3464,10 +3467,17 @@ const translations = ui[lang];
     }
 
     // Normalize producer name (A, B, C or normalizer, analyzer, auditor)
-    const p = (producer || '').toUpperCase();
+    const p = (producer || item.producer || '').toUpperCase();
 
     // Industry News Event (Section I)
-    if (event === 'i_industry_wordsea' || event === 'industry_wordsea' || event === 'i_industry_word_cloud' || (p === 'I' && (event === 'data' || event === 'wordsea' || event === 'i_industry_wordsea'))) {
+    const isIndustryEvent = event === 'i_industry_wordsea' || 
+      event === 'industry_wordsea' || 
+      event === 'i_industry_word_cloud' || 
+      event === 'wordsea' || 
+      event === 'i_wordsea' || 
+      ((p === 'I' || p === 'INDUSTRY' || item.role === 'industry_news') && (event === 'data' || event === 'wordsea' || event === 'i_industry_wordsea' || !event));
+
+    if (isIndustryEvent) {
       const industryGrid = document.querySelector('.industry-grid');
       if (industryGrid) industryGrid.classList.remove('hidden');
       
@@ -3982,77 +3992,105 @@ const translations = ui[lang];
     lastNewsMap = newsMap;
     lastWcWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
 
-    if (wcChartInstance) {
-      wcChartInstance.dispose();
-    }
+    const doInitAndRender = () => {
+      const targetEl = document.getElementById('industry-wordcloud');
+      if (!targetEl) return;
 
-    const formattedList = list.slice(0, 100).map(item => {
-      const name = Array.isArray(item) ? item[0] : (item.name || item.word || '');
-      const value = Array.isArray(item) ? item[1] : (item.value || item.count || 1);
-      return { name, value };
-    });
+      if (wcChartInstance) {
+        wcChartInstance.dispose();
+        wcChartInstance = null;
+      }
 
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark' || document.documentElement.classList.contains('dark');
-    // @ts-ignore
-    wcChartInstance = echarts.init(el, isDark ? 'dark' : null);
+      const formattedList = list.slice(0, 100).map(item => {
+        const name = Array.isArray(item) ? item[0] : (item.name || item.word || '');
+        const value = Array.isArray(item) ? item[1] : (item.value || item.count || 1);
+        return { name, value };
+      });
 
-    const colors = ['#967041', '#2f804e', '#7649c0', '#b22f2f', '#4d70ce', '#98487f', '#7c3aed', '#059669'];
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark' || document.documentElement.classList.contains('dark');
+      // @ts-ignore
+      wcChartInstance = echarts.init(targetEl, isDark ? 'dark' : null);
 
-    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
-    const sizeRange: [number, number] = isMobile ? [12, 48] : [14, 80];
+      const colors = ['#967041', '#2f804e', '#7649c0', '#b22f2f', '#4d70ce', '#98487f', '#7c3aed', '#059669'];
 
-    const option = {
-      backgroundColor: 'transparent',
-      tooltip: {
-        show: true,
-        backgroundColor: isDark ? '#1e293b' : '#ffffff',
-        borderColor: isDark ? 'rgba(148, 163, 184, 0.2)' : 'rgba(100, 116, 139, 0.2)',
-        textStyle: { color: isDark ? '#f8fafc' : '#0f172a' },
-        formatter: (params: any) => {
-          const count = params.value;
-          const name = params.name;
-          return `<div style="font-weight:600;">${name}</div><div>${lang === 'zh' ? '相关新闻/热度' : 'Mentions/Heat'}: ${count}</div>`;
-        }
-      },
-      series: [{
-        type: 'wordCloud',
-        shape: 'circle',
-        left: 'center',
-        top: 'center',
-        width: '95%',
-        height: '95%',
-        sizeRange: sizeRange,
-        rotationRange: [0, 0],
-        gridSize: 10,
-        drawOutOfBound: false,
-        layoutAnimation: true,
-        textStyle: {
-          fontFamily: 'Outfit, "PingFang SC", sans-serif',
-          fontWeight: 'normal',
-          color: function () {
-            return colors[Math.floor(Math.random() * colors.length)];
+      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+      const sizeRange: [number, number] = isMobile ? [12, 48] : [14, 80];
+
+      const option = {
+        backgroundColor: 'transparent',
+        tooltip: {
+          show: true,
+          backgroundColor: isDark ? '#1e293b' : '#ffffff',
+          borderColor: isDark ? 'rgba(148, 163, 184, 0.2)' : 'rgba(100, 116, 139, 0.2)',
+          textStyle: { color: isDark ? '#f8fafc' : '#0f172a' },
+          formatter: (params: any) => {
+            const count = params.value;
+            const name = params.name;
+            return `<div style="font-weight:600;">${name}</div><div>${lang === 'zh' ? '相关新闻/热度' : 'Mentions/Heat'}: ${count}</div>`;
           }
         },
-        emphasis: {
-          focus: 'self',
+        series: [{
+          type: 'wordCloud',
+          shape: 'circle',
+          left: 'center',
+          top: 'center',
+          width: '95%',
+          height: '95%',
+          sizeRange: sizeRange,
+          rotationRange: [0, 0],
+          gridSize: 10,
+          drawOutOfBound: false,
+          layoutAnimation: true,
           textStyle: {
-            textShadowBlur: 8,
-            textShadowColor: 'rgba(124, 58, 237, 0.5)'
-          }
-        },
-        data: formattedList
-      }]
+            fontFamily: 'Outfit, "PingFang SC", sans-serif',
+            fontWeight: 'normal',
+            color: function () {
+              return colors[Math.floor(Math.random() * colors.length)];
+            }
+          },
+          emphasis: {
+            focus: 'self',
+            textStyle: {
+              textShadowBlur: 8,
+              textShadowColor: 'rgba(124, 58, 237, 0.5)'
+            }
+          },
+          data: formattedList
+        }]
+      };
+
+      wcChartInstance.setOption(option);
+      if (typeof wcChartInstance.resize === 'function') {
+        wcChartInstance.resize();
+      }
+
+      wcChartInstance.on('click', (params: any) => {
+        const keyword = params.name;
+        const data = newsMap.get(keyword);
+        if (data) {
+          renderNews(data.articles, keyword, data.totalCount);
+        }
+      });
     };
 
-    wcChartInstance.setOption(option);
+    // Ensure DOM container has completed reflow after unhiding before canvas size calculation
+    if (typeof requestAnimationFrame !== 'undefined') {
+      requestAnimationFrame(() => {
+        setTimeout(doInitAndRender, 60);
+      });
+    } else {
+      setTimeout(doInitAndRender, 60);
+    }
 
-    wcChartInstance.on('click', (params: any) => {
-      const keyword = params.name;
-      const data = newsMap.get(keyword);
-      if (data) {
-        renderNews(data.articles, keyword, data.totalCount);
+    // Default to displaying the first keyword news immediately upon arrival
+    if (list.length > 0) {
+      const firstItem = list[0];
+      const firstKeyword = Array.isArray(firstItem) ? firstItem[0] : (firstItem.name || firstItem.keyword || firstItem.word || '');
+      const firstData = newsMap.get(firstKeyword);
+      if (firstData && Array.isArray(firstData.articles) && firstData.articles.length > 0) {
+        renderNews(firstData.articles, firstKeyword, firstData.totalCount);
       }
-    });
+    }
   }
 
   window.addEventListener('resize', () => {
@@ -4206,25 +4244,44 @@ const translations = ui[lang];
       buffer += decoder.decode(value, { stream: true });
 
       if (isSSE) {
-        // SSE Logic (Uses \n\n as boundary)
+        // SSE Logic (Supports both \n\n and \r\n\r\n as event boundaries)
         while (true) {
-          const boundary = buffer.indexOf('\n\n');
-          if (boundary === -1) break;
+          const match = buffer.match(/\r?\n\r?\n/);
+          if (!match || match.index === undefined) break;
 
+          const boundary = match.index;
+          const boundaryLength = match[0].length;
           const rawEvent = buffer.slice(0, boundary);
-          buffer = buffer.slice(boundary + 2);
+          buffer = buffer.slice(boundary + boundaryLength);
 
-          for (const line of rawEvent.split('\n')) {
-            if (!line.startsWith('data: ')) continue;
-            const dataStr = line.slice(6).trim();
-            if (!dataStr || dataStr === '[DONE]') continue;
+          let eventType = '';
+          const dataLines: string[] = [];
 
-            try {
-              const item = JSON.parse(dataStr);
-              if (onEachItem) onEachItem(item);
-              await processEvent(item);
-            } catch (e) {
-              console.error('SSE Line parse error:', dataStr, e);
+          for (const rawLine of rawEvent.split(/\r?\n/)) {
+            const line = rawLine.trimEnd();
+            if (!line || line.startsWith(':')) continue;
+            if (line.startsWith('event:')) {
+              eventType = line.slice(6).trim();
+            } else if (line.startsWith('data:')) {
+              let d = line.slice(5);
+              if (d.startsWith(' ')) d = d.slice(1);
+              dataLines.push(d);
+            }
+          }
+
+          if (dataLines.length > 0) {
+            const dataStr = dataLines.join('\n').trim();
+            if (dataStr && dataStr !== '[DONE]') {
+              try {
+                const item = JSON.parse(dataStr);
+                if (eventType && !item.event) {
+                  item.event = eventType;
+                }
+                if (onEachItem) onEachItem(item);
+                await processEvent(item);
+              } catch (e) {
+                console.error('SSE Line parse error:', dataStr, e);
+              }
             }
           }
         }
@@ -4253,16 +4310,43 @@ const translations = ui[lang];
 
     // Process leftover buffer
     if (buffer.trim()) {
+      if (isSSE) {
+        let eventType = '';
+        const dataLines: string[] = [];
+        for (const rawLine of buffer.split(/\r?\n/)) {
+          const line = rawLine.trimEnd();
+          if (!line || line.startsWith(':')) continue;
+          if (line.startsWith('event:')) {
+            eventType = line.slice(6).trim();
+          } else if (line.startsWith('data:')) {
+            let d = line.slice(5);
+            if (d.startsWith(' ')) d = d.slice(1);
+            dataLines.push(d);
+          }
+        }
+        if (dataLines.length > 0) {
+          const dataStr = dataLines.join('\n').trim();
+          if (dataStr && dataStr !== '[DONE]') {
+            try {
+              const item = JSON.parse(dataStr);
+              if (eventType && !item.event) item.event = eventType;
+              if (onEachItem) onEachItem(item);
+              await processEvent(item);
+            } catch (e) {}
+          }
+        }
+      } else {
         const trimmed = buffer.trim();
         let dataStr = trimmed;
         if (dataStr.startsWith('data: ')) dataStr = dataStr.substring(6).trim();
         if (dataStr && dataStr !== '[DONE]') {
-            try {
-                const item = JSON.parse(dataStr);
-                if (onEachItem) onEachItem(item);
-                await processEvent(item);
-            } catch (e) {}
+          try {
+            const item = JSON.parse(dataStr);
+            if (onEachItem) onEachItem(item);
+            await processEvent(item);
+          } catch (e) {}
         }
+      }
     }
     window.dispatchEvent(new CustomEvent('analysis-complete'));
   }
